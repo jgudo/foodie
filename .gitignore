@@ -1,0 +1,7 @@
+node_modules/
+frontend/.env-dev
+frontend/.env-prod
+frontend/.env
+server/.env-dev
+server/.env-prod
+server/.env
