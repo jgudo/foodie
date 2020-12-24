@@ -1,71 +1,61 @@
 const express = require('express');
-const Joi = require('joi');
+const passport = require('passport');
 const { schemas, validateBody } = require('../../../validations/validations');
-const User = require('../../../schemas/UserSchema');
-const withAuth = require('../../../middlewares/withAuth');
-const { sessionizeUser } = require('../../../helpers/utils');
+const { sessionizeUser, makeErrorJson, makeResponseJson } = require('../../../helpers/utils');
+const { INVALID_INPUT, INCORRECT_CREDENTIALS, EMAIL_TAKEN } = require('../../../constants/error-types');
 const router = express.Router({ mergeParams: true });
 
 //@route POST /api/v1/register
-router.post('/v1/register', validateBody(schemas.registerSchema), async (req, res, next) => {
-    try {
-        const { email, password, username } = req.body;
+router.post(
+    '/v1/register',
+    validateBody(schemas.registerSchema),
+    (req, res, next) => {
+        passport.authenticate('local-register', (err, user, info) => {
+            if (err) {
+                return next();
+            }
 
-        const user = new User({ email, password, username });
-        await user.save();
-        const sessionUser = sessionizeUser(user);
+            if (user) { // if user has been successfully created
+                const userData = sessionizeUser(user);
+                res.status(200).send(makeResponseJson(userData));
+            } else {
+                return res
+                    .status(401)
+                    .send(makeErrorJson({ type: EMAIL_TAKEN, status_code: 401, message: info.error }));
+            }
 
-        req.session.user = sessionUser;
-        // res.sendStatus(200);
-        res.status(200).send(sessionUser);
-    } catch (e) {
-        console.log(e);
-        res.status(400).send(e);
+            next();
+        })(req, res, next);
     }
-});
+);
 
 //@route POST /api/v1/authenticate
-router.post('/v1/authenticate', validateBody(schemas.loginSchema), async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (user) { // if user exist based on given email
-            try { // try if password matches
-                await user.passwordMatch(password);
-                const sessionUser = sessionizeUser(user);
-                req.session.user = sessionUser;
-                res.send(sessionUser);
-            } catch (e) {
-                res.status(401).send(e);
+router.post(
+    '/v1/authenticate',
+    validateBody(schemas.loginSchema),
+    (req, res, next) => {
+        passport.authenticate('local-login', (err, user, info) => {
+            if (err) {
+                return next(err);
             }
-        } else { // else if no user found
-            res
-                .status(401)
-                .json({ error: 'Incorrect email or password' });
-        }
-    } catch (e) {
-        console.log(e);
-        res
-            .status(500)
-            .json({ error: 'Internal error, please try again.' });
-    }
-});
+
+            if (!user) {
+                return res
+                    .status(401)
+                    .send(makeErrorJson({ type: INCORRECT_CREDENTIALS, status_code: 401, message: info.error }));
+            } else {
+                const userData = sessionizeUser(user);
+                return res.status(200).send(userData);
+            }
+        })(req, res, next);
+    });
 
 //@route DELETE /api/v1/logout
 router.delete('/v1/logout', (req, res) => {
     try {
-        const user = req.session.user;
+        req.logOut();
 
-        if (user) {
-            req.session.destroy((err) => {
-                if (err) throw (err);
-
-                res.clearCookie(process.env.SESSION_NAME);
-                res.send(user);
-            });
-        } else {
-            throw new Error('Something went wrong.');
-        }
+        res.sendStatus(200);
     } catch (e) {
         res.status(422).send(e);
     }

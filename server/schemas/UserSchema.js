@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    facebook: {
+        id: String,
+        token: String,
+        name: String,
+        email: String
+    },
     dateJoined: {
         type: Date,
         default: Date.now,
@@ -32,15 +38,13 @@ const UserSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-UserSchema.methods.passwordMatch = function (password) {
-    return new Promise((resolve, reject) => {
-        bcrypt.compare(password, this.password, function (err, same) {
-            if (same) {
-                resolve(true);
-            } else {
-                reject(err);
-            }
-        })
+UserSchema.methods.passwordMatch = function (password, cb) {
+    const user = this;
+
+    bcrypt.compare(password, user.password, function (err, isMatch) {
+        if (err) return cb(err);
+
+        cb(null, isMatch);
     });
 }
 
