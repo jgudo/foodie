@@ -16,9 +16,21 @@ module.exports = {
         '60px': '60px'
       }
     },
+    default: {
+      button: {
+        '&:disabled': {
+          cursor: 'not-allowed',
+          opacity: 0.4,
+        }
+      }
+    }
   },
   variants: {
-    extend: {},
+    opacity: ({ after }) => after(['disabled']),
+    cursor: ['hover', 'focus'],
+    extend: {
+      cursor: ['disabled']
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),

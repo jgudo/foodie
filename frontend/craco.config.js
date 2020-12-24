@@ -22,6 +22,7 @@ module.exports = {
                 // Jest module mapper which will detect our absolute imports.
                 '^assets(.*)$': '<rootDir>/src/assets$1',
                 '^components(.*)$': '<rootDir>/src/components$1',
+                '^routers(.*)$': '<rootDir>/src/routers$1',
                 '^pages(.*)$': '<rootDir>/src/pages$1',
                 '^redux(.*)$': '<rootDir>/src/redux$1',
                 '^utils(.*)$': '<rootDir>/src/utils$1',
