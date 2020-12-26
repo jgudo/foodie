@@ -1,0 +1,9 @@
+.input--error {
+    @extend input[type=text];
+    @apply border-red-300 !important;
+
+    &:focus {
+        @apply ring-0 border-red-600 !important;
+    }
+}
+

@@ -19,12 +19,8 @@ export interface IAuth {
     username: string | null;
 }
 
-export type TCustomClasses =
-    | 'group'
-    | 'focus:ring-2'
-    | 'focus:ring-indigo-500'
-    | 'focus:z-10'
-    | 'sm:text-sm'
-    | 'focus:ring-red-500'
-    | 'disabled:opacity-50'
-    | 'disabled:cursor-not-allowed'
+export interface IRegister {
+    email: string;
+    password: string;
+    username: string;
+}

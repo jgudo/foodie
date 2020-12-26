@@ -1,4 +1,3 @@
 .container {
-    @apply w-4/5;
     @apply m-auto;
 }

@@ -1,19 +1,15 @@
-import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
+import withAuth from "~/components/hoc/withAuth";
 import { LOGIN } from "~/constants/routes";
-import { IRootReducer } from "~/types/types";
 
 interface IProps {
     component: React.ComponentType;
     path: string;
+    isAuth: boolean;
     [propName: string]: any;
 }
 
-const ProtectedRoute: React.FC<IProps> = ({ component: Component, path, ...rest }) => {
-    const { isAuth } = useSelector((state: IRootReducer) => ({
-        isAuth: !!state.auth.id && !!state.auth.username
-    }));
-
+const ProtectedRoute: React.FC<IProps> = ({ isAuth, component: Component, path, ...rest }) => {
     return (
         <Route
             {...rest}
@@ -24,4 +20,4 @@ const ProtectedRoute: React.FC<IProps> = ({ component: Component, path, ...rest 
     );
 }
 
-export default ProtectedRoute;
+export default withAuth(ProtectedRoute);

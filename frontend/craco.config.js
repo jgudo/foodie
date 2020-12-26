@@ -5,6 +5,9 @@ module.exports = {
     style: {
         postcss: {
             plugins: [
+                require('postcss-import'),
+                require('postcss-nested'),
+                require('postcss-extend'),
                 require('tailwindcss'),
                 require('autoprefixer'),
             ],
