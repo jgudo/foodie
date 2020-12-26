@@ -20,41 +20,53 @@ app.disable('x-powered-by');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  preflightContinue: true
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(hpp());
 
+// app.use(express.static(path.join(__dirname, 'public')));
+
 const sessionOptions = {
   key: process.env.SESSION_NAME,
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { expires: 14 * 24 * 60 * 60 * 1000, httpOnly: true }, //14 days expiration
+  cookie: {
+    expires: 14 * 24 * 60 * 60 * 1000,
+    secure: false,
+  }, //14 days expiration
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
     collection: 'session'
   })
 };
-app.use(session(sessionOptions));
 
-app.use(passport.initialize());
-app.use(passport.session());
 
+console.log('NODE_ENV =', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   sessionOptions.cookie.secure = true // serve secure cookies
+  sessionOptions.cookie.httpOnly = true // serve secure cookies
 }
 
+app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', authRouter);
-app.use('/', (req, res) => {
-  res.send('Hoy gago');
-})
+// app.use('/', (req, res) => {
+//   res.send('Hoy gago');
+// })
 app.use(csurf());
 
 // catch 404 and forward to error handler

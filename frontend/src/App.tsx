@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
+import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
@@ -37,11 +38,14 @@ function App() {
       <BrowserRouter>
         <div className="App">
           <NavBar />
-          <Switch>
-            <ProtectedRoute path="/" exact component={Home} />
-            <PublicRoute path="/register" component={Register} />
-            <PublicRoute path="/login" component={Login} />
-          </Switch>
+          <main className="min-h-screen">
+            <Switch>
+              <ProtectedRoute path="/" exact component={Home} />
+              <PublicRoute path="/register" component={Register} />
+              <PublicRoute path="/login" component={Login} />
+              <Route component={PageNotFound} />
+            </Switch>
+          </main>
         </div>
       </BrowserRouter>
     );

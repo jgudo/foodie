@@ -14,7 +14,8 @@ const email = Joi
     });
 const password = Joi
     .string()
-    .pattern(new RegExp('^[a-zA-Z0-9]{6,30}$'))
+    .min(8)
+    .max(50)
     .required()
     .messages({
         'string.base': `"password" should be a type of 'text'`,

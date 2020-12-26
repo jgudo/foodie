@@ -11,12 +11,17 @@ module.exports = function (passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function (user, done) {
-        done(null, user.id);
+        done(null, user._id);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function (id, done) {
+        console.log('ID', id);
         User.findById(id, function (err, user) {
+            if (err) {
+                return done(err);
+            }
+
             done(err, user);
         });
     });
@@ -32,25 +37,43 @@ module.exports = function (passport) {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true // allows us to pass back the entire request to the callback
-    }, async (req, email, password, done) => {
-        try {
-            const user = await User.findOne({ email });
+    }, (req, email, password, done) => {
+        User.findOne({ email })
+            .then((user) => {
+                if (user) {
+                    return done(null, false, { error: 'Email already has been already used by other user.' });
+                } else {
+                    const newUser = new User({ email, password, username: req.body.username });
 
-            if (user) {
-                return done(null, false, { error: 'Email already has been already used by other user.' });
-            } else {
-                const newUser = new User({ email, password, username: req.body.username });
+                    newUser.save(function (err) {
+                        if (err) {
+                            return done(err);
+                        }
+                        return done(null, newUser);
+                    });
+                }
+            })
+            .catch((e) => {
+                return done(err);
+            })
+        // try {
+        //     const user = await User.findOne({ email });
 
-                newUser.save(function (err) {
-                    if (err) {
-                        return done(err);
-                    }
-                    return done(null, newUser);
-                });
-            }
-        } catch (err) {
-            return done(err);
-        }
+        //     if (user) {
+        //         return done(null, false, { error: 'Email already has been already used by other user.' });
+        //     } else {
+        //         const newUser = new User({ email, password, username: req.body.username });
+
+        //         newUser.save(function (err) {
+        //             if (err) {
+        //                 return done(err);
+        //             }
+        //             return done(null, newUser);
+        //         });
+        //     }
+        // } catch (err) {
+        //     return done(err);
+        // }
     })
     );
 

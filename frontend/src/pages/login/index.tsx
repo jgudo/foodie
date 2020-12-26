@@ -85,12 +85,12 @@ const Login: React.FC = () => {
                     </div>
 
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center">
+                        {/* <div className="flex items-center">
                             <input id="remember_me" name="remember_me" type="checkbox" readOnly={isLoading} />
                             <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-600">
                                 Remember me
                             </label>
-                        </div>
+                        </div> */}
 
                         <div className="text-sm">
                             <Link className="font-medium text-indigo-600 hover:text-indigo-500 underline" to="/forgot-password">

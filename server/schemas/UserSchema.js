@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema({
     },
     username: {
         type: String,
+        unique: true,
         required: true
     },
     facebook: {
@@ -31,6 +32,44 @@ const UserSchema = new mongoose.Schema({
         name: String,
         email: String
     },
+    isEmailValidated: {
+        type: Boolean,
+        default: false
+    },
+    info: {
+        bio: {
+            type: String,
+            default: ''
+        },
+        birthday: {
+            type: Date,
+            default: null
+        }
+    },
+    profilePicture: {
+        type: String,
+        default: null
+    },
+    coverPhoto: {
+        type: String,
+        default: null
+    },
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
     dateJoined: {
         type: Date,
         default: Date.now,

@@ -16,15 +16,20 @@ router.post(
             }
 
             if (user) { // if user has been successfully created
-                const userData = sessionizeUser(user);
-                res.status(200).send(makeResponseJson(userData));
+                req.logIn(user, function (err) { // <-- Log user in
+                    if (err) {
+                        return next(err);
+                    }
+
+                    console.log('REGISTRATION SUCCESS, IS AUTH: ', req.isAuthenticated())
+                    const userData = sessionizeUser(user);
+                    return res.status(200).send(makeResponseJson(userData));
+                });
             } else {
                 return res
                     .status(401)
                     .send(makeErrorJson({ type: EMAIL_TAKEN, status_code: 401, message: info.error }));
             }
-
-            next();
         })(req, res, next);
     }
 );
@@ -44,8 +49,15 @@ router.post(
                     .status(401)
                     .send(makeErrorJson({ type: INCORRECT_CREDENTIALS, status_code: 401, message: info.error }));
             } else {
-                const userData = sessionizeUser(user);
-                return res.status(200).send(userData);
+                req.logIn(user, function (err) { // <-- Log user in
+                    if (err) {
+                        return next(err);
+                    }
+
+                    console.log('LOGIN SUCCESS, IS AUTH: ', req.isAuthenticated())
+                    const userData = sessionizeUser(user);
+                    return res.status(200).send(makeResponseJson(userData));
+                });
             }
         })(req, res, next);
     });
@@ -57,15 +69,19 @@ router.delete('/v1/logout', (req, res) => {
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(422).send(e);
+        res.status(422).send(makeErrorJson({ status_code: 422, message: 'Unable to logout. Please try again.' }));
     }
 });
 
 //@route GET /api/v1/checkSession
 // Check if user session exists
-router.get('/v1/checkSession', (req, res) => {
-    if (req.session.user) {
-        res.status(200).send(req.session.user);
+router.get('/v1/check-session', (req, res) => {
+    console.log('SESSION: ', req.session.passport)
+    console.log('USER ', req.user);
+    console.log('IS AUTH:', req.isAuthenticated())
+    if (req.isAuthenticated()) {
+        const user = sessionizeUser(req.user);
+        res.status(200).send(makeResponseJson(user));
     } else {
         res.sendStatus(404);
     }
