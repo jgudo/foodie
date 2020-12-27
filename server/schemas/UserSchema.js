@@ -27,6 +27,8 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    firstname: String,
+    lastname: String,
     facebook: {
         id: String,
         token: String,
@@ -92,6 +94,14 @@ UserSchema.methods.toUserJSON = function () {
     const user = omit(this.toObject(), ['password', 'facebook', 'createdAt', 'updatedAt']);
 
     return user;
+}
+
+UserSchema.methods.toCommentJSON = function () {
+    return {
+        username: this.username,
+        email: this.email,
+        profilePicture: this.profilePicture
+    };
 }
 
 UserSchema.pre('save', function (next) {

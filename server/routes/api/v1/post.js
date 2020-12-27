@@ -12,7 +12,7 @@ router.post(
     validateBody(schemas.createPostSchema),
     async (req, res, next) => {
         try {
-            const { _posted_by, description } = req.body;
+            const { description } = req.body;
             const post = new Post({ _posted_by: req.user._id, description, createdAt: Date.now() });
 
             await post.save();

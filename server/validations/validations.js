@@ -2,23 +2,6 @@ const Joi = require('joi');
 const { INVALID_INPUT } = require('../constants/error-types');
 const { makeErrorJson } = require('../helpers/utils');
 
-// const customMessage = (errors) => {
-//     console.log('JOI', errors);
-//     return errors.map((error) => {
-//         switch (error.code) {
-//             case "string.min":
-//                 return { ...error, message: '{#field} exceeded maximum length of {#limit}' };
-//             case "string.max":
-//                 return { ...error, message: '{#field} should have a minimum length of {#limit}' };
-//             case "any.empty":
-//                 return { ...error, message: '{#field} cannot be an empty field.' };
-//             case "any.required":
-//                 return { ...error, message: '{#field} is a required field.' };
-//             default:
-//                 return error;
-//         }
-//     });
-// }
 
 const email = Joi
     .string()
@@ -64,16 +47,24 @@ module.exports = {
             username
         }).options({ abortEarly: false }),
         createPostSchema: Joi.object().keys({
-            posted_by: Joi
-                .string()
-                // .required()
-                .messages({
-                    'string.base': '"Post owner id" should be of type "text"',
-                    'string.empty': `"Post owner id" cannot be an empty field`,
-                    'any.required': '"Post owner id" field is required'
-                }),
             description: Joi.string(),
             photos: Joi.array()
+        }),
+        commentSchema: Joi.object().keys({
+            body: Joi
+                .string()
+                .required()
+                .messages({
+                    'string.base': '"text" should be of type "string"',
+                    'string.empty': `"text" cannot be an empty field`,
+                    'any.required': '"text" field is required'
+                })
+        }),
+        editProfileSchema: Joi.object().keys({
+            firstname: Joi.string(),
+            lastname: Joi.string(),
+            bio: Joi.string()
+
         })
     },
     validateBody: (schema) => {

@@ -6,13 +6,13 @@ const CommentSchema = new mongoose.Schema({
         ref: 'Post',
         required: true
     },
-    comments: [{
-        text: String,
-        _commented_by: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }
-    }]
+    body: String,
+    _commented_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    createdAt: Date,
+    updatedAt: Date
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);

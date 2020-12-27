@@ -1,16 +1,18 @@
 const { isAuthenticated } = require('../../../middlewares/withAuth');
 const { makeResponseJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
+const { validateBody, schemas } = require('../../../validations/validations');
 
 const router = require('express').Router({ mergeParams: true });
 
 router.get(
-    '/v1/me',
+    '/v1/:username',
     isAuthenticated,
     async (req, res, next) => {
         try {
+            const { username } = req.params;
             const user = await User
-                .findById(req.user._id)
+                .findOne({ username })
                 .populate({
                     path: 'posts',
                     select: '_posted_by description name photos comments createdAt',
@@ -29,6 +31,33 @@ router.get(
         } catch (e) {
             console.log(e)
             res.sendStatus(400);
+        }
+    }
+)
+
+router.patch(
+    '/v1/:username/edit',
+    isAuthenticated,
+    validateBody(schemas.editProfileSchema),
+    async (req, res, next) => {
+        try {
+            const { username } = req.params;
+            const { firstname, lastname, bio } = req.body;
+
+            if (username !== req.user.username) return res.sendStatus(401);
+
+            const newUser = await User
+                .findOneAndUpdate({ username }, {
+                    $set: {
+                        firstname, lastname, bio
+                    }
+                }, {
+                    new: true
+                });
+            res.status(200).send(makeResponseJson(newUser));
+        } catch (e) {
+            console.log(e);
+            res.status(401).send(e);
         }
     }
 )
