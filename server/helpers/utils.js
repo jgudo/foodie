@@ -1,3 +1,4 @@
+//@ts-check
 const { INVALID_INPUT, INCORRECT_CREDENTIALS, EMAIL_TAKEN } = require("../constants/error-types");
 
 const initStatus = {
@@ -9,10 +10,18 @@ const initStatus = {
 };
 
 module.exports = {
+    /**
+     * 
+     * @param {{_id: string, username: string, [prop: string]: any}} user 
+     */
     sessionizeUser: (user) => ({
         id: user._id,
         username: user.username
     }),
+    /**
+     * 
+     * @param {object} data 
+     */
     makeResponseJson: (data) => {
         return {
             ...initStatus,
@@ -22,6 +31,10 @@ module.exports = {
             timestamp: new Date()
         };
     },
+    /**
+     * 
+     * @param {{type?: string, status_code: number, message: string}} param0 
+     */
     makeErrorJson: ({ type, status_code, message }) => {
         switch (type) {
             case INVALID_INPUT:

@@ -2,6 +2,24 @@ const Joi = require('joi');
 const { INVALID_INPUT } = require('../constants/error-types');
 const { makeErrorJson } = require('../helpers/utils');
 
+// const customMessage = (errors) => {
+//     console.log('JOI', errors);
+//     return errors.map((error) => {
+//         switch (error.code) {
+//             case "string.min":
+//                 return { ...error, message: '{#field} exceeded maximum length of {#limit}' };
+//             case "string.max":
+//                 return { ...error, message: '{#field} should have a minimum length of {#limit}' };
+//             case "any.empty":
+//                 return { ...error, message: '{#field} cannot be an empty field.' };
+//             case "any.required":
+//                 return { ...error, message: '{#field} is a required field.' };
+//             default:
+//                 return error;
+//         }
+//     });
+// }
+
 const email = Joi
     .string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
@@ -10,8 +28,9 @@ const email = Joi
         'string.base': `"email" should be a type of 'text'`,
         'string.empty': `"email" cannot be an empty field`,
         'string.min': `"email" should have a minimum length of {#limit}`,
-        'any.required': `"email" is a required field`
+        'any.required': `"email" is a required field.`
     });
+
 const password = Joi
     .string()
     .min(8)
@@ -44,6 +63,18 @@ module.exports = {
             password,
             username
         }).options({ abortEarly: false }),
+        createPostSchema: Joi.object().keys({
+            posted_by: Joi
+                .string()
+                // .required()
+                .messages({
+                    'string.base': '"Post owner id" should be of type "text"',
+                    'string.empty': `"Post owner id" cannot be an empty field`,
+                    'any.required': '"Post owner id" field is required'
+                }),
+            description: Joi.string(),
+            photos: Joi.array()
+        })
     },
     validateBody: (schema) => {
         return (req, res, next) => {

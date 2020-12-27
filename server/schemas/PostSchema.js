@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const PostSchema = new mongoose.Schema({
-    creator: {
+    _posted_by: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     photos: [String],
     comments: [{
@@ -21,4 +22,4 @@ const PostSchema = new mongoose.Schema({
     createdAt: Date,
 });
 
-module.defaults = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Post', PostSchema);

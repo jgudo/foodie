@@ -21,4 +21,14 @@ const withAuth = function (req, res, next) {
     }
 };
 
-module.exports = withAuth;
+const isAuthenticated = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        console.log('CHECK MIDDLEWARE: IS AUTH: ', req.isAuthenticated());
+        return next();
+    }
+
+    console.log('UNAUTHORIZED')
+    return res.sendStatus(401);
+}
+
+module.exports = { isAuthenticated };

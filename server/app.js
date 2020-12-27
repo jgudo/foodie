@@ -3,7 +3,6 @@ const express = require('express');
 require('./db/db');
 const path = require('path');
 const session = require('express-session');
-// const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const cors = require('cors');
@@ -15,6 +14,8 @@ const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 const authRouter = require('./routes/api/v1/auth');
+const postRouter = require('./routes/api/v1/post');
+const userRouter = require('./routes/api/v1/user');
 
 app.disable('x-powered-by');
 // view engine setup
@@ -60,13 +61,7 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// app.use(cookieParser());
-
-app.use('/api', authRouter);
-// app.use('/', (req, res) => {
-//   res.send('Hoy gago');
-// })
+app.use('/api', [authRouter, postRouter, userRouter]);
 app.use(csurf());
 
 // catch 404 and forward to error handler

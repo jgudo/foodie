@@ -1,8 +1,9 @@
+//@ts-ignore
 const express = require('express');
 const passport = require('passport');
 const { schemas, validateBody } = require('../../../validations/validations');
 const { sessionizeUser, makeErrorJson, makeResponseJson } = require('../../../helpers/utils');
-const { INVALID_INPUT, INCORRECT_CREDENTIALS, EMAIL_TAKEN } = require('../../../constants/error-types');
+const { INCORRECT_CREDENTIALS, EMAIL_TAKEN } = require('../../../constants/error-types');
 const router = express.Router({ mergeParams: true });
 
 //@route POST /api/v1/register
@@ -21,7 +22,6 @@ router.post(
                         return next(err);
                     }
 
-                    console.log('REGISTRATION SUCCESS, IS AUTH: ', req.isAuthenticated())
                     const userData = sessionizeUser(user);
                     return res.status(200).send(makeResponseJson(userData));
                 });
@@ -54,7 +54,6 @@ router.post(
                         return next(err);
                     }
 
-                    console.log('LOGIN SUCCESS, IS AUTH: ', req.isAuthenticated())
                     const userData = sessionizeUser(user);
                     return res.status(200).send(makeResponseJson(userData));
                 });
@@ -76,8 +75,6 @@ router.delete('/v1/logout', (req, res) => {
 //@route GET /api/v1/checkSession
 // Check if user session exists
 router.get('/v1/check-session', (req, res) => {
-    console.log('SESSION: ', req.session.passport)
-    console.log('USER ', req.user);
     console.log('IS AUTH:', req.isAuthenticated())
     if (req.isAuthenticated()) {
         const user = sessionizeUser(req.user);

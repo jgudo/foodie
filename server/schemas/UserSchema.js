@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const omit = require('lodash.omit');
 // const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
@@ -85,6 +86,12 @@ UserSchema.methods.passwordMatch = function (password, cb) {
 
         cb(null, isMatch);
     });
+}
+
+UserSchema.methods.toUserJSON = function () {
+    const user = omit(this.toObject(), ['password', 'facebook', 'createdAt', 'updatedAt']);
+
+    return user;
 }
 
 UserSchema.pre('save', function (next) {
