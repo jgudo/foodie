@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 const dbName = process.env.DB_NAME || 'foodie';
 
+if (process.env.NODE_ENV === 'dev') {
+    mongoose.set("debug", true);
+}
+
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,

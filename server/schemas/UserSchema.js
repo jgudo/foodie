@@ -78,7 +78,14 @@ const UserSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
+
+UserSchema.virtual('fullname').get(function () {
+    const { firstname, lastname } = this;
+    return (firstname && lastname) ? `${this.firstname} ${this.lastname}` : null;
+});
+
+// UserSchema.set('toObject', { getters: true });
 
 UserSchema.methods.passwordMatch = function (password, cb) {
     const user = this;
@@ -96,10 +103,10 @@ UserSchema.methods.toUserJSON = function () {
     return user;
 }
 
-UserSchema.methods.toCommentJSON = function () {
+UserSchema.methods.toProfileJSON = function () {
     return {
         username: this.username,
-        email: this.email,
+        fullname: this.fullname,
         profilePicture: this.profilePicture
     };
 }

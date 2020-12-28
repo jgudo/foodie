@@ -7,12 +7,19 @@ const CommentSchema = new mongoose.Schema({
         required: true
     },
     body: String,
-    _commented_by: {
+    _commentor_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
     createdAt: Date,
     updatedAt: Date
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
+
+CommentSchema.virtual('commentor', {
+    ref: 'User',
+    localField: '_commentor_id',
+    foreignField: '_id',
+    justOne: true
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);

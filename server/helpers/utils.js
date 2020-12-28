@@ -76,7 +76,7 @@ module.exports = {
                     error: {
                         type: 'REQUEST_ERROR',
                         title: 'Request Error',
-                        message: 'Unable to process your request.'
+                        message: message || 'Unable to process your request.'
                     },
                     timestamp: new Date()
                 }

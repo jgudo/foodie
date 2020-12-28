@@ -48,7 +48,8 @@ module.exports = {
         }).options({ abortEarly: false }),
         createPostSchema: Joi.object().keys({
             description: Joi.string(),
-            photos: Joi.array()
+            photos: Joi.array(),
+            privacy: Joi.string()
         }),
         commentSchema: Joi.object().keys({
             body: Joi

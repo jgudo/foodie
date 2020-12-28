@@ -15,18 +15,20 @@ router.get(
                 .findOne({ username })
                 .populate({
                     path: 'posts',
-                    select: '_posted_by description name photos comments createdAt',
+                    model: 'Post',
+                    select: 'description name photos comments createdAt',
                     options: {
                         limit: 3,
                         sort: { createdAt: -1 },
                     },
                     populate: {
-                        path: '_posted_by',
-                        select: 'username profilePicture'
+                        path: '_author_id',
+                        select: 'username fullname profilePicture'
                     }
                 })
-                .sort('-createdAt');
+                .sort('-createdAt')
 
+            await user.populate('posts.author').execPopulate();
             res.status(200).send(makeResponseJson(user.toUserJSON()));
         } catch (e) {
             console.log(e)
@@ -43,7 +45,6 @@ router.patch(
         try {
             const { username } = req.params;
             const { firstname, lastname, bio } = req.body;
-
             if (username !== req.user.username) return res.sendStatus(401);
 
             const newUser = await User
