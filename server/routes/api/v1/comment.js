@@ -27,7 +27,7 @@ router.post(
 
             const comment = new Comment({
                 _post_id: post_id,
-                _commentor_id: req.user._id,
+                _author_id: req.user._id,
                 body,
                 createdAt: Date.now()
             });
@@ -39,7 +39,7 @@ router.post(
                         comments: comment._id
                     }
                 });
-            await comment.populate('commentor', 'username profilePicture fullname').execPopulate();
+            await comment.populate('author', 'username profilePicture fullname').execPopulate();
 
             res.status(200).send(makeResponseJson(comment));
         } catch (e) {
@@ -48,5 +48,68 @@ router.post(
         }
     }
 );
+
+router.get(
+    '/v1/comment/:post_id',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+
+            if (!isValidObjectId(post_id)) return res.sendStatus(400);
+
+            const post = await Post.findById(post_id);
+            if (!post) return res.sendStatus(404);
+
+            const comments = await Comment
+                .find({ _post_id: post_id })
+                .populate({
+                    path: 'author',
+                    select: 'fullname username profilePicture'
+                });
+
+            if (comments.length === 0 || !comments) return res.sendStatus(404);
+
+            res.status(200).send(makeResponseJson(comments));
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(400);
+        }
+    }
+);
+
+router.delete(
+    '/v1/comment',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { post_id, comment_id } = req.query;
+
+            if (!isValidObjectId(post_id) || !isValidObjectId(comment_id)) return res.sendStatus(400);
+
+            const post = await Post.findById(post_id);
+            const comment = await Comment.findById(comment_id);
+            if (!post || !comment) return res.sendStatus(404);
+
+            // IF POST OWNER OR COMMENTOR - DELETE COMMENT
+            if (req.user._id.toString() === comment._author_id.toString()
+                || req.user._id.toString() === post._author_id.toString()
+            ) {
+                await Comment.findOneAndRemove({ _post_id: post_id });
+                await Post.findByIdAndUpdate(post_id, {
+                    $pull: {
+                        comments: comment_id
+                    }
+                });
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(400);
+        }
+    }
+)
 
 module.exports = router;

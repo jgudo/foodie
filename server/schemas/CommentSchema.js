@@ -7,7 +7,7 @@ const CommentSchema = new mongoose.Schema({
         required: true
     },
     body: String,
-    _commentor_id: {
+    _author_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
@@ -15,9 +15,9 @@ const CommentSchema = new mongoose.Schema({
     updatedAt: Date
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
 
-CommentSchema.virtual('commentor', {
+CommentSchema.virtual('author', {
     ref: 'User',
-    localField: '_commentor_id',
+    localField: '_author_id',
     foreignField: '_id',
     justOne: true
 });

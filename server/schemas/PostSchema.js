@@ -43,6 +43,22 @@ PostSchema.virtual('commentsCount', {
     localField: 'comments',
     foreignField: '_id',
     count: true
-})
+});
+
+PostSchema.methods.isPostLiked = function (userID) {
+    if (!mongoose.isValidObjectId(userID)) return;
+
+    return this.likes.some(user => {
+        return user._id.toString() === userID.toString();
+    });
+}
+
+PostSchema.methods.isBookmarked = function(userID) {
+    if (!mongoose.isValidObjectId(userID)) return;
+
+    return this.likes.some(user => {
+        return user._id.toString() === userID.toString();
+    });
+}
 
 module.exports = mongoose.model('Post', PostSchema);

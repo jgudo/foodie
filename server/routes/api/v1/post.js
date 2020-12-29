@@ -3,6 +3,7 @@ const { validateBody, schemas } = require('../../../validations/validations');
 const Post = require('../../../schemas/PostSchema');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
+const { isValidObjectId } = require('mongoose');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -57,7 +58,7 @@ router.get(
                 query.privacy.$in = ['public', privacy];
             }
 
-            const post = await Post
+            const posts = await Post
                 .find(query)
                 .sort(sortQuery)
                 .populate('commentsCount')
@@ -66,14 +67,62 @@ router.get(
                     select: 'username fullname profilePicture'
                 });
 
-            if (!post || post.length === 0) {
+            const uPosts = posts.map((post) => { // POST WITH isLiked merged
+                const isPostLiked = post.isPostLiked(req.user._id);
+
+                return {
+                    ...post.toObject(),
+                    isLiked: isPostLiked
+                }
+            });
+
+            if (!uPosts || uPosts.length === 0) {
                 return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No post(s) found.' }));
             }
 
-            res.status(200).send(makeResponseJson(post));
+            res.status(200).send(makeResponseJson(uPosts));
         } catch (e) {
             console.log(e);
             res.status(400).send(e);
+        }
+    }
+);
+
+router.post(
+    '/v1/like/post/:post_id',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+
+            if (!isValidObjectId(post_id) || !post_id) return res.sendStatus(400);
+
+            const post = await Post.findById(post_id);
+
+            if (!post) return res.sendStatus(404); // SEND 404 IF NO POST FOUND
+
+            const isPostLiked = post.isPostLiked(req.user._id);
+            let query = {};
+
+            if (isPostLiked) {
+                query = {
+                    $pull: { likes: req.user._id }
+                }
+            } else {
+                query = {
+                    $push: { likes: req.user._id }
+                }
+            }
+
+            console.log(req.user.toObject())
+            const fetchedPost = await Post.findOneAndUpdate({ _id: post_id }, query, { new: true });
+            await fetchedPost.populate('author', 'fullname username profilePicture').execPopulate();
+            const updatedPost = { ...fetchedPost.toObject(), isLiked: !isPostLiked };
+
+            res.status(200).send(makeResponseJson(updatedPost));
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(400);
         }
     }
 );
