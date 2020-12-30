@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { isValidObjectId } = require('mongoose');
 
 const withAuth = function (req, res, next) {
     const token = req.cookies.token;
@@ -21,7 +22,7 @@ const withAuth = function (req, res, next) {
     }
 };
 
-const isAuthenticated = function (req, res, next) {
+function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         console.log('CHECK MIDDLEWARE: IS AUTH: ', req.isAuthenticated());
         return next();
@@ -31,4 +32,16 @@ const isAuthenticated = function (req, res, next) {
     return res.sendStatus(401);
 }
 
-module.exports = { isAuthenticated };
+function validateObjectID(...ObjectIDs) {
+    return function (req, res, next) {
+        ObjectIDs.forEach((id) => {
+            if (!isValidObjectId(req.params[id])) {
+                return res.sendStatus(400);
+            } else {
+                next();
+            }
+        });
+    }
+}
+
+module.exports = { isAuthenticated, validateObjectID };

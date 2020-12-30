@@ -57,11 +57,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null
     },
-    friends: [{
+    followers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    followers: [{
+    following: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
@@ -89,6 +89,14 @@ UserSchema.virtual('fullname').get(function () {
     return (firstname && lastname) ? `${this.firstname} ${this.lastname}` : null;
 });
 
+UserSchema.virtual('followersCount').get(function () {
+    return this.followers.length;
+});
+
+UserSchema.virtual('followingCount').get(function () {
+    return this.following.length;
+});
+
 // UserSchema.set('toObject', { getters: true });
 
 UserSchema.methods.passwordMatch = function (password, cb) {
@@ -113,6 +121,20 @@ UserSchema.methods.toProfileJSON = function () {
         fullname: this.fullname,
         profilePicture: this.profilePicture
     };
+}
+
+UserSchema.methods.isBookmarked = function (postID) {
+    if (!mongoose.isValidObjectId(postID)) return;
+
+    return this.bookmarks.some(bookmark => {
+        return bookmark._id.toString() === postID.toString();
+    });
+}
+
+UserSchema.methods.isFollowing = function (userID) {
+    return this.following.some(user => {
+        return user._id.toString() === userID.toString();
+    });
 }
 
 UserSchema.pre('save', function (next) {

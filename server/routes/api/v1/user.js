@@ -1,4 +1,5 @@
-const { isAuthenticated } = require('../../../middlewares/withAuth');
+const omit = require('lodash.omit');
+const { isAuthenticated, validateObjectID } = require('../../../middlewares/middlewares');
 const { makeResponseJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
 const { validateBody, schemas } = require('../../../validations/validations');
@@ -22,14 +23,26 @@ router.get(
                         sort: { createdAt: -1 },
                     },
                     populate: {
-                        path: '_author_id',
+                        path: '_author_id', // <--- virtual 'author' not working :(
                         select: 'username fullname profilePicture'
                     }
                 })
-                .sort('-createdAt')
+                .sort('-createdAt');
 
-            await user.populate('posts.author').execPopulate();
-            res.status(200).send(makeResponseJson(user.toUserJSON()));
+            // RENAME _author_id PROPERTY TO author SINCE NESTED POPULATE VIRTUAL NOT WORKING :(
+            // DO THIS FOR CONSISTENCY 
+            const toObjectUser = user.toUserJSON(); // this will omit private data like password, etc..
+            toObjectUser.posts = toObjectUser.posts.map((post) => {
+                const { _author_id: author } = post;
+
+                return { ...omit(post, ['_author_id']), author };
+            });
+
+            if (req.user.username !== username) {
+                toObjectUser.isFollowing = req.user.isFollowing(user._id);
+            }
+
+            res.status(200).send(makeResponseJson(toObjectUser));
         } catch (e) {
             console.log(e)
             res.sendStatus(400);
@@ -62,5 +75,42 @@ router.patch(
         }
     }
 )
+
+router.post(
+    '/v1/follow/:user_id',
+    isAuthenticated,
+    validateObjectID('user_id'),
+    async (req, res, next) => {
+        try {
+            const { user_id } = req.params;
+
+            const user = User.findById(user_id);
+            if (!user) return res.sendStatus(404);
+
+            let op = '$push';
+            const isFollowing = req.user.isFollowing(user_id);
+
+            if (isFollowing) op = '$pull';
+
+            const query = {
+                user: {
+                    [op]: { followers: req.user._id }
+                },
+                self: {
+                    [op]: { following: user_id }
+                }
+            };
+
+            const followedUser = await User.findByIdAndUpdate(user_id, query.user, { new: true }); // UPDATE USER'S FOLLOWERS/FOLLOWING
+            await User.findByIdAndUpdate(req.user._id, query.self); // UPDATE OWN FOLLOWERS/FOLLOWING
+            const resUser = { ...followedUser.toObject(), isFollowing };
+
+            res.status(200).send(makeResponseJson(resUser));
+        } catch (e) {
+            console.log('CANT FOLLOW USER, ', e);
+            res.status(500).send(e);
+        }
+    }
+);
 
 module.exports = router;

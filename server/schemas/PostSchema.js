@@ -53,12 +53,4 @@ PostSchema.methods.isPostLiked = function (userID) {
     });
 }
 
-PostSchema.methods.isBookmarked = function(userID) {
-    if (!mongoose.isValidObjectId(userID)) return;
-
-    return this.likes.some(user => {
-        return user._id.toString() === userID.toString();
-    });
-}
-
 module.exports = mongoose.model('Post', PostSchema);

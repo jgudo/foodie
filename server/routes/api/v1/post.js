@@ -1,4 +1,4 @@
-const { isAuthenticated } = require('../../../middlewares/withAuth');
+const { isAuthenticated, validateObjectID } = require('../../../middlewares/middlewares');
 const { validateBody, schemas } = require('../../../validations/validations');
 const Post = require('../../../schemas/PostSchema');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
@@ -8,7 +8,7 @@ const { isValidObjectId } = require('mongoose');
 const router = require('express').Router({ mergeParams: true });
 
 router.post(
-    '/v1/create-post',
+    '/v1/post',
     isAuthenticated,
     validateBody(schemas.createPostSchema),
     async (req, res, next) => {
@@ -69,9 +69,11 @@ router.get(
 
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
                 const isPostLiked = post.isPostLiked(req.user._id);
+                const isBookmarked = req.user.isBookmarked(post._id);
 
                 return {
                     ...post.toObject(),
+                    isBookmarked,
                     isLiked: isPostLiked
                 }
             });
@@ -91,11 +93,10 @@ router.get(
 router.post(
     '/v1/like/post/:post_id',
     isAuthenticated,
+    validateObjectID('post_id'),
     async (req, res, next) => {
         try {
             const { post_id } = req.params;
-
-            if (!isValidObjectId(post_id) || !post_id) return res.sendStatus(400);
 
             const post = await Post.findById(post_id);
 
@@ -114,8 +115,7 @@ router.post(
                 }
             }
 
-            console.log(req.user.toObject())
-            const fetchedPost = await Post.findOneAndUpdate({ _id: post_id }, query, { new: true });
+            const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
             await fetchedPost.populate('author', 'fullname username profilePicture').execPopulate();
             const updatedPost = { ...fetchedPost.toObject(), isLiked: !isPostLiked };
 
@@ -123,6 +123,118 @@ router.post(
         } catch (e) {
             console.log(e);
             res.sendStatus(400);
+        }
+    }
+);
+
+router.patch(
+    '/v1/post/:post_id',
+    isAuthenticated,
+    validateObjectID('post_id'),
+    validateBody(schemas.createPostSchema),
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+            const { description, privacy } = req.body;
+            const obj = { updatedAt: Date.now() };
+
+            if (!description && !privacy) return res.sendStatus(400);
+
+            if (description) obj.description = description;
+            if (privacy && (privacy === 'public' || privacy === 'private')) obj.privacy = privacy;
+
+            const post = await Post.findById(post_id);
+            if (!post) return res.sendStatus(404);
+
+            if (req.user._id.toString() === post._author_id.toString()) {
+                const updatedPost = await Post.findByIdAndUpdate(post_id, {
+                    $set: obj
+                }, {
+                    new: true
+                });
+                await updatedPost.populate('author', 'fullname, username, profilePicture').execPopulate();
+
+                res.status(200).send(makeResponseJson(updatedPost));
+            } else {
+                res.sendStatus(401);
+            }
+        } catch (e) {
+            console.log('CANT EDIT POST :', e);
+            res.sendStatus(500);
+        }
+    }
+);
+// @route /post/:post_id -- DELETE POST
+router.delete(
+    '/v1/post/:post_id',
+    isAuthenticated,
+    validateObjectID('post_id'),
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+
+            const post = await Post.findById(post_id);
+            if (!post) return res.sendStatus(404);
+
+            if (req.user._id.toString() === post._author_id.toString()) {
+                await Post.findByIdAndDelete(post_id);
+                await User.updateMany({
+                    bookmarks: {
+                        $in: [post_id]
+                    }
+                }, {
+                    $pull: {
+                        bookmarks: post_id
+                    }
+                });
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
+        } catch (e) {
+            console.log('CANT DELETE POST', e);
+            res.sendStatus(500);
+        }
+    }
+);
+
+// @route /bookmark/post/:post_id -- BOOKMARK POST
+router.post(
+    '/v1/bookmark/post/:post_id',
+    isAuthenticated,
+    validateObjectID('post_id'),
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+
+            const post = await Post.findById(post_id);
+            if (!post) return res.sendStatus(404);
+
+            if (req.user._id.toString() === post._author_id.toString()) {
+                return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You can\'t bookmark your own post.' }))
+            }
+
+            const isPostBookmarked = req.user.isBookmarked(post_id);
+            let query = {};
+
+            if (isPostBookmarked) {
+                query = {
+                    $pull: { bookmarks: post_id }
+                }
+            } else {
+                query = {
+                    $push: { bookmarks: post_id }
+                }
+            }
+
+            await User.findByIdAndUpdate(req.user._id, query);
+            await post.populate('author', 'fullname username profilePicture').execPopulate();
+
+            const uPost = { ...post.toObject(), isBookmarked: !isPostBookmarked };
+            res.status(200).send(makeResponseJson(uPost));
+        } catch (e) {
+            console.log('CANT BOOKMARK POST ', e);
+            res.sendStatus(500);
         }
     }
 );

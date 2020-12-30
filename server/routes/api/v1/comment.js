@@ -1,5 +1,5 @@
 const { isValidObjectId } = require('mongoose');
-const { isAuthenticated } = require('../../../middlewares/withAuth');
+const { isAuthenticated, validateObjectID } = require('../../../middlewares/middlewares');
 const Post = require('../../../schemas/PostSchema');
 const Comment = require('../../../schemas/CommentSchema');
 const { validateBody, schemas } = require('../../../validations/validations');
@@ -10,16 +10,12 @@ const router = require('express').Router({ mergeParams: true });
 router.post(
     '/v1/comment/:post_id',
     isAuthenticated,
+    validateObjectID('post_id'),
     validateBody(schemas.commentSchema),
     async (req, res, next) => {
         try {
             const { post_id } = req.params;
             const { body } = req.body;
-
-            // check is POST ID is a valid Object ID
-            if (!isValidObjectId(post_id) || !post_id) {
-                return res.sendStatus(400);
-            }
 
             // check if the POST actually exists
             const post = await Post.findById(post_id);
@@ -52,11 +48,10 @@ router.post(
 router.get(
     '/v1/comment/:post_id',
     isAuthenticated,
+    validateObjectID('post_id'),
     async (req, res, next) => {
         try {
             const { post_id } = req.params;
-
-            if (!isValidObjectId(post_id)) return res.sendStatus(400);
 
             const post = await Post.findById(post_id);
             if (!post) return res.sendStatus(404);
@@ -79,24 +74,24 @@ router.get(
 );
 
 router.delete(
-    '/v1/comment',
+    '/v1/comment/:comment_id',
     isAuthenticated,
+    validateObjectID('comment_id'),
     async (req, res, next) => {
         try {
-            const { post_id, comment_id } = req.query;
+            const { comment_id } = req.params;
 
-            if (!isValidObjectId(post_id) || !isValidObjectId(comment_id)) return res.sendStatus(400);
-
-            const post = await Post.findById(post_id);
             const comment = await Comment.findById(comment_id);
-            if (!post || !comment) return res.sendStatus(404);
+            if (!comment) return res.sendStatus(404);
 
             // IF POST OWNER OR COMMENTOR - DELETE COMMENT
-            if (req.user._id.toString() === comment._author_id.toString()
-                || req.user._id.toString() === post._author_id.toString()
-            ) {
-                await Comment.findOneAndRemove({ _post_id: post_id });
-                await Post.findByIdAndUpdate(post_id, {
+            if (req.user._id.toString() === comment._author_id.toString()) {
+                await Comment.findByIdAndDelete(comment_id);
+                await Post.findOneAndUpdate({
+                    comments: {
+                        $in: [comment_id]
+                    }
+                }, {
                     $pull: {
                         comments: comment_id
                     }
@@ -111,5 +106,42 @@ router.delete(
         }
     }
 )
+
+router.patch(
+    '/v1/comment/:comment_id',
+    isAuthenticated,
+    validateObjectID('comment_id'),
+    validateBody(schemas.commentSchema),
+    async (req, res, next) => {
+        try {
+            const { comment_id } = req.params;
+            const { body } = req.body;
+
+            if (!body) return res.sendStatus(400);
+
+            const comment = await Comment.findById(comment_id);
+            if (!comment) return res.sendStatus(404);
+
+            if (req.user._id.toString() === comment._author_id.toString()) {
+                const updatedComment = await Comment.findByIdAndUpdate(comment_id, {
+                    $set: {
+                        body,
+                        updatedAt: Date.now()
+                    }
+                }, {
+                    new: true
+                });
+
+                await updatedComment.populate('author', 'fullname username profilePicture').execPopulate()
+                res.status(200).send(makeResponseJson(updatedComment));
+            } else {
+                res.sendStatus(401);
+            }
+
+        } catch (e) {
+
+        }
+    }
+);
 
 module.exports = router;
