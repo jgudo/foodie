@@ -3,6 +3,7 @@ const { isAuthenticated, validateObjectID } = require('../../../middlewares/midd
 const { makeResponseJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
 const { validateBody, schemas } = require('../../../validations/validations');
+const mongoose = require('mongoose');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -86,6 +87,7 @@ router.post(
 
             const user = User.findById(user_id);
             if (!user) return res.sendStatus(404);
+            if (user_id === req.user._id.toString()) return res.sendStatus(400);
 
             let op = '$push';
             const isFollowing = req.user.isFollowing(user_id);
@@ -103,12 +105,78 @@ router.post(
 
             const followedUser = await User.findByIdAndUpdate(user_id, query.user, { new: true }); // UPDATE USER'S FOLLOWERS/FOLLOWING
             await User.findByIdAndUpdate(req.user._id, query.self); // UPDATE OWN FOLLOWERS/FOLLOWING
-            const resUser = { ...followedUser.toObject(), isFollowing };
+            const resUser = { ...followedUser.toObject(), isFollowing: !isFollowing };
 
             res.status(200).send(makeResponseJson(resUser));
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
             res.status(500).send(e);
+        }
+    }
+);
+
+router.get(
+    '/v1/:username/following',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { username } = req.params;
+            const { offset: off } = req.query;
+
+            let offset = 0;
+            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
+
+            const limit = 10;
+            const skip = offset * limit;
+
+            const user = await User
+                .findOne({ username })
+                .populate({
+                    path: 'following',
+                    select: 'profilePicture username fullname',
+                    options: {
+                        skip,
+                        limit,
+                    }
+                })
+
+            res.status(200).send(user.following);
+        } catch (e) {
+            console.log(e);
+            res.status(500).send(e)
+        }
+    }
+);
+
+router.get(
+    '/v1/:username/followers',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { username } = req.params;
+            const { offset: off } = req.query;
+
+            let offset = 0;
+            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
+
+            const limit = 10;
+            const skip = offset * limit;
+
+            const user = await User
+                .findOne({ username })
+                .populate({
+                    path: 'followers',
+                    select: 'profilePicture username fullname',
+                    options: {
+                        skip,
+                        limit,
+                    }
+                })
+
+            res.status(200).send(user.followers);
+        } catch (e) {
+            console.log(e);
+            res.status(500).send(e)
         }
     }
 );

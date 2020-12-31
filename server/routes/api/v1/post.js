@@ -45,7 +45,14 @@ router.get(
     async (req, res, next) => {
         try {
             const { username } = req.params;
-            const { privacy, sortBy, sortOrder } = req.query;
+            const { privacy, sortBy, sortOrder, offset: off } = req.query;
+
+            let offset = 0;
+            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
+
+            const limit = 5;
+            const skip = offset * limit;
+
             const query = {
                 post_owner: username,
                 privacy: { $in: ['public'] },
@@ -64,8 +71,10 @@ router.get(
                 .populate('commentsCount')
                 .populate({
                     path: 'author',
-                    select: 'username fullname profilePicture'
-                });
+                    select: 'username fullname profilePicture',
+                })
+                .skip(skip)
+                .limit(limit);
 
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
                 const isPostLiked = post.isPostLiked(req.user._id);

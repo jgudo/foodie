@@ -65,10 +65,6 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    following: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
@@ -90,11 +86,11 @@ UserSchema.virtual('fullname').get(function () {
 });
 
 UserSchema.virtual('followersCount').get(function () {
-    return this.followers.length;
+    return this.followers ? this.followers.length : 0;
 });
 
 UserSchema.virtual('followingCount').get(function () {
-    return this.following.length;
+    return this.following ? this.following.length : 0;
 });
 
 // UserSchema.set('toObject', { getters: true });

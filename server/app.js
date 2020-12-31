@@ -14,6 +14,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 const authRouter = require('./routes/api/v1/auth');
+const feedRouter = require('./routes/api/v1/feed');
 const postRouter = require('./routes/api/v1/post');
 const userRouter = require('./routes/api/v1/user');
 const commentRouter = require('./routes/api/v1/comment');
@@ -62,7 +63,7 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api', [authRouter, postRouter, userRouter, commentRouter]);
+app.use('/api', [feedRouter, authRouter, postRouter, userRouter, commentRouter]);
 app.use(csurf());
 
 // catch 404 and forward to error handler
