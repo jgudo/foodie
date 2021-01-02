@@ -7,10 +7,6 @@ const PostSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    post_owner: { // used for fetching posts based on username
-        type: String,
-        required: true
-    },
     privacy: {
         type: String,
         default: 'public',
@@ -42,6 +38,13 @@ PostSchema.virtual('author', {
 PostSchema.virtual('commentsCount', {
     ref: 'Comment',
     localField: 'comments',
+    foreignField: '_id',
+    count: true
+});
+
+PostSchema.virtual('likesCount', {
+    ref: 'User',
+    localField: 'likes',
     foreignField: '_id',
     count: true
 });

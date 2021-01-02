@@ -19,7 +19,6 @@ router.post(
             const post = new Post({
                 _author_id: req.user._id,
                 // author: req.user._id,
-                post_owner: req.user.username,
                 description,
                 privacy: privacy || 'public',
                 createdAt: Date.now()
@@ -64,11 +63,14 @@ router.get(
             let offset = 0;
             if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
 
+            const user = await User.findOne({ username });
+            if (!user) return res.sendStatus(404);
+
             const limit = 5;
             const skip = offset * limit;
 
             const query = {
-                post_owner: username,
+                _author_id: user._id,
                 privacy: { $in: ['public'] },
             };
             const sortQuery = {
@@ -83,6 +85,7 @@ router.get(
                 .find(query)
                 .sort(sortQuery)
                 .populate('commentsCount')
+                .populate('likesCount')
                 .populate({
                     path: 'author',
                     select: 'username fullname profilePicture',
@@ -90,20 +93,22 @@ router.get(
                 .skip(skip)
                 .limit(limit);
 
+            console.log(posts)
+            if (!posts || posts.length <= 0) {
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No post(s) found.' }));
+            }
+
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
                 const isPostLiked = post.isPostLiked(req.user._id);
                 const isBookmarked = req.user.isBookmarked(post._id);
 
+                console.log(isBookmarked)
                 return {
                     ...post.toObject(),
                     isBookmarked,
                     isLiked: isPostLiked
                 }
             });
-
-            if (!uPosts || uPosts.length === 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No post(s) found.' }));
-            }
 
             res.status(200).send(makeResponseJson(uPosts));
         } catch (e) {

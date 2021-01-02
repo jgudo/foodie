@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
 import PageNotFound from "./pages/error/PageNotFound";

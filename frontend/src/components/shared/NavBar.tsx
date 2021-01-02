@@ -16,7 +16,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
     };
 
     return (
-        <nav className="flex justify-between align-center w-100 bg-white text-gray-700 h-60px py-2 px-20 fixed w-full">
+        <nav className="flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 px-20 fixed w-full">
             <ul className="flex items-center">
                 <li className="logo">
                     <NavLink to="/">

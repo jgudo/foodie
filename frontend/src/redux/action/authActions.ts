@@ -1,5 +1,5 @@
 import { CHECK_SESSION, LOGIN_START, LOGIN_SUCCESS, LOGOUT_START, LOGOUT_SUCCESS, REGISTER_START, REGISTER_SUCCESS } from "~/constants/actionType";
-import { IAuth, IRegister } from "~/types/types";
+import { IRegister, IUser } from "~/types/types";
 
 export const loginStart = (email: string, password: string) => (<const>{
     type: LOGIN_START,
@@ -34,7 +34,7 @@ export const registerStart = ({ email, password, username }: IRegister) => (<con
     }
 });
 
-export const registerSuccess = (userAuth: IAuth) => (<const>{
+export const registerSuccess = (userAuth: IUser) => (<const>{
     type: REGISTER_SUCCESS,
     payload: userAuth
 });

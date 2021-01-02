@@ -61,6 +61,10 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
     }],
+    bookmarks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
     dateJoined: {
         type: Date,
         default: Date.now,
@@ -71,14 +75,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.virtual('fullname').get(function () {
     const { firstname, lastname } = this;
     return (firstname && lastname) ? `${this.firstname} ${this.lastname}` : null;
-});
-
-UserSchema.virtual('followersCount').get(function () {
-    return this.followers ? this.followers.length : 0;
-});
-
-UserSchema.virtual('followingCount').get(function () {
-    return this.following ? this.following.length : 0;
 });
 
 // UserSchema.set('toObject', { getters: true });

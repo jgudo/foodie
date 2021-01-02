@@ -10,3 +10,6 @@ export const SET_AUTH_ERR_MSG = 'SET_AUTH_ERR_MSG';
 export const CLEAR_AUTH_ERR_MSG = 'CLEAR_AUTH_ERR_MSG';
 
 export const SET_AUTH_LOADING = 'SET_AUTH_LOADING';
+
+export const GET_FEED_START = 'GET_FEED_START';
+export const GET_FEED_SUCCESS = 'GET_FEED_SUCCESS';

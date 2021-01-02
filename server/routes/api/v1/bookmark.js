@@ -2,6 +2,7 @@ const Bookmark = require('../../../schemas/BookmarkSchema');
 const { isAuthenticated, validateObjectID } = require('../../../middlewares/middlewares');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const Post = require('../../../schemas/PostSchema');
+const User = require('../../../schemas/UserSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -24,6 +25,7 @@ router.post(
 
             if (isPostBookmarked) {
                 await Bookmark.findOneAndDelete({ _owner_id: req.user._id });
+                await User.findByIdAndUpdate(req.user._id, { $pull: { bookmarks: post_id } });
                 res.status(200).send(makeResponseJson([]));
             } else {
                 const bookmark = new Bookmark({
@@ -32,7 +34,7 @@ router.post(
                     createdAt: Date.now()
                 });
                 await bookmark.save();
-
+                await User.findByIdAndUpdate(req.user._id, { $push: { bookmarks: post_id } });
                 res.status(200).send(makeResponseJson(bookmark));
             }
         } catch (e) {

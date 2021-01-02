@@ -15,19 +15,25 @@ router.get(
             let offset = 0;
             if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
 
-            const limit = 1;
+            const limit = 5;
             const skip = offset * limit;
 
-            const feed = await NewsFeed
+            const feeds = await NewsFeed
                 .find({ follower: req.user._id })
                 .populate({
                     path: 'post',
+                    populate: {
+                        path: 'author likesCount commentsCount',
+                        select: 'profilePicture username fullname'
+                    },
                 })
                 .sort({ 'post.createdAt': -1 })
                 .skip(skip)
                 .limit(limit);
 
-            res.status(200).send(makeResponseJson(feed));
+            const filteredFeed = feeds.map(feed => feed.post);
+
+            res.status(200).send(makeResponseJson(filteredFeed));
         } catch (e) {
             console.log('CANT GET FEED', e);
             res.sendStatus(500);

@@ -1,8 +1,8 @@
 import { LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_SUCCESS } from '~/constants/actionType';
 import { TAuthActionType } from '~/redux/action/authActions';
-import { IAuth } from '~/types/types';
+import { IUser } from '~/types/types';
 
-const initState: IAuth = {
+const initState: IUser = {
     id: null,
     username: null,
     fullname: '',
