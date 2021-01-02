@@ -16,7 +16,9 @@ module.exports = {
      */
     sessionizeUser: (user) => ({
         id: user._id,
-        username: user.username
+        username: user.username,
+        fullname: user.fullname,
+        profilePicture: user.profilePicture
     }),
     /**
      * 

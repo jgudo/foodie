@@ -4,7 +4,9 @@ import { IAuth } from '~/types/types';
 
 const initState: IAuth = {
     id: null,
-    username: null
+    username: null,
+    fullname: '',
+    profilePicture: ''
 }
 
 const authReducer = (state = initState, action: TAuthActionType) => {

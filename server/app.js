@@ -17,6 +17,8 @@ const authRouter = require('./routes/api/v1/auth');
 const feedRouter = require('./routes/api/v1/feed');
 const postRouter = require('./routes/api/v1/post');
 const userRouter = require('./routes/api/v1/user');
+const followRouter = require('./routes/api/v1/follow');
+const bookmarkRouter = require('./routes/api/v1/bookmark');
 const commentRouter = require('./routes/api/v1/comment');
 
 app.disable('x-powered-by');
@@ -63,7 +65,15 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api', [feedRouter, authRouter, postRouter, userRouter, commentRouter]);
+app.use('/api', [
+  feedRouter,
+  authRouter,
+  postRouter,
+  userRouter,
+  commentRouter,
+  followRouter,
+  bookmarkRouter
+]);
 app.use(csurf());
 
 // catch 404 and forward to error handler

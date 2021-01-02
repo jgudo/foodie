@@ -1,13 +1,15 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom";
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
 
 const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
     const dispatch = useDispatch();
-    const isLoadingAuth = useSelector((state: IRootReducer) => state.loading.isLoadingAuth);
+    const { isLoadingAuth, auth } = useSelector((state: IRootReducer) => ({
+        isLoadingAuth: state.loading.isLoadingAuth,
+        auth: state.auth
+    }));
 
     const onLogout = () => {
         dispatch(logoutStart());
@@ -24,9 +26,12 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
             </ul>
             {
                 isAuth ? (
-                    <button onClick={onLogout} disabled={isLoadingAuth}>
-                        {isLoadingAuth ? 'Logging Out...' : 'Logout'}
-                    </button>
+                    <div className="flex items-center">
+                        <h6 className="mr-10">{auth.fullname || auth.username}</h6>
+                        <button onClick={onLogout} disabled={isLoadingAuth}>
+                            {isLoadingAuth ? 'Logging Out...' : 'Logout'}
+                        </button>
+                    </div>
                 ) : (
                         <ul className="flex items-center">
                             <li className="group inline-block mx-3">

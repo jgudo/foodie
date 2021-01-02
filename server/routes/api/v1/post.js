@@ -3,7 +3,9 @@ const { validateBody, schemas } = require('../../../validations/validations');
 const Post = require('../../../schemas/PostSchema');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
-const { isValidObjectId } = require('mongoose');
+const { isValidObjectId, Types } = require('mongoose');
+const Follow = require('../../../schemas/FollowSchema');
+const NewsFeed = require('../../../schemas/NewsFeedSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -30,8 +32,20 @@ router.post(
                         posts: post._id
                     }
                 });
+            const userFollowers = await Follow.findOne({ _user_id: req.user._id });
+            let newsFeeds = [];
 
-            console.log('FROM /create-post:', req.isAuthenticated())
+            if (userFollowers && userFollowers.followers) {
+                newsFeeds = userFollowers.followers.map(follower => ({
+                    follower: Types.ObjectId(follower._id),
+                    post: Types.ObjectId(post._id)
+                }));
+            }
+
+            if (newsFeeds.length !== 0) {
+                await NewsFeed.insertMany(newsFeeds);
+            }
+
             return res.status(200).send(makeResponseJson(post));
         } catch (e) {
             console.log(e);
@@ -207,45 +221,5 @@ router.delete(
     }
 );
 
-// @route /bookmark/post/:post_id -- BOOKMARK POST
-router.post(
-    '/v1/bookmark/post/:post_id',
-    isAuthenticated,
-    validateObjectID('post_id'),
-    async (req, res, next) => {
-        try {
-            const { post_id } = req.params;
-
-            const post = await Post.findById(post_id);
-            if (!post) return res.sendStatus(404);
-
-            if (req.user._id.toString() === post._author_id.toString()) {
-                return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You can\'t bookmark your own post.' }))
-            }
-
-            const isPostBookmarked = req.user.isBookmarked(post_id);
-            let query = {};
-
-            if (isPostBookmarked) {
-                query = {
-                    $pull: { bookmarks: post_id }
-                }
-            } else {
-                query = {
-                    $push: { bookmarks: post_id }
-                }
-            }
-
-            await User.findByIdAndUpdate(req.user._id, query);
-            await post.populate('author', 'fullname username profilePicture').execPopulate();
-
-            const uPost = { ...post.toObject(), isBookmarked: !isPostBookmarked };
-            res.status(200).send(makeResponseJson(uPost));
-        } catch (e) {
-            console.log('CANT BOOKMARK POST ', e);
-            res.sendStatus(500);
-        }
-    }
-);
 
 module.exports = router;

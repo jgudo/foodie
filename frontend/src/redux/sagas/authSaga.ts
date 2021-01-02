@@ -63,7 +63,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(true));
 
                 const user = yield call(register, payload);
-                yield put(registerSuccess(user.id, user.username));
+                yield put(registerSuccess(user));
                 yield put(isAuthenticating(false));
             }
             catch (e) {

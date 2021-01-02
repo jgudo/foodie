@@ -17,6 +17,8 @@ export interface TLoading {
 export interface IAuth {
     id: string | null;
     username: string | null;
+    fullname?: string;
+    profilePicture?: string;
 }
 
 export interface IRegister {
