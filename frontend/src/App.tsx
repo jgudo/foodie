@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import * as ROUTE from "~/constants/routes";
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
 import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import Profile from "./pages/profile";
 import Register from "./pages/register";
 import { loginSuccess } from "./redux/action/authActions";
+import ProfileRoute from "./routers/ProfileRoute";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
 import { checkAuthSession } from "./services/api";
@@ -19,10 +22,9 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const user = await checkAuthSession();
+        const { auth } = await checkAuthSession();
 
-        console.log(user);
-        dispatch(loginSuccess(user.id, user.username));
+        dispatch(loginSuccess(auth));
         setCheckingSession(false);
       } catch (e) {
         console.log('ERROR', e);
@@ -40,9 +42,10 @@ function App() {
           <NavBar />
           <main className="min-h-screen">
             <Switch>
-              <ProtectedRoute path="/" exact component={Home} />
-              <PublicRoute path="/register" component={Register} />
-              <PublicRoute path="/login" component={Login} />
+              <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
+              <PublicRoute path={ROUTE.REGISTER} component={Register} />
+              <PublicRoute path={ROUTE.LOGIN} component={Login} />
+              <ProfileRoute path={ROUTE.PROFILE} component={Profile} />
               <Route component={PageNotFound} />
             </Switch>
           </main>

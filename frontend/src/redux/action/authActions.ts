@@ -9,12 +9,9 @@ export const loginStart = (email: string, password: string) => (<const>{
     }
 });
 
-export const loginSuccess = (id: string, username: string) => (<const>{
+export const loginSuccess = (auth: IUser) => (<const>{
     type: LOGIN_SUCCESS,
-    payload: {
-        id,
-        username
-    }
+    payload: auth
 });
 
 export const logoutStart = () => (<const>{

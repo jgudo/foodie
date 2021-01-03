@@ -29,6 +29,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
                 yield put(createPostSuccess(post));
                 yield put(isCreatingPost(false));
             } catch (e) {
+                yield put(isCreatingPost(false));
                 console.log(e);
             }
             break;

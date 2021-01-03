@@ -25,9 +25,9 @@ function* authSaga({ type, payload }: IAuthSaga) {
         case LOGIN_START:
             try {
                 yield put(isAuthenticating(true));
-                const user = yield call(login, payload.email, payload.password);
+                const { auth } = yield call(login, payload.email, payload.password);
 
-                yield put(loginSuccess(user.id, user.username));
+                yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
                 console.log(e);
@@ -38,10 +38,10 @@ function* authSaga({ type, payload }: IAuthSaga) {
         case CHECK_SESSION:
             try {
                 yield put(isAuthenticating(true));
-                const user = yield call(checkAuthSession);
+                const { auth } = yield call(checkAuthSession);
 
-                console.log('SUCCESS ', user);
-                yield put(loginSuccess(user.id, user.username));
+                console.log('SUCCESS ', auth);
+                yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
                 yield handleError();

@@ -93,3 +93,16 @@ export const createPost = async (post: ICreatePost) => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const getUser = async (username: string) => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/${username}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

@@ -19,11 +19,13 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
     return (
         <nav className="flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 px-14 fixed w-full">
             <ul className="flex items-center">
+                {/* ---- LOGO -------- */}
                 <li className="logo">
                     <NavLink to="/">
                         <h2 className="text-2xl">Foodie</h2>
                     </NavLink>
                 </li>
+                {/* -------- SEARCH BAR ------- */}
                 <li className="ml-6">
                     <input
                         className="!border-gray-100 !py-2"
@@ -33,6 +35,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                 </li>
             </ul>
             <div className="flex items-center">
+                {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
                 <ul className="flex items-center space-x-8 mr-8">
                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
                         <UserAddOutlined className=" text-xl" />
@@ -47,6 +50,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                 {
                     isAuth ? (
                         <div className="flex items-center">
+                            {/* ---- AVATAR WITH  USERNAME ----------- */}
                             <Link to={`/${auth.username}`} className="cursor-pointer">
                                 <div className="flex items-center">
                                     <div
@@ -56,6 +60,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                                     <h6 className="mr-10">@{auth.username}</h6>
                                 </div>
                             </Link>
+                            {/* ----- LOGOUT BUTTON ------ */}
                             <button className="button--muted" onClick={onLogout} disabled={isLoadingAuth}>
                                 {isLoadingAuth ? 'Logging Out...' : 'Logout'}
                             </button>

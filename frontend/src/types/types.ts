@@ -4,6 +4,7 @@ export interface IRootReducer {
     error: IError;
     loading: TLoading;
     newsFeed: IPost[];
+    profile: IProfile;
 }
 
 export interface IError {
@@ -13,6 +14,7 @@ export interface IError {
 export interface TLoading {
     isLoadingAuth: boolean;
     isLoadingCreatePost: boolean;
+    isLoadingGetUser: boolean;
 }
 
 
@@ -38,6 +40,24 @@ export interface IPost {
     createdAt: Date;
     updatedAt?: Date;
 
+}
+
+export interface IProfile {
+    id: string;
+    username: string;
+    email: string;
+    fullname: string | null;
+    firstname: string;
+    lastname: string;
+    info: {
+        bio: string;
+        birthday: Date | null;
+    },
+    isEmailValidated: boolean;
+    profilePicture: string | null;
+    coverPhoto: string | null;
+    dateJoined: Date | null;
+    [prop: string]: any;
 }
 
 export interface IRegister {

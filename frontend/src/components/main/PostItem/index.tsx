@@ -19,7 +19,7 @@ const PostItem: React.FC<IProps> = ({ post }) => {
                     <div className="rounded-full overflow-hidden relative w-10 h-10 mr-3 bg-gray-200">
                         <img
                             alt=""
-                            className="w-full h-full"
+                            className="w-full h-full object-cover"
                             src={post.author.profilePicture || `https://i.pravatar.cc/60?${new Date().getTime()}`}
                         // src={post.author.profilePicture || 'https://source.unsplash.com/200x200/?person'}
                         />

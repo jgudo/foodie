@@ -55,7 +55,7 @@ router.post(
                     }
 
                     const userData = sessionizeUser(user);
-                    return res.status(200).send(makeResponseJson(userData));
+                    return res.status(200).send(makeResponseJson({ auth: userData, user: req.user.toUserJSON() }));
                 });
             }
         })(req, res, next);
@@ -78,7 +78,7 @@ router.get('/v1/check-session', (req, res) => {
     console.log('IS AUTH:', req.isAuthenticated())
     if (req.isAuthenticated()) {
         const user = sessionizeUser(req.user);
-        res.status(200).send(makeResponseJson(user));
+        res.status(200).send(makeResponseJson({ auth: user, user: req.user.toUserJSON() }));
     } else {
         res.sendStatus(404);
     }
