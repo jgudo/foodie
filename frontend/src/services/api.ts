@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IGetNewsFeed, IRegister } from '~/types/types';
+import { ICreatePost, IGetNewsFeed, IRegister } from '~/types/types';
 
 const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
@@ -72,6 +72,20 @@ export const getNewsFeed = async ({ offset = 0 }: IGetNewsFeed) => {
             params: {
                 offset
             }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const createPost = async (post: ICreatePost) => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: '/post',
+            data: post
         });
 
         return Promise.resolve(req.data.data)

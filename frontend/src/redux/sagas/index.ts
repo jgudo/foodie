@@ -1,5 +1,5 @@
 import { takeLatest } from 'redux-saga/effects';
-import { CHECK_SESSION, GET_FEED_START, LOGIN_START, LOGOUT_START, REGISTER_START } from '~/constants/actionType';
+import { CHECK_SESSION, CREATE_POST_START, GET_FEED_START, LOGIN_START, LOGOUT_START, REGISTER_START } from '~/constants/actionType';
 import authSaga from './authSaga';
 import newsFeedSaga from './newsFeedSaga';
 
@@ -12,7 +12,8 @@ function* rootSaga() {
     ], authSaga);
 
     yield takeLatest([
-        GET_FEED_START
+        GET_FEED_START,
+        CREATE_POST_START
     ], newsFeedSaga);
 }
 

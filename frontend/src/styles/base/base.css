@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  h1, h2 {
+    @apply font-bold;
+  }
+  
+  h3, h4, h5, h6 {
+    @apply font-medium;
+  }
+
   h1 {
     @apply text-4xl leading-loose;
   }
@@ -34,7 +42,7 @@
       border-transparent
       text-sm
       font-medium
-      rounded-md
+      rounded-full
       text-white
       bg-indigo-600;
     
@@ -50,22 +58,23 @@
 
   input[type=text],
   input[type=email],
-  input[type=password] {
+  input[type=password],
+  textarea {
     @apply
       appearance-none
       relative
       block
       w-full
-      px-3
+      px-6
       py-3
       border
       border-gray-300
       placeholder-gray-500
       text-gray-900
-      rounded-md
+      rounded-full
       readonly:opacity-50
-      focus-readonly:border-indigo-100
-      hover-readonly:cursor-not-allowed;
+      focus:border-indigo-100
+      hover:cursor-not-allowed;
 
     &:focus {
       @apply outline-none;
@@ -84,13 +93,18 @@
       text-indigo-600
       border-indigo-500
       rounded
-      hover-readonly:cursor-not-allowed
-      focus-readonly:ring-0
+      hover:cursor-not-allowed
+      focus:ring-0
       readonly:opacity-50;
     
     &:focus {
       @apply ring-0 outline-none;
     }
+  }
+
+  textarea {
+    @apply rounded-md;
+    @apply resize-none;
   }
 }
 
@@ -101,7 +115,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     line-height: 1.6;
-    @apply bg-gray-50;
+    @apply bg-gray-100;
     
   }
 

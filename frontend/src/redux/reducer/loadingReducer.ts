@@ -1,8 +1,9 @@
-import { SET_AUTH_LOADING } from "~/constants/actionType";
+import { SET_AUTH_LOADING, SET_CREATE_POST_LOADING } from "~/constants/actionType";
 import { TLoadingActionType } from "../action/loadingActions";
 
 const initState = {
-    isLoadingAuth: false
+    isLoadingAuth: false,
+    isLoadingCreatePost: false
 }
 
 const loadingReducer = (state = initState, action: TLoadingActionType) => {
@@ -11,6 +12,11 @@ const loadingReducer = (state = initState, action: TLoadingActionType) => {
             return {
                 ...state,
                 isLoadingAuth: action.payload
+            }
+        case SET_CREATE_POST_LOADING:
+            return {
+                ...state,
+                isLoadingCreatePost: action.payload
             }
         default:
             return state;

@@ -2,3 +2,13 @@
     @extend button;
     width: 100%;
 }
+.button--muted {
+    @extend button;
+    @apply bg-gray-100;
+    @apply text-gray-600;
+    @apply rounded-md;
+    &:hover {
+        @apply bg-gray-200;
+        @apply text-gray-700;
+    }
+}

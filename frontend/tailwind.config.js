@@ -7,7 +7,6 @@ module.exports = {
     screens: {
       'mobile': '420px',
       'tablet': '640px',
-      // => @media (min-width: 640px) { ... }
       'laptop': '1024px',
       'desktop': '1280px',
     },
@@ -16,7 +15,8 @@ module.exports = {
     },
     extend: {
       height: {
-        '60px': '60px'
+        '60px': '60px',
+        '25rem': '25rem'
       },
       padding: {
         '60px': '60px'
@@ -36,6 +36,13 @@ module.exports = {
   },
   variants: {
     cursor: ['hover', 'focus'],
+    backgroundColor: ['hover', 'focus'],
+    backgroundSize: ['important'],
+    backgroundRepeat: ['important'],
+    backgroundPosition: ['important'],
+    margin: ['first'],
+    padding: ['important'],
+    borderColor: ['important', 'focus'],
     extend: {
       cursor: ['disabled'],
       opacity: ['disabled', 'readonly'],
@@ -54,15 +61,30 @@ module.exports = {
 
       addVariant('focus', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
-          return `.${e(`focus-readonly${separator}${className}`)}:read-only:focus`
+          return `.${e(`focus${separator}${className}`)}:read-only:focus`
         })
       })
 
       addVariant('hover', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
-          return `.${e(`hover-readonly${separator}${className}`)}:read-only:hover`
+          return `.${e(`hover${separator}${className}`)}:read-only:hover`
         })
       })
+
+      addVariant('important', ({ container }) => {
+        container.walkRules(rule => {
+          rule.selector = `.\\!${rule.selector.slice(1)}`
+          rule.walkDecls(decl => {
+            decl.important = true
+          })
+        })
+      });
+
+      // addVariant('first-child', ({ modifySelectors, separator }) => {
+      //   modifySelectors(({ className }) => {
+      //     return `.${e(`first-child${separator}${className} > *`)}:first-child`
+      //   })
+      // });
     })
   ]
 }

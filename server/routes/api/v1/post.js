@@ -25,6 +25,7 @@ router.post(
             });
 
             await post.save();
+            await post.populate('author', 'profilePicture username fullname').execPopulate();
             await User
                 .findByIdAndUpdate(req.user._id, {
                     $push: {
@@ -34,12 +35,15 @@ router.post(
             const userFollowers = await Follow.findOne({ _user_id: req.user._id });
             let newsFeeds = [];
 
+            // add post to follower's newsfeed
             if (userFollowers && userFollowers.followers) {
                 newsFeeds = userFollowers.followers.map(follower => ({
                     follower: Types.ObjectId(follower._id),
                     post: Types.ObjectId(post._id)
                 }));
             }
+            // append own post on newsfeed
+            newsFeeds = newsFeeds.concat({ follower: req.user._id, post: Types.ObjectId(post._id) });
 
             if (newsFeeds.length !== 0) {
                 await NewsFeed.insertMany(newsFeeds);

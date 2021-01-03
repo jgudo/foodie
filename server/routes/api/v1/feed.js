@@ -31,7 +31,10 @@ router.get(
                 .skip(skip)
                 .limit(limit);
 
-            const filteredFeed = feeds.map(feed => feed.post);
+            const filteredFeed = feeds.map((feed) => {
+                const isPostLiked = feed.post.isPostLiked(req.user._id);
+                return { ...feed.post.toObject(), isLiked: isPostLiked };
+            });
 
             res.status(200).send(makeResponseJson(filteredFeed));
         } catch (e) {

@@ -12,6 +12,7 @@ export interface IError {
 
 export interface TLoading {
     isLoadingAuth: boolean;
+    isLoadingCreatePost: boolean;
 }
 
 
@@ -43,6 +44,11 @@ export interface IRegister {
     email: string;
     password: string;
     username: string;
+}
+
+export interface ICreatePost {
+    description: string;
+    photos?: []
 }
 
 export interface IGetNewsFeed {
