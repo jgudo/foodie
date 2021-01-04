@@ -18,6 +18,9 @@ module.exports = {
         '60px': '60px',
         '25rem': '25rem'
       },
+      width: {
+        '30rem': '30rem'
+      },
       padding: {
         '60px': '60px'
       },
@@ -36,12 +39,13 @@ module.exports = {
   },
   variants: {
     cursor: ['hover', 'focus'],
-    backgroundColor: ['hover', 'focus'],
+    backgroundColor: ['hover', 'focus', 'important'],
     backgroundSize: ['important'],
     backgroundRepeat: ['important'],
     backgroundPosition: ['important'],
     margin: ['first'],
     padding: ['important'],
+    textColor: ['important'],
     borderColor: ['important', 'focus'],
     extend: {
       cursor: ['disabled'],

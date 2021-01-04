@@ -20,6 +20,7 @@ const userRouter = require('./routes/api/v1/user');
 const followRouter = require('./routes/api/v1/follow');
 const bookmarkRouter = require('./routes/api/v1/bookmark');
 const commentRouter = require('./routes/api/v1/comment');
+const notificationRouter = require('./routes/api/v1/notification');
 
 app.disable('x-powered-by');
 // view engine setup
@@ -68,11 +69,12 @@ app.use(passport.session());
 app.use('/api', [
   feedRouter,
   authRouter,
+  notificationRouter,
   postRouter,
   userRouter,
   commentRouter,
   followRouter,
-  bookmarkRouter
+  bookmarkRouter,
 ]);
 app.use(csurf());
 

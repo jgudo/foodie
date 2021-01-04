@@ -57,7 +57,18 @@ export interface IProfile {
     profilePicture: string | null;
     coverPhoto: string | null;
     dateJoined: Date | null;
+    followingCount: number;
+    followersCount: number;
     [prop: string]: any;
+}
+
+export interface INotification {
+    id: string;
+    initiator: IProfile;
+    target: IProfile,
+    createdAt: Date;
+    type: String;
+    link: String;
 }
 
 export interface IRegister {
@@ -71,6 +82,6 @@ export interface ICreatePost {
     photos?: []
 }
 
-export interface IGetNewsFeed {
+export interface IFetchParams {
     offset?: number;
 }

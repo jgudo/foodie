@@ -1,6 +1,7 @@
 import { Redirect, Route } from "react-router-dom";
 import withAuth from "~/components/hoc/withAuth";
 import { LOGIN } from "~/constants/routes";
+import Profile from "~/pages/profile";
 
 interface IProps {
     component: React.ComponentType;
@@ -14,7 +15,11 @@ const ProfileRoute: React.FC<IProps> = ({ isAuth, component: Component, path, ..
         <Route
             {...rest}
             component={(props: any) => {
-                return isAuth ? <Component {...props} /> : <Redirect to={LOGIN} />
+                return isAuth ? (
+                    <Profile>
+                        <Component {...props} />
+                    </Profile>
+                ) : <Redirect to={LOGIN} />
             }}
         />
     );

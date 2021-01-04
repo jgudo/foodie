@@ -7,7 +7,7 @@ import Preloader from "./components/shared/Preloader";
 import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
-import Profile from "./pages/profile";
+import Posts from "./pages/profile/components/Posts";
 import Register from "./pages/register";
 import { loginSuccess } from "./redux/action/authActions";
 import ProfileRoute from "./routers/ProfileRoute";
@@ -45,7 +45,7 @@ function App() {
               <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
               <PublicRoute path={ROUTE.REGISTER} component={Register} />
               <PublicRoute path={ROUTE.LOGIN} component={Login} />
-              <ProfileRoute path={ROUTE.PROFILE} component={Profile} />
+              <ProfileRoute path={ROUTE.PROFILE} component={Posts} />
               <Route component={PageNotFound} />
             </Switch>
           </main>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICreatePost, IGetNewsFeed, IRegister } from '~/types/types';
+import { ICreatePost, IFetchParams, IRegister } from '~/types/types';
 
 const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
@@ -64,7 +64,7 @@ export const logout = async () => {
     }
 }
 
-export const getNewsFeed = async ({ offset = 0 }: IGetNewsFeed) => {
+export const getNewsFeed = async ({ offset = 0 }: IFetchParams) => {
     try {
         const req = await axios({
             method: 'GET',
@@ -99,6 +99,35 @@ export const getUser = async (username: string) => {
         const req = await axios({
             method: 'GET',
             url: `/${username}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getPosts = async (username: string, { offset = 0 }: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/${username}/posts`,
+            params: {
+                offset
+            }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getNotifications = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/notifications`
         });
 
         return Promise.resolve(req.data.data)

@@ -111,12 +111,6 @@ UserSchema.methods.isBookmarked = function (postID) {
     });
 }
 
-UserSchema.methods.isFollowing = function (userID) {
-    return this.following.some(user => {
-        return user._id.toString() === userID.toString();
-    });
-}
-
 UserSchema.pre('save', function (next) {
     if (this.isNew || this.isModified('password')) {
         bcrypt.genSalt(10, (err, salt) => {

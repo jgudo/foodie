@@ -16,6 +16,8 @@ const initState: IProfile = {
     isEmailValidated: false,
     profilePicture: null,
     coverPhoto: null,
+    followersCount: 0,
+    followingCount: 0,
     dateJoined: null
 };
 

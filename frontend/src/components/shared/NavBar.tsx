@@ -1,9 +1,10 @@
-import { BellOutlined, MessageOutlined, UserAddOutlined } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
+import Notification from '../main/Notification';
 
 const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
     const dispatch = useDispatch();
@@ -26,9 +27,10 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                     </NavLink>
                 </li>
                 {/* -------- SEARCH BAR ------- */}
-                <li className="ml-6">
+                <li className="ml-6 relative flex items-center">
+                    <SearchOutlined className="text-gray-200 absolute left-3 my-auto z-10" />
                     <input
-                        className="!border-gray-100 !py-2"
+                        className="!border-gray-100 !pl-10 !py-2"
                         placeholder="Search..."
                         type="text"
                     />
@@ -44,7 +46,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                         <MessageOutlined className=" text-xl" />
                     </li>
                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                        <BellOutlined className=" text-xl" />
+                        <Notification />
                     </li>
                 </ul>
                 {

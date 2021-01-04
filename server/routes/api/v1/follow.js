@@ -3,6 +3,7 @@ const { makeResponseJson } = require('../../../helpers/utils');
 const { validateObjectID, isAuthenticated } = require('../../../middlewares/middlewares');
 const Follow = require('../../../schemas/FollowSchema');
 const User = require('../../../schemas/UserSchema');
+const Notification = require('../../../schemas/NotificationSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -36,7 +37,22 @@ router.post(
                 if (err) {
                     return res.status(200).send(makeResponseJson({ state: false }));
                 }
-                console.log(doc)
+
+                const io = req.app.get('io');
+                const notification = new Notification({
+                    type: 'follow',
+                    initiator: req.user._id,
+                    target: Types.ObjectId(follow_id),
+                    link: `/${req.user.username}`,
+                    createdAt: Date.now()
+                });
+
+                notification
+                    .save()
+                    .then(() => {
+                        io.to(follow_id).emit('notifyFollow', { notification, count: 1 });
+                    });
+
                 res.status(200).send(makeResponseJson({ state: true }));
             });
         } catch (e) {
@@ -125,7 +141,7 @@ router.get(
             }
             ]);
 
-            res.status(200).send(makeResponseJson(doc))
+            res.status(200).send(makeResponseJson(doc));
         } catch (e) {
 
         }

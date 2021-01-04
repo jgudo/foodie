@@ -5,9 +5,9 @@ import {
     GET_FEED_START,
     GET_FEED_SUCCESS
 } from "~/constants/actionType";
-import { ICreatePost, IGetNewsFeed, IPost } from "~/types/types";
+import { ICreatePost, IFetchParams, IPost } from "~/types/types";
 
-export const getNewsFeedStart = (options?: IGetNewsFeed) => (<const>{
+export const getNewsFeedStart = (options?: IFetchParams) => (<const>{
     type: GET_FEED_START,
     payload: options
 });

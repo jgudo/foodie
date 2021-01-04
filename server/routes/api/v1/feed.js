@@ -10,6 +10,7 @@ router.get(
     '/v1/feed',
     isAuthenticated,
     async (req, res, next) => {
+
         try {
             const { offset: off } = req.query;
             let offset = 0;
