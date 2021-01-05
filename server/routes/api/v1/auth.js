@@ -75,7 +75,6 @@ router.delete('/v1/logout', (req, res) => {
 //@route GET /api/v1/checkSession
 // Check if user session exists
 router.get('/v1/check-session', (req, res) => {
-    console.log('IS AUTH:', req.isAuthenticated())
     if (req.isAuthenticated()) {
         const user = sessionizeUser(req.user);
         res.status(200).send(makeResponseJson({ auth: user, user: req.user.toUserJSON() }));

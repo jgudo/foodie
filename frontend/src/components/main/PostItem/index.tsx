@@ -1,8 +1,9 @@
-import { CommentOutlined, EllipsisOutlined, LikeOutlined } from '@ant-design/icons';
+import { CommentOutlined, EllipsisOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Link } from 'react-router-dom';
 import { IPost } from "~/types/types";
+import LikeButton from '../LikeButton';
 
 dayjs.extend(relativeTime);
 
@@ -66,9 +67,7 @@ const PostItem: React.FC<IProps> = ({ post }) => {
             </div>
             {/* --- LIKE/COMMENT BUTTON */}
             <div className="flex items-center justify-around">
-                <span className={`py-2 rounded-md flex items-center justify-center ${post.isLiked ? 'text-indigo-700 font-bold' : 'text-gray-700 hover:text-gray-800'} cursor-pointer hover:bg-gray-100 text-l w-2/4`}>
-                    <LikeOutlined />&nbsp; {post.isLiked ? 'Liked' : 'Like'}
-                </span>
+                <LikeButton postID={post.id} isLiked={post.isLiked} />
                 <span className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4">
                     <CommentOutlined />&nbsp;Comment
                     </span>

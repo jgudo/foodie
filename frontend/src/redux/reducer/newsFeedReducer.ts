@@ -1,4 +1,4 @@
-import { CLEAR_FEED, CREATE_POST_SUCCESS, GET_FEED_SUCCESS } from "~/constants/actionType";
+import { CLEAR_FEED, CREATE_POST_SUCCESS, GET_FEED_SUCCESS, UPDATE_FEED_POST } from "~/constants/actionType";
 import { IPost } from "~/types/types";
 import { TNewsFeedActionType } from "../action/feedActions";
 
@@ -12,6 +12,13 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
             return [action.payload, ...state];
         case CLEAR_FEED:
             return initState;
+        case UPDATE_FEED_POST:
+            return state.map((post: IPost) => {
+                if (post.id === action.payload.id) {
+                    return action.payload;
+                }
+                return post;
+            })
         default:
             return state;
     }

@@ -18,9 +18,16 @@ router.get(
 
             if (!user) return res.sendStatus(404);
 
-            const followCounts = await Follow.aggregate([
+            const result = await Follow.aggregate([
                 {
                     $match: { _user_id: user._id }
+                },
+                {
+                    $project: {
+                        following: { $ifNull: ["$following", []] },
+                        followers: { $ifNull: ["$following", []] },
+                        followers: 1
+                    }
                 },
                 {
                     $project: {
@@ -31,15 +38,23 @@ router.get(
                     }
                 },
             ]);
-            const followingCount = followCounts[0] ? followCounts[0].followingCount : 0;
-            const followersCount = followCounts[0] ? followCounts[0].followersCount : 0;
 
-            const toObjectUser = { ...user.toUserJSON(), followingCount, followersCount };
+            const { followingCount, followersCount, followers } = result[0] || {};
 
-            if (req.user.username !== username && followCounts[0]) {
-                const isFollowing = followCounts[0].followers.some((follower) => {
-                    return follower._id.toString() === req.user._id.toString();
-                });
+            const toObjectUser = {
+                ...user.toUserJSON(),
+                followingCount: followingCount || 0,
+                followersCount: followersCount || 0
+            };
+
+            if (req.user.username !== username) {
+                let isFollowing = false;
+
+                if (followers) {
+                    isFollowing = followers.some((follower) => {
+                        return follower._id.toString() === req.user._id.toString();
+                    });
+                }
 
                 toObjectUser.isFollowing = isFollowing;
             }

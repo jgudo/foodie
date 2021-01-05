@@ -16,24 +16,47 @@ router.post(
             const { follow_id } = req.params;
 
             const user = User.findById(follow_id);
-            if (!user) return res.sendStatus(404);
-            if (follow_id === req.user._id.toString()) return res.sendStatus(400);
+            if (!user) return res.sendStatus(404); // CHECK IF FOLLOWING USER EXIST
+            if (follow_id === req.user._id.toString()) return res.sendStatus(400); // CHECK IF FOLLOWING IS NOT YOURSELF
+
+            //  CHECK IF ALREADY FOLLOWING
+            const isFollowing = await Follow
+                .findOne({
+                    _user_id: req.user._id,
+                    following: {
+                        $in: [Types.ObjectId(follow_id)]
+                    }
+                });
+            if (isFollowing) return res.status(400).send(makeErrorJson({ status_code: 400, message: 'Already following.' }));
+
+            // ADD "FOLLOWERS" FIELD IF NOT EXIST
+            // const op1 = await Follow.findOne({ _user_id: req.user._id });
+            // if (!op1) {
+            //     const follow = new Follow({ _user_id: req.user._id });
+            //     await follow.save();
+            // }
+            // // ADD "FOLLOWING" FIELD IF NOT EXIST
+            // const op2 = await Follow.findOne({ _user_id: Types.ObjectId(follow_id) });
+            // if (!op2) {
+            //     const follow = new Follow({ _user_id: req.user._id });
+            //     await follow.save();
+            // }
 
             const bulk = Follow.collection.initializeUnorderedBulkOp();
 
             bulk.find({ _user_id: req.user._id }).upsert().updateOne({
                 $addToSet: {
-                    following: Types.ObjectId(follow_id)
+                    following: Types.ObjectId(follow_id),
                 }
             });
 
             bulk.find({ _user_id: Types.ObjectId(follow_id) }).upsert().updateOne({
                 $addToSet: {
-                    followers: req.user._id
+                    followers: req.user._id,
                 }
             });
 
-            bulk.execute(function (err, doc) {
+            bulk.execute((err, doc) => {
                 if (err) {
                     return res.status(200).send(makeResponseJson({ state: false }));
                 }
@@ -49,8 +72,10 @@ router.post(
 
                 notification
                     .save()
-                    .then(() => {
-                        io.to(follow_id).emit('notifyFollow', { notification, count: 1 });
+                    .then(async (doc) => {
+                        await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
+                        console.log('DOCCCCCCCCCC', doc);
+                        io.to(follow_id).emit('notifyFollow', { notification: doc, count: 1 });
                     });
 
                 res.status(200).send(makeResponseJson({ state: true }));
@@ -82,7 +107,7 @@ router.post(
                 }
             });
 
-            bulk.find({ _user_id: follow_id }).upsert().updateOne({
+            bulk.find({ _user_id: Types.ObjectId(follow_id) }).upsert().updateOne({
                 $pull: {
                     followers: req.user._id
                 }
@@ -93,7 +118,7 @@ router.post(
                     return res.status(200).send(makeResponseJson({ state: false }));
                 }
                 console.log(doc)
-                res.status(200).send(makeResponseJson({ state: true }));
+                res.status(200).send(makeResponseJson({ state: false }));
             });
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);

@@ -6,6 +6,7 @@ const User = require('../../../schemas/UserSchema');
 const { isValidObjectId, Types } = require('mongoose');
 const Follow = require('../../../schemas/FollowSchema');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
+const Notification = require('../../../schemas/NotificationSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -97,7 +98,6 @@ router.get(
                 .skip(skip)
                 .limit(limit);
 
-            console.log(posts)
             if (!posts || posts.length <= 0) {
                 return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No post(s) found.' }));
             }
@@ -106,7 +106,6 @@ router.get(
                 const isPostLiked = post.isPostLiked(req.user._id);
                 const isBookmarked = req.user.isBookmarked(post._id);
 
-                console.log(isBookmarked)
                 return {
                     ...post.toObject(),
                     isBookmarked,
@@ -149,9 +148,28 @@ router.post(
 
             const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
             await fetchedPost.populate('author', 'fullname username profilePicture').execPopulate();
-            const updatedPost = { ...fetchedPost.toObject(), isLiked: !isPostLiked };
+            const updatedPost = { ...fetchedPost.toObject(), isLiked: !isPostLiked, likesCount: fetchedPost.likes.length };
 
-            res.status(200).send(makeResponseJson(updatedPost));
+            if (!isPostLiked && updatedPost.author.id !== req.user._id.toString()) {
+                const io = req.app.get('io');
+                const targetUserID = updatedPost.author.id;
+                const notification = new Notification({
+                    type: 'like',
+                    initiator: req.user._id,
+                    target: targetUserID,
+                    link: `/post/${post_id}`,
+                    createdAt: Date.now()
+                });
+
+                notification
+                    .save()
+                    .then(async (doc) => {
+                        await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
+                        console.log('DOCCCCCC', doc)
+                        io.to(targetUserID).emit('notifyLike', { notification: doc, count: 1 });
+                    });
+            }
+            res.status(200).send(makeResponseJson({ post: updatedPost, state: isPostLiked }));
         } catch (e) {
             console.log(e);
             res.sendStatus(400);

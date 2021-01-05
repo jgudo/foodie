@@ -9,12 +9,14 @@ const FollowSchema = new mongoose.Schema({
     following: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        default: []
     }],
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        default: []
     }],
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
 

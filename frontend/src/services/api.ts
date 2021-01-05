@@ -135,3 +135,42 @@ export const getNotifications = async (): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const followUser = async (id: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/follow/${id}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const unfollowUser = async (id: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/unfollow/${id}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const likePost = async (id: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/like/post/${id}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

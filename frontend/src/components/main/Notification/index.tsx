@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getNotifications } from "~/services/api";
 import socket from "~/socket/socket";
-import { IRootReducer } from "~/types/types";
+import { INotification, IRootReducer } from "~/types/types";
 import NotificationList from "./NotificationList";
 
 const Notification: React.FC = () => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isNotificationOpen, setNotificationOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
-    const [notifications, setNotifications] = useState({
+    const [notifications, setNotifications] = useState<any>({
         items: [],
         count: 0,
         unreadCount: 0
@@ -19,21 +19,42 @@ const Notification: React.FC = () => {
     useEffect(() => {
         socket.on('connect', () => {
             socket.emit('userConnect', id);
-            console.log('COnnected');
+            console.log('Client connected to socket.');
 
             if (isNotificationOpen) {
                 fetchNotifications();
             }
         });
 
-        socket.on('notifyFollow', ({ notification, count }: any) => {
+        socket.on('notifyFollow', ({ notification, count }: { notification: INotification, count: number }) => {
+            console.log('STATE: ', notifications);
+            setNotifications((prev: any) => ({ ...prev, count: prev.count + count, items: [notification, ...prev.items] }))
+
             console.log(notification);
         });
+
+        socket.on('notifyLike', ({ notification, count }: { notification: INotification, count: number }) => {
+            console.log('STATE: ', notifications);
+            setNotifications((prev: any) => ({ ...prev, count: prev.count + count, items: [notification, ...prev.items] }))
+
+            console.log(notification);
+        });
+
+
         return () => {
             socket.emit('userDisconnect', id);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    document.addEventListener('click', (e: Event) => {
+        const toggle = (e.target as HTMLElement).closest('.notification-toggle');
+        const wrapper = (e.target as HTMLElement).closest('.notification-wrapper');
+
+        if (!toggle && isNotificationOpen && !wrapper) {
+            setNotificationOpen(false);
+        }
+    });
 
     const fetchNotifications = async () => {
         try {
@@ -50,13 +71,21 @@ const Notification: React.FC = () => {
 
     const toggleNotification = () => {
         setNotificationOpen(!isNotificationOpen);
+
+        // Since setting state is asynchronous, we should flip the value of isNotificationOpen
+        if (!isNotificationOpen && notifications.items.length === 0) {
+            fetchNotifications();
+        }
     }
 
     return (
         <div className="relative">
-            <BellOutlined className=" text-xl focus:outline-none" onClick={toggleNotification} />
+            <BellOutlined
+                className="notification-toggle text-xl focus:outline-none"
+                onClick={toggleNotification}
+            />
             {isNotificationOpen && (
-                <div className="absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
+                <div className="notification-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
                     <NotificationList notifications={notifications.items} />
                 </div>
             )}

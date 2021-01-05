@@ -45,7 +45,7 @@ function App() {
               <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
               <PublicRoute path={ROUTE.REGISTER} component={Register} />
               <PublicRoute path={ROUTE.LOGIN} component={Login} />
-              <ProfileRoute path={ROUTE.PROFILE} component={Posts} />
+              <ProfileRoute path={ROUTE.PROFILE} exact component={Posts} />
               <Route component={PageNotFound} />
             </Switch>
           </main>

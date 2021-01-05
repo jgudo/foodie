@@ -1,7 +1,12 @@
-import { SET_AUTH_ERR_MSG, CLEAR_AUTH_ERR_MSG } from "~/constants/actionType";
+import { CLEAR_AUTH_ERR_MSG, SET_AUTH_ERR_MSG, SET_PROFILE_ERR_MSG } from "~/constants/actionType";
 
 export const setAuthErrorMessage = (message: string) => (<const>{
 	type: SET_AUTH_ERR_MSG,
+	payload: message
+});
+
+export const setProfileErrorMessage = (message: string) => (<const>{
+	type: SET_PROFILE_ERR_MSG,
 	payload: message
 });
 
@@ -10,5 +15,6 @@ export const clearAuthErrorMessage = () => (<const>{
 });
 
 export type ErrorActionType =
-	ReturnType<typeof setAuthErrorMessage>
+	| ReturnType<typeof setAuthErrorMessage>
+	| ReturnType<typeof setProfileErrorMessage>
 	| ReturnType<typeof clearAuthErrorMessage>;

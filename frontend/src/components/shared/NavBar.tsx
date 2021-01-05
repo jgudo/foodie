@@ -1,4 +1,4 @@
-import { MessageOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
+import { MessageOutlined, SearchOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { logoutStart } from "~/redux/action/authActions";
@@ -39,9 +39,6 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
             <div className="flex items-center">
                 {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
                 <ul className="flex items-center space-x-8 mr-8">
-                    <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                        <UserAddOutlined className=" text-xl" />
-                    </li>
                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
                         <MessageOutlined className=" text-xl" />
                     </li>

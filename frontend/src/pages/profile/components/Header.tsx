@@ -1,3 +1,4 @@
+import FollowButton from '~/components/main/FollowButton';
 import { IProfile, IUser } from "~/types/types";
 
 interface IProps {
@@ -34,11 +35,7 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                         </div>
                         {/* ---- FOLLOW/UNFOLLOW BUTTON */}
                         {profile.username !== auth.username && (
-                            <div>
-                                <button className={`text-xl ${profile.isFollowing && '!bg-indigo-100 !border !border-indigo-500 !text-indigo-700'}`}>
-                                    {profile.isFollowing ? 'Following' : 'Follow'}
-                                </button>
-                            </div>
+                            <FollowButton isFollowing={profile.isFollowing} userID={profile.id} />
                         )}
                     </div>
                     {/* ---- PROFILE NAVS ----- */}

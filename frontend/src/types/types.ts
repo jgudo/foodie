@@ -9,6 +9,7 @@ export interface IRootReducer {
 
 export interface IError {
     authError?: string;
+    profileError?: string;
 }
 
 export interface TLoading {
@@ -68,6 +69,7 @@ export interface INotification {
     target: IProfile,
     createdAt: Date;
     type: String;
+    unread: Boolean;
     link: String;
 }
 

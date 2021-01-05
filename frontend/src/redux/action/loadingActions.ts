@@ -1,4 +1,8 @@
-import { SET_AUTH_LOADING, SET_CREATE_POST_LOADING, SET_GET_USER_LOADING } from "~/constants/actionType";
+import {
+    SET_AUTH_LOADING,
+    SET_CREATE_POST_LOADING,
+    SET_GET_USER_LOADING
+} from "~/constants/actionType";
 
 export const isAuthenticating = (bool: boolean = true) => (<const>{
     type: SET_AUTH_LOADING,
