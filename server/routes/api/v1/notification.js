@@ -34,4 +34,63 @@ router.get(
     }
 );
 
+router.get(
+    '/v1/notifications/unread',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const notif = await Notification.find({ target: req.user._id, unread: true });
+
+            res.status(200).send(makeResponseJson({ count: notif.length }));
+        } catch (e) {
+            console.log('CANT GET UNREAD NOTIFICATIONS', e);
+            res.status(400).send(e);
+        }
+    }
+);
+
+router.patch(
+    '/v1/notifications/mark',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            await Notification
+                .updateMany(
+                    { target: req.user._id },
+                    {
+                        $set: {
+                            unread: false
+                        }
+                    });
+            res.status(200).send(makeResponseJson({ state: false }));
+        } catch (e) {
+            console.log('CANT MARK ALL AS UNREAD', e);
+            res.status(400).send(e);
+        }
+    }
+);
+
+router.patch(
+    '/v1/read/notification/:id',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const notif = await Notification.findById(id);
+            if (!notif) return res.sendStatus(400);
+
+            const result = await Notification
+                .findByIdAndUpdate(id, {
+                    $set: {
+                        unread: false
+                    }
+                });
+
+            res.status(200).send(makeResponseJson({ state: false })) // state = false EQ unread = false
+        } catch (e) {
+
+        }
+    }
+);
+
 module.exports = router;

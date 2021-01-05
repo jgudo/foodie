@@ -1,7 +1,13 @@
 import { BellOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getNotifications } from "~/services/api";
+import Badge from '~/components/shared/Badge';
+import {
+    getNotifications,
+    getUnreadNotifications,
+
+    markAllAsUnreadNotifications, readNotification
+} from "~/services/api";
 import socket from "~/socket/socket";
 import { INotification, IRootReducer } from "~/types/types";
 import NotificationList from "./NotificationList";
@@ -10,10 +16,10 @@ const Notification: React.FC = () => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isNotificationOpen, setNotificationOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
     const [notifications, setNotifications] = useState<any>({
         items: [],
-        count: 0,
-        unreadCount: 0
+        count: 0
     });
 
     useEffect(() => {
@@ -28,18 +34,24 @@ const Notification: React.FC = () => {
 
         socket.on('notifyFollow', ({ notification, count }: { notification: INotification, count: number }) => {
             console.log('STATE: ', notifications);
-            setNotifications((prev: any) => ({ ...prev, count: prev.count + count, items: [notification, ...prev.items] }))
+            setUnreadCount(unreadCount + 1);
+            setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));
 
             console.log(notification);
         });
 
         socket.on('notifyLike', ({ notification, count }: { notification: INotification, count: number }) => {
             console.log('STATE: ', notifications);
-            setNotifications((prev: any) => ({ ...prev, count: prev.count + count, items: [notification, ...prev.items] }))
+            setUnreadCount(unreadCount + 1);
+            setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));
 
             console.log(notification);
         });
 
+        getUnreadNotifications()
+            .then(({ count }) => {
+                setUnreadCount(count);
+            });
 
         return () => {
             socket.emit('userDisconnect', id);
@@ -70,6 +82,7 @@ const Notification: React.FC = () => {
     };
 
     const toggleNotification = () => {
+        setUnreadCount(0);
         setNotificationOpen(!isNotificationOpen);
 
         // Since setting state is asynchronous, we should flip the value of isNotificationOpen
@@ -78,15 +91,65 @@ const Notification: React.FC = () => {
         }
     }
 
+    const handleReadNotification = async (id: string) => {
+        try {
+            const { state } = await readNotification(id);
+            const updatedNotifs = notifications.items.map((notif: INotification) => {
+                if (notif.id === id) {
+                    return {
+                        ...notif,
+                        unread: state
+                    }
+                }
+                return notif;
+            });
+            setNotifications({ ...notifications, items: updatedNotifs });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const handleMarkAllUnread = async () => {
+        try {
+            const { state } = await markAllAsUnreadNotifications();
+            const updatedNotifs = notifications.items.map((notif: INotification) => {
+                return {
+                    ...notif,
+                    unread: state
+                }
+            });
+            setNotifications({ ...notifications, items: updatedNotifs });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     return (
         <div className="relative">
-            <BellOutlined
-                className="notification-toggle text-xl focus:outline-none"
-                onClick={toggleNotification}
-            />
+            <Badge count={unreadCount}>
+                <BellOutlined
+                    className="notification-toggle text-xl focus:outline-none"
+                    onClick={toggleNotification}
+                />
+            </Badge>
             {isNotificationOpen && (
                 <div className="notification-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
-                    <NotificationList notifications={notifications.items} />
+                    {/*  ----- HEADER ----- */}
+                    <div className="p-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
+                        <h6 className="text-white">Notifications</h6>
+                        <span
+                            className="text-sm  p-2 text-white opacity-80 rounded-md hover:bg-indigo-500"
+                            onClick={handleMarkAllUnread}
+                        >
+                            Mark all as read
+                        </span>
+                    </div>
+                    {/* ----- LIST ---- */}
+                    <NotificationList
+                        notifications={notifications.items}
+                        readNotification={handleReadNotification}
+                        toggleNotification={setNotificationOpen}
+                    />
                 </div>
             )}
         </div>

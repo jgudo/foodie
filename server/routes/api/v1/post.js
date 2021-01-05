@@ -153,22 +153,26 @@ router.post(
             if (!isPostLiked && updatedPost.author.id !== req.user._id.toString()) {
                 const io = req.app.get('io');
                 const targetUserID = updatedPost.author.id;
-                const notification = new Notification({
+                const newNotif = {
                     type: 'like',
                     initiator: req.user._id,
                     target: targetUserID,
                     link: `/post/${post_id}`,
-                    createdAt: Date.now()
-                });
+                };
+                const notificationExists = await Notification.findOne(newNotif);
 
-                notification
-                    .save()
-                    .then(async (doc) => {
-                        await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
-                        console.log('DOCCCCCC', doc)
-                        io.to(targetUserID).emit('notifyLike', { notification: doc, count: 1 });
-                    });
+                if (!notificationExists) {
+                    const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+
+                    const doc = await notification.save();
+                    await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
+
+                    io.to(targetUserID).emit('notifyLike', { notification: doc, count: 1 });
+                } else {
+                    await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                }
             }
+
             res.status(200).send(makeResponseJson({ post: updatedPost, state: isPostLiked }));
         } catch (e) {
             console.log(e);

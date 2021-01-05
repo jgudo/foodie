@@ -68,9 +68,9 @@ export interface INotification {
     initiator: IProfile;
     target: IProfile,
     createdAt: Date;
-    type: String;
-    unread: Boolean;
-    link: String;
+    type: string;
+    unread: boolean;
+    link: string;
 }
 
 export interface IRegister {

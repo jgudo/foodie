@@ -174,3 +174,42 @@ export const likePost = async (id: string): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const readNotification = async (id: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/read/notification/${id}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getUnreadNotifications = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/notifications/unread`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const markAllAsUnreadNotifications = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/notifications/mark`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
