@@ -3,15 +3,17 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Link } from 'react-router-dom';
 import { IPost } from "~/types/types";
+import Comments from '../Comments';
 import LikeButton from '../LikeButton';
 
 dayjs.extend(relativeTime);
 
 interface IProps {
     post: IPost,
+    likeCallback: (post: IPost) => void;
 }
 
-const PostItem: React.FC<IProps> = ({ post }) => {
+const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
             {/* --- AVATAR AND OPTIONS */}
@@ -52,7 +54,7 @@ const PostItem: React.FC<IProps> = ({ post }) => {
                 />
             </Link>
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
-            <div className="flex justify-space-between my-2">
+            <div className="flex justify-between px-2 my-2">
                 <div>
                     {post.likesCount > 0 && (
                         <span className="text-gray-700">
@@ -66,16 +68,19 @@ const PostItem: React.FC<IProps> = ({ post }) => {
                     )}
                 </div>
                 <div>
-                    {post.commentsCount > 0 && <span>{post.commentsCount} comments</span>}
+                    {post.commentsCount > 0 && (
+                        <span>{post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}</span>
+                    )}
                 </div>
             </div>
             {/* --- LIKE/COMMENT BUTTON */}
-            <div className="flex items-center justify-around">
-                <LikeButton postID={post.id} isLiked={post.isLiked} />
+            <div className="flex items-center justify-around py-2 border-b border-gray-200">
+                <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
                 <span className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4">
                     <CommentOutlined />&nbsp;Comment
                     </span>
             </div>
+            <Comments postID={post.id} />
         </div>
     );
 };

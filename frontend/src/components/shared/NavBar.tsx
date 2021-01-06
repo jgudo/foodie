@@ -70,7 +70,9 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                                     <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">Login</NavLink>
                                 </li>
                                 <li className="group inline-block mx-3">
-                                    <NavLink to="/register" className="group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">Create Account</NavLink>
+                                    <NavLink to="/register" className="button group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">
+                                        Create Account
+                                    </NavLink>
                                 </li>
                             </ul>
                         )

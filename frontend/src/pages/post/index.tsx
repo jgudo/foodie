@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import PostItem from '~/components/main/PostItem';
 import { getSinglePost } from '~/services/api';
+import { IPost } from '~/types/types';
 
 const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) => {
     const [post, setPost] = useState<any>(null);
@@ -13,6 +14,10 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) =>
         fetchPost();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const likeCallback = (post: IPost) => {
+
+    }
 
     const fetchPost = async () => {
         try {
@@ -38,7 +43,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) =>
             )}
             {(!isLoading && !error && post) && (
                 <div className="pt-20 w-2/4 m-auto">
-                    <PostItem post={post} />
+                    <PostItem post={post} likeCallback={likeCallback} />
                 </div>
             )}
             {(!isLoading && error) && (

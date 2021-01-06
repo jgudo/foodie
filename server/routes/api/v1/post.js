@@ -7,6 +7,7 @@ const { isValidObjectId, Types } = require('mongoose');
 const Follow = require('../../../schemas/FollowSchema');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
 const Notification = require('../../../schemas/NotificationSchema');
+const Comment = require('../../../schemas/CommentSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -152,12 +153,18 @@ router.post(
             }
 
             const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
+            const countComments = await Comment.find({ _post_id: Types.ObjectId(post_id) });
             await fetchedPost.populate('author', 'fullname username profilePicture').execPopulate();
-            const updatedPost = { ...fetchedPost.toObject(), isLiked: !isPostLiked, likesCount: fetchedPost.likes.length };
+            const result = {
+                ...fetchedPost.toObject(),
+                isLiked: !isPostLiked,
+                likesCount: fetchedPost.likes.length,
+                commentsCount: countComments.length
+            };
 
-            if (!isPostLiked && updatedPost.author.id !== req.user._id.toString()) {
+            if (!isPostLiked && result.author.id !== req.user._id.toString()) {
                 const io = req.app.get('io');
-                const targetUserID = updatedPost.author.id;
+                const targetUserID = result.author.id;
                 const newNotif = {
                     type: 'like',
                     initiator: req.user._id,
@@ -178,7 +185,7 @@ router.post(
                 }
             }
 
-            res.status(200).send(makeResponseJson({ post: updatedPost, state: isPostLiked }));
+            res.status(200).send(makeResponseJson({ post: result, state: isPostLiked }));
         } catch (e) {
             console.log(e);
             res.sendStatus(400);

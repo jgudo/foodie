@@ -1,7 +1,8 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { loginStart } from '~/redux/action/authActions';
+import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
 
 
@@ -10,6 +11,14 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        return () => {
+            dispatch(setAuthErrorMessage(''));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const { error, isLoading } = useSelector((state: IRootReducer) => ({
         error: state.error.authError,
         isLoading: state.loading.isLoadingAuth

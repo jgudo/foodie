@@ -3,6 +3,7 @@ import { CHECK_SESSION, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/cons
 import { checkAuthSession, login, logout, register } from "~/services/api";
 import { loginSuccess, logoutSuccess, registerSuccess } from "../action/authActions";
 import { setAuthErrorMessage } from "../action/errorActions";
+import { clearNewsFeed } from "../action/feedActions";
 import { isAuthenticating } from "../action/loadingActions";
 
 interface IAuthSaga {
@@ -10,12 +11,12 @@ interface IAuthSaga {
     payload: any;
 }
 
-function* handleError(e?: string) {
+function* handleError(e: string) {
     yield put(isAuthenticating(false));
 
-    if (typeof e !== 'string') {
-        return;
-    }
+    // if (typeof e !== 'string') {
+    //     return;
+    // }
 
     yield put(setAuthErrorMessage(e));
 }
@@ -44,7 +45,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
-                yield handleError();
+                yield handleError('Session check failed.');
             }
             break;
         case LOGOUT_START:
@@ -54,6 +55,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
 
                 yield put(logoutSuccess());
                 yield put(isAuthenticating(false));
+                yield put(clearNewsFeed());
             } catch (e) {
                 yield handleError(e.error && e.error.message);
             }
@@ -67,7 +69,8 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(false));
             }
             catch (e) {
-                yield handleError(e.error && e.error.message);
+                console.log('ERR', e);
+                yield handleError(e.error.message || 'Unable to process request.');
             }
             break;
         default:

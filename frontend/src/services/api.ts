@@ -47,7 +47,7 @@ export const register = async ({ email, password, username }: IRegister) => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e);
+        return Promise.reject(e.response.data);
     }
 }
 
@@ -107,6 +107,8 @@ export const createPost = async (post: ICreatePost) => {
     }
 }
 
+
+
 export const getUser = async (username: string) => {
     try {
         const req = await axios({
@@ -127,6 +129,39 @@ export const getPosts = async (username: string, { offset = 0 }: IFetchParams): 
             url: `/${username}/posts`,
             params: {
                 offset
+            }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getComments = async (postID: string, { offset = 0, limit }: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/comment/${postID}`,
+            params: {
+                offset,
+                limit
+            }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const commentOnPost = async (postID: string, body: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/comment/${postID}`,
+            data: {
+                body
             }
         });
 

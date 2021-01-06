@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import CreatePost from "~/components/main/CreatePost";
 import PostItem from "~/components/main/PostItem";
 import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
-import { getNewsFeedStart } from "~/redux/action/feedActions";
-import { IRootReducer } from "~/types/types";
+import { getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
+import { IPost, IRootReducer } from "~/types/types";
 
 const Home: React.FC = () => {
     const { newsFeed, auth, error, isLoading } = useSelector((state: IRootReducer) => ({
@@ -34,6 +34,10 @@ const Home: React.FC = () => {
         }
     };
 
+    const likeCallback = (post: IPost) => {
+        dispatch(updateFeedPost(post));
+    }
+
     return (
         <div className="contain pt-20 flex items-start">
             <div className="w-1/4 rounded-md bg-white py-4 sticky top-20 mr-4 shadow-sm divide-y-2">
@@ -58,7 +62,7 @@ const Home: React.FC = () => {
             <div className="w-2/4">
                 <CreatePost />
                 {newsFeed.items.map(post => (
-                    <PostItem key={post.id} post={post} />
+                    <PostItem key={post.id} post={post} likeCallback={likeCallback} />
                 ))}
                 {newsFeed.items.length !== 0 && !error && (
                     <div className="flex justify-center py-6">

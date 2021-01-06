@@ -47,7 +47,14 @@ export interface IPost {
     isLiked: boolean;
     createdAt: Date;
     updatedAt?: Date;
+}
 
+export interface IComment {
+    id: string;
+    body: string;
+    createdAt: Date;
+    updatedAt: Date;
+    author: IUser;
 }
 
 export interface IProfile {
@@ -94,4 +101,5 @@ export interface ICreatePost {
 
 export interface IFetchParams {
     offset?: number;
+    limit?: number;
 }

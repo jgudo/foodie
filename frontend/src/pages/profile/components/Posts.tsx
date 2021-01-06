@@ -16,6 +16,10 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const likeCallback = (post: IPost) => {
+
+    };
+
     const fetchPosts = async () => {
         try {
             setIsLoading(true);
@@ -49,6 +53,7 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
                         {posts.map(post => (
                             <PostItem
                                 key={post.id}
+                                likeCallback={likeCallback}
                                 post={post}
                             />
                         ))}

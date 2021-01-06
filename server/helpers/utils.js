@@ -24,11 +24,11 @@ module.exports = {
      * 
      * @param {object} data 
      */
-    makeResponseJson: (data) => {
+    makeResponseJson: (data, success = true) => {
         return {
             ...initStatus,
             status_code: 200,
-            success: true,
+            success,
             data,
             timestamp: new Date()
         };
@@ -78,7 +78,7 @@ module.exports = {
                     error: {
                         type: 'REQUEST_ERROR',
                         title: 'Request Error',
-                        message: message || 'Unable to process your request.'
+                        message: typeof message !== undefined ? message : 'Unable to process your request.'
                     },
                     timestamp: new Date()
                 }

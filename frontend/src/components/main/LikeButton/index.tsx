@@ -1,17 +1,16 @@
 import { LikeOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { updateFeedPost } from '~/redux/action/feedActions';
 import { likePost } from '~/services/api';
+import { IPost } from '~/types/types';
 
 interface IProps {
     postID: string;
     isLiked: boolean;
+    likeCallback: (post: IPost) => void;
 }
 
 const LikeButton: React.FC<IProps> = (props) => {
     const [isLiked, setIsLiked] = useState(props.isLiked);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         setIsLiked(props.isLiked);
@@ -21,7 +20,7 @@ const LikeButton: React.FC<IProps> = (props) => {
         try {
             const { post, state } = await likePost(props.postID);
             setIsLiked(state);
-            dispatch(updateFeedPost(post));
+            props.likeCallback(post);
         } catch (e) {
             console.log(e);
         }
@@ -35,7 +34,7 @@ const LikeButton: React.FC<IProps> = (props) => {
 
             <LikeOutlined />
             &nbsp;
-            {isLiked ? 'Liked' : 'Like'}
+            {isLiked ? 'Unlike' : 'Like'}
         </span>
     );
 };
