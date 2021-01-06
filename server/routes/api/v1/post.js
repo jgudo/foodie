@@ -40,11 +40,16 @@ router.post(
             if (userFollowers && userFollowers.followers) {
                 newsFeeds = userFollowers.followers.map(follower => ({
                     follower: Types.ObjectId(follower._id),
-                    post: Types.ObjectId(post._id)
+                    post: Types.ObjectId(post._id),
+                    post_owner: req.user._id
                 }));
             }
             // append own post on newsfeed
-            newsFeeds = newsFeeds.concat({ follower: req.user._id, post: Types.ObjectId(post._id) });
+            newsFeeds = newsFeeds.concat({
+                follower: req.user._id,
+                post_owner: req.user._id,
+                post: Types.ObjectId(post._id)
+            });
 
             if (newsFeeds.length !== 0) {
                 await NewsFeed.insertMany(newsFeeds);
@@ -99,7 +104,7 @@ router.get(
                 .limit(limit);
 
             if (!posts || posts.length <= 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No post(s) found.' }));
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more posts.' }));
             }
 
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
@@ -248,6 +253,33 @@ router.delete(
         } catch (e) {
             console.log('CANT DELETE POST', e);
             res.sendStatus(500);
+        }
+    }
+);
+
+router.get(
+    '/v1/post/:post_id',
+    isAuthenticated,
+    validateObjectID('post_id'),
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+            const post = await Post.findById(post_id);
+            if (!post) {
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'Post not found.' }));
+            }
+            if (post.privacy === 'private' && post._author_id.toString() !== req.user._id.toString()) {
+                return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You\'re not authorized to view this' }))
+            }
+
+            await post.populate('author', 'fullname username profilePicture').execPopulate();
+
+            const isPostLiked = post.isPostLiked(req.user._id);
+            const result = { ...post.toObject(), isLiked: isPostLiked };
+            res.status(200).send(makeResponseJson(result));
+        } catch (e) {
+            console.log('CANT GET POST', e);
+            res.status(500).send(e);
         }
     }
 );

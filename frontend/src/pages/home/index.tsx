@@ -4,27 +4,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CreatePost from "~/components/main/CreatePost";
 import PostItem from "~/components/main/PostItem";
-import { clearNewsFeed, getNewsFeedStart } from "~/redux/action/feedActions";
+import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
+import { getNewsFeedStart } from "~/redux/action/feedActions";
 import { IRootReducer } from "~/types/types";
 
 const Home: React.FC = () => {
-    const { newsFeed, auth } = useSelector((state: IRootReducer) => ({
+    const { newsFeed, auth, error, isLoading } = useSelector((state: IRootReducer) => ({
         newsFeed: state.newsFeed,
-        auth: state.auth
+        auth: state.auth,
+        error: state.error.newsFeedError,
+        isLoading: state.loading.isLoadingFeed
     }));
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getNewsFeedStart({}));
+        if (newsFeed.items.length === 0) {
+            fetchNewsFeed();
+        }
 
         return () => {
-            dispatch(clearNewsFeed());
+            dispatch(setNewsFeedErrorMessage(''));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const fetchNewsFeed = () => {
+        if (!isLoading) {
+            dispatch(getNewsFeedStart({ offset: newsFeed.offset }));
+        }
+    };
+
     return (
-        <div className="container pt-20 flex items-start">
+        <div className="contain pt-20 flex items-start">
             <div className="w-1/4 rounded-md bg-white py-4 sticky top-20 mr-4 shadow-sm divide-y-2">
                 <ul>
                     <li className="py-2 cursor-pointer px-4 rounded-md hover:bg-indigo-100">
@@ -46,9 +57,19 @@ const Home: React.FC = () => {
             </div>
             <div className="w-2/4">
                 <CreatePost />
-                {newsFeed.map(post => (
+                {newsFeed.items.map(post => (
                     <PostItem key={post.id} post={post} />
                 ))}
+                {newsFeed.items.length !== 0 && !error && (
+                    <div className="flex justify-center py-6">
+                        <button onClick={fetchNewsFeed} disabled={isLoading}>Load More</button>
+                    </div>
+                )}
+                {(newsFeed.items.length !== 0 && error) && (
+                    <div className="flex justify-center py-6">
+                        <p className="text-gray-400 italic">{error}</p>
+                    </div>
+                )}
             </div>
         </div>
     );

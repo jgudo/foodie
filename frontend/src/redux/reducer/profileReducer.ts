@@ -3,6 +3,7 @@ import { IProfile } from "~/types/types";
 import { TProfileActionTypes } from "../action/profileActions";
 
 const initState: IProfile = {
+    _id: '',
     id: '',
     username: '',
     email: '',

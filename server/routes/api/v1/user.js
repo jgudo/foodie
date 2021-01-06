@@ -25,8 +25,7 @@ router.get(
                 {
                     $project: {
                         following: { $ifNull: ["$following", []] },
-                        followers: { $ifNull: ["$following", []] },
-                        followers: 1
+                        followers: { $ifNull: ["$followers", []] },
                     }
                 },
                 {
@@ -38,6 +37,8 @@ router.get(
                     }
                 },
             ]);
+
+            console.log(result)
 
             const { followingCount, followersCount, followers } = result[0] || {};
 

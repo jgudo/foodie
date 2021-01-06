@@ -3,19 +3,26 @@ export interface IRootReducer {
     auth: IUser;
     error: IError;
     loading: TLoading;
-    newsFeed: IPost[];
+    newsFeed: INewsFeed;
     profile: IProfile;
 }
 
 export interface IError {
     authError?: string;
     profileError?: string;
+    newsFeedError?: string;
 }
 
 export interface TLoading {
     isLoadingAuth: boolean;
     isLoadingCreatePost: boolean;
     isLoadingGetUser: boolean;
+    isLoadingFeed: boolean;
+}
+
+export interface INewsFeed {
+    items: IPost[];
+    offset: number;
 }
 
 
@@ -44,6 +51,7 @@ export interface IPost {
 }
 
 export interface IProfile {
+    _id: string;
     id: string;
     username: string;
     email: string;

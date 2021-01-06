@@ -1,3 +1,4 @@
-.container {
-    @apply m-auto;
+.contain {
+    width: 100%;
+    @apply px-6%;
 }

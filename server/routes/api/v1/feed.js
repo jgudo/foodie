@@ -1,8 +1,6 @@
-const { makeResponseJson } = require('../../../helpers/utils');
+const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const { isAuthenticated } = require('../../../middlewares/middlewares');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
-const Post = require('../../../schemas/PostSchema');
-const User = require('../../../schemas/UserSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -36,6 +34,10 @@ router.get(
                 const isPostLiked = feed.post.isPostLiked(req.user._id);
                 return { ...feed.post.toObject(), isLiked: isPostLiked };
             });
+
+            if (filteredFeed.length === 0) {
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more feed.' }));
+            }
 
             res.status(200).send(makeResponseJson(filteredFeed));
         } catch (e) {

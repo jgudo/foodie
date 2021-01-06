@@ -17,13 +17,20 @@ module.exports = {
       height: {
         '60px': '60px',
         '25rem': '25rem',
+      },
+      maxHeight: {
         '80vh': '80vh'
+      },
+      minHeight: {
+        '10rem': '10rem'
       },
       width: {
         '30rem': '30rem'
       },
       padding: {
-        '60px': '60px'
+        '60px': '60px',
+        '10%': '10%',
+        '6%': '6%'
       },
       zIndex: {
         '9999': '9999'

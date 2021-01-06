@@ -26,7 +26,9 @@ const Profile: React.FC<IProps> = (props) => {
     }));
 
     useEffect(() => {
-        dispatch(getUserStart(username));
+        if (profile.username !== username) {
+            dispatch(getUserStart(username));
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -48,7 +50,7 @@ const Profile: React.FC<IProps> = (props) => {
                             profile={profile}
                             isLoadingGetUser={isLoadingGetUser}
                         />
-                        <div className="relative flex items-start px-14 transform -translate-y-24">
+                        <div className="contain relative flex items-start transform -translate-y-20">
                             <div className="w-1/4 mr-4 sticky top-44">
                                 <Sidebar bio={profile.info.bio} />
                             </div>

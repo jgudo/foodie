@@ -17,6 +17,7 @@ const PostItem: React.FC<IProps> = ({ post }) => {
             {/* --- AVATAR AND OPTIONS */}
             <div className="flex justify-between items-center w-full">
                 <div className="flex">
+
                     <div className="rounded-full overflow-hidden relative w-10 h-10 mr-3 bg-gray-200">
                         <img
                             alt=""
@@ -41,12 +42,15 @@ const PostItem: React.FC<IProps> = ({ post }) => {
                 <p className="text-gray-700">{post.description}</p>
             </div>
             {/* --- IMAGE ----- */}
-            <div
-                className="w-full h-25rem !bg-cover !bg-no-repeat !bg-center"
-                style={{
-                    background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
-                }}
-            />
+            <Link to={`/post/${post.id}`}>
+                <div
+
+                    className="w-full h-25rem !bg-cover !bg-no-repeat !bg-center"
+                    style={{
+                        background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
+                    }}
+                />
+            </Link>
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-space-between my-2">
                 <div>

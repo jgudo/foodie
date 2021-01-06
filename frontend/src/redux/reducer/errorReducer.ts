@@ -1,10 +1,16 @@
-import { CLEAR_AUTH_ERR_MSG, SET_AUTH_ERR_MSG, SET_PROFILE_ERR_MSG } from "~/constants/actionType";
+import {
+    CLEAR_AUTH_ERR_MSG,
+    SET_AUTH_ERR_MSG,
+    SET_NEWSFEED_ERR_MSG,
+    SET_PROFILE_ERR_MSG
+} from "~/constants/actionType";
 import { IError } from "~/types/types";
 import { ErrorActionType } from "../action/errorActions";
 
 const initState: IError = {
     authError: '',
-    profileError: ''
+    profileError: '',
+    newsFeedError: ''
 }
 
 const errorReducer = (state = initState, action: ErrorActionType) => {
@@ -18,6 +24,11 @@ const errorReducer = (state = initState, action: ErrorActionType) => {
             return {
                 ...state,
                 profileError: action.payload
+            }
+        case SET_NEWSFEED_ERR_MSG:
+            return {
+                ...state,
+                newsFeedError: action.payload
             }
         case CLEAR_AUTH_ERR_MSG:
             return {

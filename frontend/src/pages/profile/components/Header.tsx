@@ -1,5 +1,6 @@
 import FollowButton from '~/components/main/FollowButton';
 import { IProfile, IUser } from "~/types/types";
+import Tabs from './Tabs';
 
 interface IProps {
     profile: IProfile,
@@ -17,7 +18,7 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                     src={profile.coverPhoto || `https://source.unsplash.com/1400x900/?nature`}
                 />
             </div>
-            <div className="w-full relative px-20 flex transform -translate-y-28">
+            <div className="contain w-full relative flex transform -translate-y-28">
                 {/* --- PROFILE PICTURE */}
                 <div className="relative w-1/3 h-60 overflow-hidden mr-2 flex justify-center">
                     <img
@@ -27,7 +28,7 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                     />
                 </div>
                 <div className="flex w-full  flex-col self-end">
-                    <div className="w-full flex justify-between mr-14 ml-2">
+                    <div className="w-full flex justify-between mr-14 ml-2 mb-2">
                         {/* ---- NAME AND USERNAME */}
                         <div>
                             <h2 className="text-3xl">{profile.fullname || `@${profile.username}`}</h2>
@@ -39,24 +40,11 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                         )}
                     </div>
                     {/* ---- PROFILE NAVS ----- */}
-                    <ul className="flex items-center space-x-4">
-                        <li className="text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-md cursor-pointer px-4 py-2">
-                            Info
-                        </li>
-                        <li className="text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-md cursor-pointer px-4 py-2">
-                            <span className="text-lg text-indigo-700">{profile.followersCount}</span>
-                            &nbsp;&nbsp;
-                            <span>Followers</span>
-                        </li>
-                        <li className="text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-md cursor-pointer px-4 py-2">
-                            <span className="text-lg text-indigo-700">{profile.followingCount}</span>
-                            &nbsp;&nbsp;
-                            <span>Following</span>
-                        </li>
-                        <li className="text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-md cursor-pointer px-4 py-2">
-                            Bookmarks
-                        </li>
-                    </ul>
+                    <Tabs
+                        username={profile.username}
+                        followersCount={profile.followersCount}
+                        followingCount={profile.followingCount}
+                    />
                 </div>
             </div>
         </div>

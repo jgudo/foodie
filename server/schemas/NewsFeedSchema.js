@@ -10,6 +10,11 @@ const NewsFeedSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         required: true,
         ref: 'Post'
+    },
+    post_owner: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 });
 

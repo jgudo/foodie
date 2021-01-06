@@ -80,6 +80,19 @@ export const getNewsFeed = async ({ offset = 0 }: IFetchParams) => {
     }
 }
 
+export const getSinglePost = async (postID: string) => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/post/${postID}`,
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
 export const createPost = async (post: ICreatePost) => {
     try {
         const req = await axios({
@@ -154,6 +167,32 @@ export const unfollowUser = async (id: string): Promise<any> => {
         const req = await axios({
             method: 'POST',
             url: `/unfollow/${id}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getFollowers = async (username: string, { offset = 0 }: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/${username}/followers`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getFollowing = async (username: string, { offset = 0 }: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/${username}/following`
         });
 
         return Promise.resolve(req.data.data)

@@ -7,6 +7,11 @@ import Preloader from "./components/shared/Preloader";
 import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
+import Post from "./pages/post";
+import Bookmarks from "./pages/profile/components/Bookmarks";
+import Followers from "./pages/profile/components/Followers";
+import Following from "./pages/profile/components/Following";
+import Info from "./pages/profile/components/Info";
 import Posts from "./pages/profile/components/Posts";
 import Register from "./pages/register";
 import { loginSuccess } from "./redux/action/authActions";
@@ -43,9 +48,14 @@ function App() {
           <main className="min-h-screen">
             <Switch>
               <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
+              <ProtectedRoute path={ROUTE.POST} component={Post} />
               <PublicRoute path={ROUTE.REGISTER} component={Register} />
               <PublicRoute path={ROUTE.LOGIN} component={Login} />
-              <ProfileRoute path={ROUTE.PROFILE} exact component={Posts} />
+              <ProfileRoute path={ROUTE.PROFILE_POSTS} exact component={Posts} />
+              <ProfileRoute path={ROUTE.PROFILE_FOLLOWERS} component={Followers} />
+              <ProfileRoute path={ROUTE.PROFILE_FOLLOWING} component={Following} />
+              <ProfileRoute path={ROUTE.PROFILE_INFO} component={Info} />
+              <ProfileRoute path={ROUTE.PROFILE_BOOKMARKS} component={Bookmarks} />
               <Route component={PageNotFound} />
             </Switch>
           </main>
