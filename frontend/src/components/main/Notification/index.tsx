@@ -48,6 +48,14 @@ const Notification: React.FC = () => {
             console.log(notification);
         });
 
+        socket.on('notifyComment', ({ notification, count }: { notification: INotification, count: number }) => {
+            console.log('STATE: ', notifications);
+            setUnreadCount(unreadCount + 1);
+            setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));
+
+            console.log(notification);
+        });
+
         getUnreadNotifications()
             .then(({ count }) => {
                 setUnreadCount(count);

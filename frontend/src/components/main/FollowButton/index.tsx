@@ -36,7 +36,7 @@ const FollowButton: React.FC<IProps> = (props) => {
     return (
         <div>
             <button
-                className={`${isFollowing && '!bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center`}
+                className={`${isFollowing && '!hover:bg-gray-200 !bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center`}
                 disabled={isLoading}
                 onClick={dispatchFollow}
             >

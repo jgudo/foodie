@@ -53,7 +53,8 @@ module.exports = {
     backgroundPosition: ['important'],
     margin: ['first'],
     padding: ['important'],
-    textColor: ['important'],
+    borderRadius: ['important'],
+    textColor: ['important', 'hover'],
     borderColor: ['important', 'focus'],
     extend: {
       cursor: ['disabled'],

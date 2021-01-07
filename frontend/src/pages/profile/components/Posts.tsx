@@ -17,7 +17,17 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
     }, []);
 
     const likeCallback = (post: IPost) => {
+        const updatedPosts = posts.map((item) => {
+            if (item.id === post.id) {
+                return {
+                    ...item,
+                    ...post
+                }
+            }
 
+            return item;
+        });
+        setPosts(updatedPosts);
     };
 
     const fetchPosts = async () => {

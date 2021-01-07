@@ -11,4 +11,21 @@
         @apply bg-gray-200;
         @apply text-gray-700;
     }
+
+    &:active {
+        @apply bg-gray-300;
+    }
+}
+
+.button--danger {
+    @extend button;
+    @apply bg-red-500;
+    
+    &:hover {
+        @apply bg-red-700;
+    }
+
+    &:active {
+        @apply bg-red-700;
+    }
 }

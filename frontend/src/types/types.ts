@@ -102,4 +102,6 @@ export interface ICreatePost {
 export interface IFetchParams {
     offset?: number;
     limit?: number;
+    skip?: number;
+    sort?: 'asc' | 'desc';
 }

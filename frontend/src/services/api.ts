@@ -138,14 +138,29 @@ export const getPosts = async (username: string, { offset = 0 }: IFetchParams): 
     }
 }
 
-export const getComments = async (postID: string, { offset = 0, limit }: IFetchParams): Promise<any> => {
+export const deletePost = async (postID: string) => {
+    try {
+        const req = await axios({
+            method: 'DELETE',
+            url: `/post/${postID}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getComments = async (postID: string, { offset = 0, limit, skip, sort = 'desc' }: IFetchParams): Promise<any> => {
     try {
         const req = await axios({
             method: 'GET',
             url: `/comment/${postID}`,
             params: {
                 offset,
-                limit
+                limit,
+                skip,
+                sort
             }
         });
 

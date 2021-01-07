@@ -13,15 +13,15 @@ const PostSchema = new mongoose.Schema({
         enum: ['private', 'public', 'friends']
     },
     photos: [String],
-    comments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
-    }],
     description: {
         type: String,
         default: ''
     },
     likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],

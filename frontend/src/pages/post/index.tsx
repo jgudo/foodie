@@ -16,7 +16,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) =>
     }, []);
 
     const likeCallback = (post: IPost) => {
-
+        setPost(post);
     }
 
     const fetchPost = async () => {

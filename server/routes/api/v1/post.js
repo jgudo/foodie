@@ -244,6 +244,7 @@ router.delete(
 
             if (req.user._id.toString() === post._author_id.toString()) {
                 await Post.findByIdAndDelete(post_id);
+                await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
                 await User.updateMany({
                     bookmarks: {
                         $in: [post_id]

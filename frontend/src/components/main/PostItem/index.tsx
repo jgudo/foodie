@@ -1,10 +1,15 @@
-import { CommentOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { CommentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IPost } from "~/types/types";
+import DeletePostModal from '~/components/main/Modals/DeletePostModal';
+import useModal from '~/hooks/useModal';
+import { IPost, IRootReducer } from "~/types/types";
 import Comments from '../Comments';
 import LikeButton from '../LikeButton';
+import UpdatePostModal from '../Modals/UpdatePostModal';
+import PostOptions from '../Options/PostOptions';
 
 dayjs.extend(relativeTime);
 
@@ -14,6 +19,10 @@ interface IProps {
 }
 
 const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
+    const userID = useSelector((state: IRootReducer) => state.auth.id);
+    const deleteModal = useModal();
+    const updateModal = useModal();
+
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
             {/* --- AVATAR AND OPTIONS */}
@@ -35,9 +44,9 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
                         <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
                     </div>
                 </div>
-                <div className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200">
-                    <EllipsisOutlined style={{ fontSize: '20px' }} />
-                </div>
+                {userID === post.author.id && (
+                    <PostOptions openDeleteModal={deleteModal.openModal} openUpdateModal={updateModal.openModal} />
+                )}
             </div>
             {/* --- DESCRIPTION */}
             <div className="mb-3 mt-2">
@@ -81,6 +90,17 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
                     </span>
             </div>
             <Comments postID={post.id} />
+            <DeletePostModal
+                isOpen={deleteModal.isOpen}
+                openModal={deleteModal.openModal}
+                closeModal={deleteModal.closeModal}
+                postID={post.id}
+            />
+            <UpdatePostModal
+                isOpen={updateModal.isOpen}
+                openModal={updateModal.openModal}
+                closeModal={updateModal.closeModal}
+            />
         </div>
     );
 };
