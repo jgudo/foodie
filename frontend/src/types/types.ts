@@ -27,8 +27,8 @@ export interface INewsFeed {
 
 
 export interface IUser {
-    id: string | null;
-    username: string | null;
+    id: string;
+    username: string;
     fullname?: string;
     profilePicture?: string;
 }
@@ -46,7 +46,7 @@ export interface IPost {
     isBookmarked: boolean;
     isLiked: boolean;
     createdAt: Date;
-    updatedAt?: Date;
+    updatedAt: Date;
 }
 
 export interface IComment {

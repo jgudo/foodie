@@ -29,7 +29,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                     <div className="max-h-80vh overflow-y-scroll">
                         {notifications.map((notif) => (
                             <div
-                                className={`${notif.unread ? 'bg-indigo-100 hover:bg-indigo-200' : 'bg-white'} p-4 hover:bg-gray-100 hover:opacity-95`}
+                                className={`${notif.unread ? 'bg-indigo-100 hover:bg-indigo-200' : 'bg-white'} p-4 hover:bg-gray-100 hover:opacity-95 divide-y divide-y-2 divide-gray-100`}
                                 key={notif.id}
                                 onClick={() => handleNotificationClick(notif.link, notif.id)}
                             >

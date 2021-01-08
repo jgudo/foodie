@@ -11,7 +11,7 @@ module.exports = function (app, server) {
     app.set('io', io);
 
     io.on("connection", socket => {
-        console.log('HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY Client connected.');
+        console.log('Client connected.');
 
         socket.on("userConnect", (id) => {
             User

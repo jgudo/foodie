@@ -16,9 +16,11 @@ dayjs.extend(relativeTime);
 interface IProps {
     post: IPost,
     likeCallback: (post: IPost) => void;
+    updateSuccessCallback: (post: IPost) => void;
+    deleteSuccessCallback: (postID: string) => void;
 }
 
-const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
+const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback, deleteSuccessCallback }) => {
     const userID = useSelector((state: IRootReducer) => state.auth.id);
     const deleteModal = useModal();
     const updateModal = useModal();
@@ -89,17 +91,20 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback }) => {
                     <CommentOutlined />&nbsp;Comment
                     </span>
             </div>
-            <Comments postID={post.id} />
+            <Comments postID={post.id} authorID={post.author.id} />
             <DeletePostModal
                 isOpen={deleteModal.isOpen}
                 openModal={deleteModal.openModal}
                 closeModal={deleteModal.closeModal}
                 postID={post.id}
+                deleteSuccessCallback={deleteSuccessCallback}
             />
             <UpdatePostModal
                 isOpen={updateModal.isOpen}
                 openModal={updateModal.openModal}
                 closeModal={updateModal.closeModal}
+                post={post}
+                updateSuccessCallback={updateSuccessCallback}
             />
         </div>
     );

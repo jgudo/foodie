@@ -26,6 +26,7 @@ const PostSchema = new mongoose.Schema({
         ref: 'User'
     }],
     createdAt: Date,
+    updatedAt: Date,
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
 
 PostSchema.virtual('author', {

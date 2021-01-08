@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import CreatePost from "~/components/main/CreatePost";
 import PostItem from "~/components/main/PostItem";
 import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
-import { getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
+import { clearNewsFeed, deleteFeedPost, getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
 import { IPost, IRootReducer } from "~/types/types";
 
 const Home: React.FC = () => {
@@ -23,6 +23,7 @@ const Home: React.FC = () => {
         }
 
         return () => {
+            dispatch(clearNewsFeed());
             dispatch(setNewsFeedErrorMessage(''));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,6 +37,14 @@ const Home: React.FC = () => {
 
     const likeCallback = (post: IPost) => {
         dispatch(updateFeedPost(post));
+    }
+
+    const updateSuccessCallback = (post: IPost) => {
+        dispatch(updateFeedPost(post));
+    }
+
+    const deleteSuccessCallback = (postID: string) => {
+        dispatch(deleteFeedPost(postID));
     }
 
     return (
@@ -61,8 +70,14 @@ const Home: React.FC = () => {
             </div>
             <div className="w-2/4">
                 <CreatePost />
-                {newsFeed.items.map(post => (
-                    <PostItem key={post.id} post={post} likeCallback={likeCallback} />
+                {newsFeed.items.map((post: IPost) => (
+                    <PostItem
+                        key={post.id}
+                        post={post}
+                        likeCallback={likeCallback}
+                        updateSuccessCallback={updateSuccessCallback}
+                        deleteSuccessCallback={deleteSuccessCallback}
+                    />
                 ))}
                 {newsFeed.items.length !== 0 && !error && (
                     <div className="flex justify-center py-6">

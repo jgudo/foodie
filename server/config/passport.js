@@ -55,24 +55,6 @@ module.exports = function (passport) {
             .catch((e) => {
                 return done(err);
             })
-        // try {
-        //     const user = await User.findOne({ email });
-
-        //     if (user) {
-        //         return done(null, false, { error: 'Email already has been already used by other user.' });
-        //     } else {
-        //         const newUser = new User({ email, password, username: req.body.username });
-
-        //         newUser.save(function (err) {
-        //             if (err) {
-        //                 return done(err);
-        //             }
-        //             return done(null, newUser);
-        //         });
-        //     }
-        // } catch (err) {
-        //     return done(err);
-        // }
     })
     );
 

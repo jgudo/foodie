@@ -25,7 +25,8 @@ module.exports = {
         '10rem': '10rem'
       },
       width: {
-        '30rem': '30rem'
+        '30rem': '30rem',
+        '40rem': '40rem'
       },
       padding: {
         '60px': '60px',

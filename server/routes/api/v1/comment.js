@@ -139,8 +139,14 @@ router.delete(
             const comment = await Comment.findById(comment_id);
             if (!comment) return res.sendStatus(404);
 
+            // FIND THE POST TO GET AUTHOR ID
+            const post = await Post.findById(comment._post_id);
+            const postAuthorID = post._author_id.toString();
+            const commentAuthorID = comment._author_id.toString();
+            const userID = req.user._id.toString();
+
             // IF POST OWNER OR COMMENTOR - DELETE COMMENT
-            if (req.user._id.toString() === comment._author_id.toString()) {
+            if (userID === commentAuthorID || userID === postAuthorID) {
                 await Comment.findByIdAndDelete(comment_id);
                 await Post.findOneAndUpdate({
                     comments: {

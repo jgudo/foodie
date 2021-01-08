@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICreatePost, IFetchParams, IRegister } from '~/types/types';
+import { ICreatePost, IFetchParams, IPost, IRegister } from '~/types/types';
 
 const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
@@ -151,6 +151,20 @@ export const deletePost = async (postID: string) => {
     }
 }
 
+export const updatePost = async (postID: string, updates: Partial<IPost>) => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/post/${postID}`,
+            data: updates
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
 export const getComments = async (postID: string, { offset = 0, limit, skip, sort = 'desc' }: IFetchParams): Promise<any> => {
     try {
         const req = await axios({
@@ -165,6 +179,19 @@ export const getComments = async (postID: string, { offset = 0, limit, skip, sor
         });
 
         return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const deleteComment = async (commentID: string): Promise<any> => {
+    try {
+        await axios({
+            method: 'DELETE',
+            url: `/comment/${commentID}`,
+        });
+
+        return Promise.resolve();
     } catch (e) {
         return Promise.reject(e.response.data);
     }

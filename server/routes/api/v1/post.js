@@ -28,12 +28,6 @@ router.post(
 
             await post.save();
             await post.populate('author', 'profilePicture username fullname').execPopulate();
-            await User
-                .findByIdAndUpdate(req.user._id, {
-                    $push: {
-                        posts: post._id
-                    }
-                });
             const userFollowers = await Follow.findOne({ _user_id: req.user._id });
             let newsFeeds = [];
 
@@ -153,13 +147,11 @@ router.post(
             }
 
             const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
-            const countComments = await Comment.find({ _post_id: Types.ObjectId(post_id) });
+            await fetchedPost.populate('likesCount commentsCount').execPopulate();
             await fetchedPost.populate('author', 'fullname username profilePicture').execPopulate();
             const result = {
                 ...fetchedPost.toObject(),
                 isLiked: !isPostLiked,
-                likesCount: fetchedPost.likes.length,
-                commentsCount: countComments.length
             };
 
             if (!isPostLiked && result.author.id !== req.user._id.toString()) {
@@ -206,7 +198,7 @@ router.patch(
 
             if (!description && !privacy) return res.sendStatus(400);
 
-            if (description) obj.description = description;
+            if (description) obj.description = description.trim();
             if (privacy && (privacy === 'public' || privacy === 'private')) obj.privacy = privacy;
 
             const post = await Post.findById(post_id);
@@ -245,6 +237,7 @@ router.delete(
             if (req.user._id.toString() === post._author_id.toString()) {
                 await Post.findByIdAndDelete(post_id);
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
+                await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) })
                 await User.updateMany({
                     bookmarks: {
                         $in: [post_id]
@@ -280,7 +273,7 @@ router.get(
                 return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You\'re not authorized to view this' }))
             }
 
-            await post.populate('author', 'fullname username profilePicture').execPopulate();
+            await post.populate('author likesCount commentsCount', 'fullname username profilePicture').execPopulate();
 
             const isPostLiked = post.isPostLiked(req.user._id);
             const result = { ...post.toObject(), isLiked: isPostLiked };

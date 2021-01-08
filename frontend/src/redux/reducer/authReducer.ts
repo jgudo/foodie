@@ -3,8 +3,8 @@ import { TAuthActionType } from '~/redux/action/authActions';
 import { IUser } from '~/types/types';
 
 const initState: IUser = {
-    id: null,
-    username: null,
+    id: '',
+    username: '',
     fullname: '',
     profilePicture: ''
 }

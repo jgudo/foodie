@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Slide, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import * as ROUTE from "~/constants/routes";
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
@@ -44,6 +46,13 @@ function App() {
   ) : (
       <BrowserRouter>
         <div className="App">
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            transition={Slide}
+            draggable={false}
+            bodyStyle={{ paddingLeft: '15px' }}
+          />
           <NavBar />
           <main className="min-h-screen">
             <Switch>

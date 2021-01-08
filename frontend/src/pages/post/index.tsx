@@ -4,7 +4,7 @@ import PostItem from '~/components/main/PostItem';
 import { getSinglePost } from '~/services/api';
 import { IPost } from '~/types/types';
 
-const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) => {
+const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, match }) => {
     const [post, setPost] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -17,6 +17,14 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) =>
 
     const likeCallback = (post: IPost) => {
         setPost(post);
+    }
+
+    const updateSuccessCallback = (post: IPost) => {
+        setPost(post);
+    }
+
+    const deleteSuccessCallback = () => {
+        history.push('/');
     }
 
     const fetchPost = async () => {
@@ -43,7 +51,12 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ match }) =>
             )}
             {(!isLoading && !error && post) && (
                 <div className="pt-20 w-2/4 m-auto">
-                    <PostItem post={post} likeCallback={likeCallback} />
+                    <PostItem
+                        post={post}
+                        likeCallback={likeCallback}
+                        updateSuccessCallback={updateSuccessCallback}
+                        deleteSuccessCallback={deleteSuccessCallback}
+                    />
                 </div>
             )}
             {(!isLoading && error) && (

@@ -42,7 +42,7 @@ router.get(
             res.status(200).send(makeResponseJson(filteredFeed));
         } catch (e) {
             console.log('CANT GET FEED', e);
-            res.sendStatus(500);
+            res.status(500).send(e);
         }
     }
 );

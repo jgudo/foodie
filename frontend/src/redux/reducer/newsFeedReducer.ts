@@ -1,4 +1,4 @@
-import { CLEAR_FEED, CREATE_POST_SUCCESS, GET_FEED_SUCCESS, UPDATE_FEED_POST } from "~/constants/actionType";
+import { CLEAR_FEED, CREATE_POST_SUCCESS, DELETE_FEED_POST, GET_FEED_SUCCESS, UPDATE_FEED_POST } from "~/constants/actionType";
 import { INewsFeed, IPost } from "~/types/types";
 import { TNewsFeedActionType } from "../action/feedActions";
 
@@ -11,7 +11,7 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
     switch (action.type) {
         case GET_FEED_SUCCESS:
             return {
-                items: [...action.payload, ...state.items],
+                items: [...state.items, ...action.payload],
                 offset: state.offset + 1
             };
         case CREATE_POST_SUCCESS:
@@ -29,6 +29,16 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
                         return action.payload;
                     }
                     return post;
+                })
+            }
+        case DELETE_FEED_POST:
+            return {
+                ...state,
+                // eslint-disable-next-line array-callback-return
+                items: state.items.filter((post: IPost) => {
+                    if (post.id !== action.payload) {
+                        return post;
+                    }
                 })
             }
         default:
