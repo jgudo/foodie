@@ -213,6 +213,22 @@ export const commentOnPost = async (postID: string, body: string): Promise<any> 
     }
 }
 
+export const updateComment = async (postID: string, body: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/comment/${postID}`,
+            data: {
+                body
+            }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
 export const getNotifications = async (): Promise<any> => {
     try {
         const req = await axios({

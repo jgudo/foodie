@@ -1,23 +1,37 @@
 import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { Dispatch, RefObject, SetStateAction, useState } from 'react';
+import { IComment } from '~/types/types';
 
 interface IProps {
     isOwnComment: boolean;
-    setCommentToDelete: (id: string) => void;
-    commentID: string;
     openDeleteModal: () => void;
+    setIsUpdating: Dispatch<SetStateAction<boolean>>;
+    setCommentBody: Dispatch<SetStateAction<string>>;
+    setTargetID: Dispatch<SetStateAction<string>>;
+    commentInputRef: RefObject<HTMLInputElement>;
+    comment: IComment;
 }
 
-const CommentOptions: React.FC<IProps> = ({ openDeleteModal, setCommentToDelete, isOwnComment, commentID }) => {
-    const [isOpen, setIsOpen] = useState(false);
+// isOwnComment={user.id === comment.author.id}
+//                                         commentID={comment.id}
 
+const CommentOptions: React.FC<IProps> = (props) => {
+    const [isOpen, setIsOpen] = useState(false);
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     }
 
     const onClickDelete = () => {
-        setCommentToDelete(commentID);
-        openDeleteModal();
+        props.setTargetID(props.comment.id);
+        props.openDeleteModal();
+    }
+
+    const onClickEdit = () => {
+        if (props.commentInputRef.current) props.commentInputRef.current.focus();
+        setIsOpen(false);
+        props.setCommentBody(props.comment.body);
+        props.setIsUpdating(true);
+        props.setTargetID(props.comment.id);
     }
 
     return (
@@ -30,9 +44,10 @@ const CommentOptions: React.FC<IProps> = ({ openDeleteModal, setCommentToDelete,
             </div>
             {isOpen && (
                 <div className="post-option-wrapper w-56 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
-                    {isOwnComment && (
+                    {props.isOwnComment && (
                         <h4
                             className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer"
+                            onClick={onClickEdit}
                         >
                             <EditOutlined className="mr-4" />
                             Edit Comment

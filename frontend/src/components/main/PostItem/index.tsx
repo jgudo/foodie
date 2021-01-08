@@ -8,7 +8,7 @@ import useModal from '~/hooks/useModal';
 import { IPost, IRootReducer } from "~/types/types";
 import Comments from '../Comments';
 import LikeButton from '../LikeButton';
-import UpdatePostModal from '../Modals/UpdatePostModal';
+import EditPostModal from '../Modals/EditPostModal';
 import PostOptions from '../Options/PostOptions';
 
 dayjs.extend(relativeTime);
@@ -99,7 +99,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 postID={post.id}
                 deleteSuccessCallback={deleteSuccessCallback}
             />
-            <UpdatePostModal
+            <EditPostModal
                 isOpen={updateModal.isOpen}
                 openModal={updateModal.openModal}
                 closeModal={updateModal.closeModal}

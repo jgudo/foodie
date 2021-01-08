@@ -16,7 +16,7 @@ interface IProps {
 
 Modal.setAppElement('#root');
 
-const UpdatePostModal: React.FC<IProps> = (props) => {
+const EditPostModal: React.FC<IProps> = (props) => {
     const [description, setDescription] = useState(props.post.description || '');
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState('');
@@ -57,7 +57,7 @@ const UpdatePostModal: React.FC<IProps> = (props) => {
                 <CloseOutlined className="p-2 absolute right-2 top-2 outline-none text-gray-500" onClick={props.closeModal} />
                 {error && <span className="p-4 bg-red-100 text-red-500 block w-full">{error}</span>}
                 <div className="p-4 px-8 w-40rem">
-                    <h1>Update Post</h1>
+                    <h1>Edit Post</h1>
                     <br />
                     <label htmlFor="update-post">Description</label>
                     <textarea
@@ -90,4 +90,4 @@ const UpdatePostModal: React.FC<IProps> = (props) => {
     );
 };
 
-export default UpdatePostModal;
+export default EditPostModal;

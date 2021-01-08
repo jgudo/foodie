@@ -1,6 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import { deleteComment } from '~/services/api';
 
 interface IProps {
@@ -25,6 +26,10 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
 
             props.closeModal();
             props.deleteSuccessCallback(props.commentID);
+            toast.dark('Comment successfully deleted.', {
+                progressStyle: { backgroundColor: '#4caf50' },
+                autoClose: 2000
+            });
             setIsDeleting(false);
         } catch (e) {
             setIsDeleting(false);

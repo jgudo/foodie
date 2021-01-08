@@ -181,7 +181,7 @@ router.patch(
             if (!body) return res.sendStatus(400);
 
             const comment = await Comment.findById(comment_id);
-            if (!comment) return res.sendStatus(404);
+            if (!comment) return res.status(404).send(makeErrorJson());
 
             if (req.user._id.toString() === comment._author_id.toString()) {
                 const updatedComment = await Comment.findByIdAndUpdate(comment_id, {
