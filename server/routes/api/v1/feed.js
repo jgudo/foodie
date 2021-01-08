@@ -32,7 +32,9 @@ router.get(
 
             const filteredFeed = feeds.map((feed) => {
                 const isPostLiked = feed.post.isPostLiked(req.user._id);
-                return { ...feed.post.toObject(), isLiked: isPostLiked };
+                const isBookmarked = req.user.isBookmarked(feed.post.id);
+
+                return { ...feed.post.toObject(), isLiked: isPostLiked, isBookmarked };
             });
 
             if (filteredFeed.length === 0) {

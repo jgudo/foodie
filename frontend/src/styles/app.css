@@ -4,5 +4,7 @@
 @import './elements/button.css';
 @import './elements/input.css';
 
+@import './utils/utils.css';
+
 @import './components/container.css';
 @import './components/modal.css';

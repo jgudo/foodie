@@ -1,4 +1,4 @@
-import { TeamOutlined } from "@ant-design/icons";
+import { StarOutlined, TeamOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -49,9 +49,9 @@ const Home: React.FC = () => {
 
     return (
         <div className="contain pt-20 flex items-start">
-            <div className="w-1/4 rounded-md bg-white py-4 sticky top-20 mr-4 shadow-sm divide-y-2">
+            <div className="w-1/4 rounded-md bg-white sticky top-20 mr-4 shadow-sm divide-y-2">
                 <ul>
-                    <li className="py-2 cursor-pointer px-4 rounded-md hover:bg-indigo-100">
+                    <li className="px-4 py-3 cursor-pointer rounded-md hover:bg-indigo-100">
                         <Link to={`/${auth.username}`} className="flex items-center text-black">
                             <div
                                 className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-4"
@@ -60,10 +60,22 @@ const Home: React.FC = () => {
                             <h6>My Profile</h6>
                         </Link>
                     </li>
-                    <li className="py-2 cursor-pointer px-4 mt-4 rounded-md hover:bg-indigo-100">
-                        <Link to={`/${auth.username}/friends`} className="flex items-center text-black">
+                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
+                        <Link to={`/${auth.username}/following`} className="flex items-center text-black">
                             <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6>Friends</h6>
+                            <h6>Following</h6>
+                        </Link>
+                    </li>
+                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
+                        <Link to={`/${auth.username}/followers`} className="flex items-center text-black">
+                            <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
+                            <h6>Followers</h6>
+                        </Link>
+                    </li>
+                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
+                        <Link to={`/${auth.username}/bookmarks`} className="flex items-center text-black">
+                            <StarOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
+                            <h6>Bookmarks</h6>
                         </Link>
                     </li>
                 </ul>

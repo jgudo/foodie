@@ -33,7 +33,7 @@ const Followers: React.FC<RouteComponentProps<{ username: string; }>> = ({ match
     };
 
     return (
-        <div className="w-2/4">
+        <div className="w-full">
             {!isLoading && followers.length === 0 ? (
                 <div className="w-full min-h-10rem flex items-center justify-center">
                     <h6 className="text-gray-400 italic">{username} has no followers.</h6>

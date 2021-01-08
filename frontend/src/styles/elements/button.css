@@ -7,13 +7,18 @@
     @apply bg-gray-100;
     @apply text-gray-600;
     @apply rounded-md;
+
     &:hover {
-        @apply bg-gray-200;
+        @apply bg-gray-300;
         @apply text-gray-700;
     }
 
     &:active {
         @apply bg-gray-300;
+    }
+
+    &:focus {
+        @apply bg-gray-100;
     }
 }
 
@@ -25,7 +30,8 @@
         @apply bg-red-700;
     }
 
-    &:active {
+    &:active,
+    &:focus {
         @apply bg-red-700;
     }
 }

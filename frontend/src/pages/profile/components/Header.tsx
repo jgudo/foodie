@@ -1,3 +1,5 @@
+import { EditOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 import FollowButton from '~/components/main/FollowButton';
 import { IProfile, IUser } from "~/types/types";
 import Tabs from './Tabs';
@@ -9,6 +11,8 @@ interface IProps {
 }
 
 const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
+    const history = useHistory();
+
     return (
         <div>
             <div className="w-full h-80 bg-gray-200 relative">
@@ -35,13 +39,22 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                             <span className="text-indigo-700">{profile.fullname && `@${profile.username}`}</span>
                         </div>
                         {/* ---- FOLLOW/UNFOLLOW BUTTON */}
-                        {profile.username !== auth.username && (
+                        {profile.username !== auth.username ? (
                             <FollowButton isFollowing={profile.isFollowing} userID={profile.id} />
-                        )}
+                        ) : (
+                                <button
+                                    className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-0 flex items-center justify-center"
+                                    onClick={() => history.push(`/${profile.username}/edit`)}
+                                >
+                                    <EditOutlined className="text-xl mr-4" />
+                                    Edit Profile
+                                </button>
+                            )}
                     </div>
                     {/* ---- PROFILE NAVS ----- */}
                     <Tabs
                         username={profile.username}
+                        isOwnProfile={profile.id === auth.id}
                         followersCount={profile.followersCount}
                         followingCount={profile.followingCount}
                     />

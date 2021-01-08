@@ -6,7 +6,7 @@ const BookmarkSchema = new mongoose.Schema({
         ref: 'Post',
         required: true
     },
-    _owner_id: {
+    _author_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -17,5 +17,12 @@ const BookmarkSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
+
+BookmarkSchema.virtual('post', {
+    ref: 'Post',
+    localField: '_post_id',
+    foreignField: '_id',
+    justOne: true
+});
 
 module.exports = mongoose.model('Bookmark', BookmarkSchema);

@@ -5,9 +5,10 @@ interface IProps {
     followersCount: number;
     followingCount: number;
     username: string;
+    isOwnProfile: boolean;
 }
 
-const Tabs: React.FC<IProps> = ({ username, followersCount, followingCount }) => {
+const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, followingCount }) => {
     const { pathname } = useLocation();
     const [activeNav, setActiveNav] = useState('');
 
@@ -16,10 +17,20 @@ const Tabs: React.FC<IProps> = ({ username, followersCount, followingCount }) =>
         const currentNav = splitPath[splitPath.length - 1];
 
         setActiveNav(currentNav);
+
+        console.log(pathname)
     }, [pathname]);
 
     return (
         <ul className="flex items-center space-x-4">
+            <li>
+                <Link
+                    to={`/${username}/`}
+                    className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'posts' && 'border-indigo-700  border-b-4'}`}
+                >
+                    Posts
+                </Link>
+            </li>
             <li>
                 <Link
                     to={`/${username}/info`}
@@ -48,14 +59,16 @@ const Tabs: React.FC<IProps> = ({ username, followersCount, followingCount }) =>
                             <span>Following</span>
                 </Link>
             </li>
-            <li>
-                <Link
-                    to={`/${username}/bookmarks`}
-                    className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'bookmarks' && 'border-indigo-700 border-b-4'}`}
-                >
-                    Bookmarks
+            {isOwnProfile && (
+                <li>
+                    <Link
+                        to={`/${username}/bookmarks`}
+                        className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'bookmarks' && 'border-indigo-700 border-b-4'}`}
+                    >
+                        Bookmarks
                 </Link>
-            </li>
+                </li>
+            )}
         </ul>
     );
 };

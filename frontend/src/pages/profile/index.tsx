@@ -50,11 +50,13 @@ const Profile: React.FC<IProps> = (props) => {
                             profile={profile}
                             isLoadingGetUser={isLoadingGetUser}
                         />
-                        <div className="contain relative flex items-start transform -translate-y-20">
+                        <div className="contain relative flex min-h-10rem items-start transform -translate-y-20">
                             <div className="w-1/4 mr-4 sticky top-44">
                                 <Sidebar bio={profile.info.bio} />
                             </div>
-                            {props.children}
+                            <div className="w-2/4">
+                                {props.children}
+                            </div>
                         </div>
                     </div>
                 )}

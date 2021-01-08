@@ -345,3 +345,29 @@ export const markAllAsUnreadNotifications = async (): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const getBookmarks = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/bookmarks`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const bookmarkPost = async (postID: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/bookmark/post/${postID}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

@@ -72,7 +72,7 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
     };
 
     return (
-        <div className="w-2/4">
+        <div className="w-full">
             {!isLoading && posts.length === 0 && error && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
                     <h6 className="text-gray-400 italic">{error}</h6>

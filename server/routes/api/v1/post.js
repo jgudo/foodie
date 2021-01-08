@@ -8,6 +8,7 @@ const Follow = require('../../../schemas/FollowSchema');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
 const Notification = require('../../../schemas/NotificationSchema');
 const Comment = require('../../../schemas/CommentSchema');
+const Bookmark = require('../../../schemas/BookmarkSchema');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -237,7 +238,8 @@ router.delete(
             if (req.user._id.toString() === post._author_id.toString()) {
                 await Post.findByIdAndDelete(post_id);
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
-                await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) })
+                await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) });
+                await Bookmark.deleteMany({ _post_id: Types.ObjectId(post_id) });
                 await User.updateMany({
                     bookmarks: {
                         $in: [post_id]
@@ -275,8 +277,9 @@ router.get(
 
             await post.populate('author likesCount commentsCount', 'fullname username profilePicture').execPopulate();
 
+            const isBookmarked = req.user.isBookmarked(post_id);
             const isPostLiked = post.isPostLiked(req.user._id);
-            const result = { ...post.toObject(), isLiked: isPostLiked };
+            const result = { ...post.toObject(), isLiked: isPostLiked, isBookmarked };
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET POST', e);

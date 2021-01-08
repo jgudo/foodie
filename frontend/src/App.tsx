@@ -11,6 +11,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Post from "./pages/post";
 import Bookmarks from "./pages/profile/components/Bookmarks";
+import EditInfo from "./pages/profile/components/EditInfo";
 import Followers from "./pages/profile/components/Followers";
 import Following from "./pages/profile/components/Following";
 import Info from "./pages/profile/components/Info";
@@ -64,6 +65,7 @@ function App() {
               <ProfileRoute path={ROUTE.PROFILE_FOLLOWERS} component={Followers} />
               <ProfileRoute path={ROUTE.PROFILE_FOLLOWING} component={Following} />
               <ProfileRoute path={ROUTE.PROFILE_INFO} component={Info} />
+              <ProfileRoute path={ROUTE.PROFILE_EDIT_INFO} component={EditInfo} />
               <ProfileRoute path={ROUTE.PROFILE_BOOKMARKS} component={Bookmarks} />
               <Route component={PageNotFound} />
             </Switch>

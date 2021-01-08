@@ -46,9 +46,12 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                         <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
                     </div>
                 </div>
-                {userID === post.author.id && (
-                    <PostOptions openDeleteModal={deleteModal.openModal} openUpdateModal={updateModal.openModal} />
-                )}
+                <PostOptions
+                    openDeleteModal={deleteModal.openModal}
+                    openUpdateModal={updateModal.openModal}
+                    post={post}
+                    isOwnPost={userID === post.author.id}
+                />
             </div>
             {/* --- DESCRIPTION */}
             <div className="mb-3 mt-2">
@@ -80,7 +83,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 </div>
                 <div>
                     {post.commentsCount > 0 && (
-                        <span>{post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}</span>
+                        <span className="text-gray-700">{post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}</span>
                     )}
                 </div>
             </div>

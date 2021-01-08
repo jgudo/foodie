@@ -71,10 +71,10 @@ app.use('/api', [
   authRouter,
   notificationRouter,
   postRouter,
+  bookmarkRouter,
   userRouter,
   commentRouter,
   followRouter,
-  bookmarkRouter,
 ]);
 app.use(csurf());
 

@@ -68,6 +68,7 @@ export interface IProfile {
     info: {
         bio: string;
         birthday: Date | null;
+        gender: string;
     },
     isEmailValidated: boolean;
     profilePicture: string | null;
@@ -86,6 +87,13 @@ export interface INotification {
     type: string;
     unread: boolean;
     link: string;
+}
+
+export interface IBookmark {
+    id: string;
+    isBookmarked: boolean;
+    post: IPost;
+    createdAt: Date;
 }
 
 export interface IRegister {

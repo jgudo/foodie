@@ -1,0 +1,7 @@
+.excerpt-text {
+    display: -webkit-box;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: number_of_lines_you_want;
+    -webkit-box-orient: vertical;
+}

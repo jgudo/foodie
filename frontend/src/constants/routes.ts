@@ -4,6 +4,7 @@ export const HOME = '/';
 export const POST = '/post/:post_id';
 export const PROFILE_POSTS = '/:username';
 export const PROFILE_INFO = '/:username/info';
+export const PROFILE_EDIT_INFO = '/:username/edit';
 export const PROFILE_FOLLOWERS = '/:username/followers';
 export const PROFILE_FOLLOWING = '/:username/following';
 export const PROFILE_BOOKMARKS = '/:username/bookmarks';

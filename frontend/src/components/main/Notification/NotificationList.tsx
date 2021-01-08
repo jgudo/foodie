@@ -26,7 +26,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                     <p className="text-gray-400 italic">No new notifications</p>
                 </div>
             ) : (
-                    <div className="max-h-80vh overflow-y-scroll">
+                    <div className="max-h-80vh overflow-y-scroll divide-y divide-gray-100">
                         {notifications.map((notif) => (
                             <div
                                 className={`${notif.unread ? 'bg-indigo-100 hover:bg-indigo-200' : 'bg-white'} p-4 hover:bg-gray-100 hover:opacity-95 divide-y divide-y-2 divide-gray-100`}
