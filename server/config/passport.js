@@ -53,7 +53,7 @@ module.exports = function (passport) {
                 }
             })
             .catch((e) => {
-                return done(err);
+                return done(e);
             })
     })
     );

@@ -1,5 +1,10 @@
-//@ts-check
-const { INVALID_INPUT, INCORRECT_CREDENTIALS, EMAIL_TAKEN } = require("../constants/error-types");
+const {
+    INVALID_INPUT,
+    INCORRECT_CREDENTIALS,
+    EMAIL_TAKEN,
+    DUPLICATE_FIELDS,
+    VALIDATION_ERROR
+} = require("../constants/error-types");
 
 const initStatus = {
     status_code: 404,
@@ -37,12 +42,12 @@ module.exports = {
      * 
      * @param {{type?: string, status_code: number, message: string}} param0 
      */
-    makeErrorJson: ({ type, status_code, message }) => {
+    makeErrorJson: ({ type, message, status_code }) => {
         switch (type) {
             case INVALID_INPUT:
                 return {
                     ...initStatus,
-                    status_code,
+                    status_code: 400,
                     error: {
                         type: INVALID_INPUT,
                         title: 'Invalid Input Provided',
@@ -53,7 +58,7 @@ module.exports = {
             case INCORRECT_CREDENTIALS:
                 return {
                     ...initStatus,
-                    status_code,
+                    status_code: 401,
                     error: {
                         type: INCORRECT_CREDENTIALS,
                         title: 'Incorrect Credentials',
@@ -64,7 +69,7 @@ module.exports = {
             case EMAIL_TAKEN:
                 return {
                     ...initStatus,
-                    status_code,
+                    status_code: 400,
                     error: {
                         type: EMAIL_TAKEN,
                         title: 'Email Taken',
@@ -72,9 +77,32 @@ module.exports = {
                     },
                     timestamp: new Date()
                 }
+            case DUPLICATE_FIELDS:
+                return {
+                    ...initStatus,
+                    status_code: 409,
+                    error: {
+                        type: DUPLICATE_FIELDS,
+                        title: 'Duplicate Fields',
+                        message
+                    },
+                    timestamp: new Date()
+                }
+            case VALIDATION_ERROR:
+                return {
+                    ...initStatus,
+                    status_code: 400,
+                    error: {
+                        type: VALIDATION_ERROR,
+                        title: 'Validation Error',
+                        message
+                    },
+                    timestamp: new Date()
+                }
             default:
                 return {
                     ...initStatus,
+                    status_code: initStatus.status_code || status_code,
                     error: {
                         type: 'REQUEST_ERROR',
                         title: 'Request Error',
@@ -83,5 +111,6 @@ module.exports = {
                     timestamp: new Date()
                 }
         }
-    }
+    },
+
 }

@@ -1,26 +1,25 @@
-const jwt = require('jsonwebtoken');
+const { makeErrorJson } = require('../helpers/utils');
 const { isValidObjectId } = require('mongoose');
+const { DUPLICATE_FIELDS, VALIDATION_ERROR } = require('../constants/error-types');
 
-const withAuth = function (req, res, next) {
-    const token = req.cookies.token;
-
-    if (!token) {
-        res
-            .status(401)
-            .send('Unauthorized');
+function handleDuplicateKeyError(err, res) {
+    const field = Object.keys(err.keyValue);
+    const code = 409;
+    const error = `An account with that ${field} already exists.`;
+    res.status(code).send(makeErrorJson({ type: DUPLICATE_FIELDS, message: error }));
+}
+//handle field formatting, empty fields, and mismatched passwords
+function handleValidationError(err, res) {
+    let errors = Object.values(err.errors).map(el => el.message);
+    let fields = Object.values(err.errors).map(el => el.path);
+    let code = 400;
+    if (errors.length > 1) {
+        const formattedErrors = errors.join('')
+        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, messages: formattedErrors }));
     } else {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
-            if (err) {
-                res
-                    .status(401)
-                    .send('Unauthorized');
-            } else {
-                req.email = decoded.email;
-                next();
-            }
-        });
+        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, messages: formattedErrors }));
     }
-};
+}
 
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -44,4 +43,17 @@ function validateObjectID(...ObjectIDs) {
     }
 }
 
-module.exports = { isAuthenticated, validateObjectID };
+function errorHandler(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    try {
+        if (err.name === 'ValidationError') return err = handleValidationError(err, res);
+        if (err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
+    } catch (err) {
+        res.status(500).send('An unknown error occurred.');
+    }
+}
+
+module.exports = { isAuthenticated, validateObjectID, errorHandler };

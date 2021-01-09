@@ -1,6 +1,7 @@
 import { MessageOutlined, SearchOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { LOGIN, REGISTER } from '~/constants/routes';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
@@ -12,12 +13,15 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
         isLoadingAuth: state.loading.isLoadingAuth,
         auth: state.auth
     }));
+    const { pathname } = useLocation();
 
     const onLogout = () => {
         dispatch(logoutStart());
     };
 
-    return (
+    const hideNavToPaths = [LOGIN, REGISTER];
+
+    return hideNavToPaths.includes(pathname) ? null : (
         <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full">
             <ul className="flex items-center">
                 {/* ---- LOGO -------- */}

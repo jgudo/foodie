@@ -13,7 +13,7 @@ router.post(
     (req, res, next) => {
         passport.authenticate('local-register', (err, user, info) => {
             if (err) {
-                return next();
+                return next(err);
             }
 
             if (user) { // if user has been successfully created
@@ -28,7 +28,7 @@ router.post(
             } else {
                 return res
                     .status(401)
-                    .send(makeErrorJson({ type: EMAIL_TAKEN, status_code: 401, message: info.error }));
+                    .send(makeErrorJson({ type: EMAIL_TAKEN, message: info.error }));
             }
         })(req, res, next);
     }
@@ -41,13 +41,13 @@ router.post(
     (req, res, next) => {
         passport.authenticate('local-login', (err, user, info) => {
             if (err) {
-                return next(err);
+                return next(new Error(err));
             }
 
             if (!user) {
                 return res
                     .status(401)
-                    .send(makeErrorJson({ type: INCORRECT_CREDENTIALS, status_code: 401, message: info.error }));
+                    .send(makeErrorJson({ type: INCORRECT_CREDENTIALS, message: info.error }));
             } else {
                 req.logIn(user, function (err) { // <-- Log user in
                     if (err) {

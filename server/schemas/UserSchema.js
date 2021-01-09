@@ -6,9 +6,10 @@ const omit = require('lodash.omit');
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: true,
         minlength: 12,
-        unique: true,
+        unique: [true, 'Email already taken.'],
+        required: [true, 'Email is required.'],
+        lowercase: true,
         validate: {
             validator:
                 (email) => {
@@ -24,8 +25,9 @@ const UserSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        unique: true,
-        required: true
+        unique: [true, 'Username already taken.'],
+        required: [true, 'Username is required.'],
+        lowercase: true
     },
     firstname: String,
     lastname: String,

@@ -1,6 +1,7 @@
 import { CommentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
@@ -22,8 +23,15 @@ interface IProps {
 
 const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback, deleteSuccessCallback }) => {
     const userID = useSelector((state: IRootReducer) => state.auth.id);
+    const [isCommentVisible, setCommentVisible] = useState(false);
     const deleteModal = useModal();
     const updateModal = useModal();
+
+    const handleToggleComment = () => {
+        if (!isCommentVisible) {
+            setCommentVisible(true);
+        }
+    }
 
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
@@ -94,7 +102,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                     <CommentOutlined />&nbsp;Comment
                     </span>
             </div>
-            <Comments postID={post.id} authorID={post.author.id} />
+            {isCommentVisible && <Comments postID={post.id} authorID={post.author.id} />}
             <DeletePostModal
                 isOpen={deleteModal.isOpen}
                 openModal={deleteModal.openModal}

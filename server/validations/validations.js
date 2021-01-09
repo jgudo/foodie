@@ -8,10 +8,10 @@ const email = Joi
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
     .required()
     .messages({
-        'string.base': `"email" should be a type of 'text'`,
-        'string.empty': `"email" cannot be an empty field`,
-        'string.min': `"email" should have a minimum length of {#limit}`,
-        'any.required': `"email" is a required field.`
+        'string.base': `Email should be a type of 'text'`,
+        'string.empty': `Email cannot be an empty field`,
+        'string.min': `Email should have a minimum length of {#limit}`,
+        'any.required': `Email is a required field.`
     });
 
 const password = Joi
@@ -20,19 +20,19 @@ const password = Joi
     .max(50)
     .required()
     .messages({
-        'string.base': `"password" should be a type of 'text'`,
-        'string.empty': `"password" cannot be an empty field`,
-        'string.min': `"password" should have a minimum length of {#limit}`,
-        'any.required': `"password" is a required field`
+        'string.base': `Password should be a type of 'text'`,
+        'string.empty': `Password cannot be an empty field`,
+        'string.min': `Password should have a minimum length of {#limit}`,
+        'any.required': `Password is a required field`
     });
 const username = Joi
     .string()
     .required()
     .messages({
-        'string.base': '"username" should be of type "text"',
-        'string.empty': `"username" cannot be an empty field`,
-        'string.min': `"username" should have a minimum length of {#limit}`,
-        'any.required': '"username" field is required'
+        'string.base': 'Username should be of type "text"',
+        'string.empty': `Username cannot be an empty field`,
+        'string.min': `Username should have a minimum length of {#limit}`,
+        'any.required': 'Username field is required'
     });
 
 module.exports = {
@@ -56,9 +56,9 @@ module.exports = {
                 .string()
                 .required()
                 .messages({
-                    'string.base': '"text" should be of type "string"',
-                    'string.empty': `"text" cannot be an empty field`,
-                    'any.required': '"text" field is required'
+                    'string.base': 'Comment body should be of type "string"',
+                    'string.empty': `Comment body cannot be an empty field`,
+                    'any.required': 'Comment body field is required'
                 })
         }),
         editProfileSchema: Joi.object().keys({

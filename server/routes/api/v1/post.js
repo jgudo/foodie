@@ -117,7 +117,7 @@ router.get(
             res.status(200).send(makeResponseJson(uPosts));
         } catch (e) {
             console.log(e);
-            res.status(400).send(e);
+            res.status(400).send(makeErrorJson());
         }
     }
 );
@@ -181,7 +181,7 @@ router.post(
             res.status(200).send(makeResponseJson({ post: result, state: isPostLiked }));
         } catch (e) {
             console.log(e);
-            res.sendStatus(400);
+            res.status(500).send(makeErrorJson());
         }
     }
 );
@@ -255,7 +255,7 @@ router.delete(
             }
         } catch (e) {
             console.log('CANT DELETE POST', e);
-            res.sendStatus(500);
+            res.status(500).send(makeErrorJson());
         }
     }
 );
@@ -283,7 +283,7 @@ router.get(
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET POST', e);
-            res.status(500).send(e);
+            res.status(500).send(makeErrorJson());
         }
     }
 );

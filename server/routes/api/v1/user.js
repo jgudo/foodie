@@ -63,7 +63,7 @@ router.get(
             res.status(200).send(makeResponseJson(toObjectUser));
         } catch (e) {
             console.log(e)
-            res.sendStatus(400);
+            res.status(500).send(makeErrorJson());
         }
     }
 )

@@ -343,7 +343,7 @@ export const getUnreadNotifications = async (): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e.response?.data || {});
     }
 }
 

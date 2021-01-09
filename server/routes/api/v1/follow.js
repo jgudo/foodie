@@ -84,7 +84,7 @@ router.post(
             res.status(200).send(makeResponseJson({ state: true }));
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
-            res.status(500).send(e);
+            res.status(500).send(makeErrorJson());
         }
     }
 );
@@ -134,7 +134,7 @@ router.post(
             });
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
-            res.status(500).send(e);
+            res.status(500).send(makeErrorJson());
         }
     }
 );
@@ -249,7 +249,7 @@ router.get(
             res.status(200).send(makeResponseJson(finalResult))
         } catch (e) {
             console.log('CANT GET FOLLOWERS', e);
-            res.sendStatus(500)
+            res.status(500).send(makeErrorJson());
         }
     });
 

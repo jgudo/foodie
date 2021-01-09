@@ -54,7 +54,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
         } catch (e) {
             console.log('CANT GET COMMENTS', e);
             setIsLoading(false);
-            setError(e.error.message);
+            setError(e.error?.message || 'Something went wrong.');
         }
     };
 
