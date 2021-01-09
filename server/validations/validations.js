@@ -64,8 +64,9 @@ module.exports = {
         editProfileSchema: Joi.object().keys({
             firstname: Joi.string(),
             lastname: Joi.string(),
-            bio: Joi.string()
-
+            bio: Joi.string(),
+            gender: Joi.string(),
+            birthday: Joi.date()
         })
     },
     validateBody: (schema) => {

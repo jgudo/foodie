@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICreatePost, IFetchParams, IPost, IRegister } from '~/types/types';
+import { ICreatePost, IFetchParams, IPost, IProfile, IRegister } from '~/types/types';
 
 const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
@@ -114,6 +114,20 @@ export const getUser = async (username: string) => {
         const req = await axios({
             method: 'GET',
             url: `/${username}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const updateUser = async (username: string, updates: Partial<IProfile>) => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/${username}/edit`,
+            data: updates
         });
 
         return Promise.resolve(req.data.data)

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import PostItem from '~/components/main/PostItem';
+import Loader from '~/components/shared/Loader';
 import { getSinglePost } from '~/services/api';
 import { IPost } from '~/types/types';
 
@@ -45,8 +46,8 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
     return (
         <>
             {(isLoading && !error) && (
-                <div className="flex justify-center items-center min-h-screen">
-                    <h4 className="text-xl">Loading...</h4>
+                <div className="flex min-h-screen items-center justify-center">
+                    <Loader />
                 </div>
             )}
             {(!isLoading && !error && post) && (

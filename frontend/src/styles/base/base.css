@@ -59,6 +59,7 @@
   input[type=text],
   input[type=email],
   input[type=password],
+  input[type=date],
   textarea {
     @apply
       appearance-none
@@ -110,6 +111,12 @@
   label {
     @apply text-gray-500;
     @apply text-sm;
+  }
+
+  select {
+    @apply border-gray-300;
+    @apply rounded-full;
+    @apply px-4 py-3;
   }
 }
 

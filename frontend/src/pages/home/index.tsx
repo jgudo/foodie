@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CreatePost from "~/components/main/CreatePost";
 import PostItem from "~/components/main/PostItem";
+import Loader from "~/components/shared/Loader";
 import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
 import { clearNewsFeed, deleteFeedPost, getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
 import { IPost, IRootReducer } from "~/types/types";
@@ -18,9 +19,7 @@ const Home: React.FC = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (newsFeed.items.length === 0) {
-            fetchNewsFeed();
-        }
+        dispatch(getNewsFeedStart({ offset: 0 }));
 
         return () => {
             dispatch(clearNewsFeed());
@@ -30,9 +29,7 @@ const Home: React.FC = () => {
     }, []);
 
     const fetchNewsFeed = () => {
-        if (!isLoading) {
-            dispatch(getNewsFeedStart({ offset: newsFeed.offset }));
-        }
+        dispatch(getNewsFeedStart({ offset: newsFeed.offset }));
     };
 
     const likeCallback = (post: IPost) => {
@@ -82,24 +79,33 @@ const Home: React.FC = () => {
             </div>
             <div className="w-2/4">
                 <CreatePost />
-                {newsFeed.items.map((post: IPost) => (
-                    <PostItem
-                        key={post.id}
-                        post={post}
-                        likeCallback={likeCallback}
-                        updateSuccessCallback={updateSuccessCallback}
-                        deleteSuccessCallback={deleteSuccessCallback}
-                    />
-                ))}
-                {newsFeed.items.length !== 0 && !error && (
-                    <div className="flex justify-center py-6">
-                        <button onClick={fetchNewsFeed} disabled={isLoading}>Load More</button>
+                {(isLoading && !error) && (
+                    <div className="flex w-full min-h-10-screen items-center justify-center">
+                        <Loader />
                     </div>
                 )}
-                {(newsFeed.items.length !== 0 && error) && (
-                    <div className="flex justify-center py-6">
-                        <p className="text-gray-400 italic">{error}</p>
-                    </div>
+                {(newsFeed.items.length !== 0) && (
+                    <>
+                        {newsFeed.items.map((post: IPost) => (
+                            <PostItem
+                                key={post.id}
+                                post={post}
+                                likeCallback={likeCallback}
+                                updateSuccessCallback={updateSuccessCallback}
+                                deleteSuccessCallback={deleteSuccessCallback}
+                            />
+                        ))}
+                        {newsFeed.items.length !== 0 && !error && (
+                            <div className="flex justify-center py-6">
+                                <button onClick={fetchNewsFeed} disabled={isLoading}>Load More</button>
+                            </div>
+                        )}
+                        {(newsFeed.items.length !== 0 && error) && (
+                            <div className="flex justify-center py-6">
+                                <p className="text-gray-400 italic">{error}</p>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import PostItem from '~/components/main/PostItem';
+import Loader from "~/components/shared/Loader";
 import { getPosts } from "~/services/api";
 import { IPost } from "~/types/types";
 
@@ -73,12 +74,17 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
 
     return (
         <div className="w-full">
+            {(isLoading && posts.length === 0) && (
+                <div className="flex min-h-10rem items-center justify-center">
+                    <Loader />
+                </div>
+            )}
             {!isLoading && posts.length === 0 && error && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
                     <h6 className="text-gray-400 italic">{error}</h6>
                 </div>
             )}
-            {(!isLoading && posts.length !== 0 && error !== null) && (
+            {(posts.length !== 0 && error !== null) && (
                 <div>
                     {posts.map(post => (
                         <PostItem

@@ -67,7 +67,7 @@ export interface IProfile {
     lastname: string;
     info: {
         bio: string;
-        birthday: Date | null;
+        birthday: string;
         gender: string;
     },
     isEmailValidated: boolean;

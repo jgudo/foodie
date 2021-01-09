@@ -35,7 +35,7 @@ module.exports = {
       },
       zIndex: {
         '9999': '9999'
-      }
+      },
     },
     default: {
       button: {

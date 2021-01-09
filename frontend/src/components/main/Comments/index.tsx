@@ -129,7 +129,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                             sort: 'asc'
                         })}
                     >
-                        {isLoading ? <Loader /> : 'Load more comments'}
+                        {isLoading ? <div className="ml-8 py-2"><Loader size="sm" /></div> : 'Load more comments'}
                     </span>
                 )}
                 {(comments.commentsCount !== 0) && (

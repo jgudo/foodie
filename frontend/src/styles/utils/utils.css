@@ -5,3 +5,48 @@
     -webkit-line-clamp: number_of_lines_you_want;
     -webkit-box-orient: vertical;
 }
+
+.animate-loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    animation-duration: .5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease;
+    animation-direction: alternate;
+    
+    &:nth-of-type(1) {
+        animation-delay: .2s;
+    }
+    
+    &:nth-of-type(2) {
+        animation-delay: .5s;
+    }
+    
+    &:nth-of-type(3) {
+        animation-delay: .8s;
+    }
+}
+
+.animate-loader-dark {
+    @apply bg-indigo-700;
+    animation-name: blink-dark; 
+    
+}
+
+.animate-loader-light {
+    @apply bg-white;
+    animation-name: blink-light; 
+}
+
+@keyframes blink-dark {
+  to {
+    background: #a29afc;
+  }
+}
+
+@keyframes blink-light {
+  to {
+    background: #e1e1e1;
+  }
+}

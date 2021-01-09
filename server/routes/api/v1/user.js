@@ -75,21 +75,27 @@ router.patch(
     async (req, res, next) => {
         try {
             const { username } = req.params;
-            const { firstname, lastname, bio } = req.body;
+            const { firstname, lastname, bio, birthday, gender } = req.body;
+            const update = { info: {} };
             if (username !== req.user.username) return res.sendStatus(401);
+
+            if (typeof firstname !== undefined) update.firstname = firstname;
+            if (typeof lastname !== undefined) update.lastname = lastname;
+            if (typeof bio !== undefined) update.info.bio = bio;
+            if (typeof birthday !== undefined) update.info.birthday = birthday;
+            if (typeof gender !== undefined) update.info.gender = gender;
 
             const newUser = await User
                 .findOneAndUpdate({ username }, {
-                    $set: {
-                        firstname, lastname, bio
-                    }
+                    $set: update
                 }, {
                     new: true
                 });
-            res.status(200).send(makeResponseJson(newUser));
+
+            res.status(200).send(makeResponseJson(newUser.toUserJSON()));
         } catch (e) {
             console.log(e);
-            res.status(401).send(e);
+            res.status(401).send(makeErrorJson());
         }
     }
 )

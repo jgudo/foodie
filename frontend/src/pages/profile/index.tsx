@@ -34,7 +34,7 @@ const Profile: React.FC<IProps> = (props) => {
 
     return (
         <Boundary>
-            {(error && !isLoadingGetUser) ? (
+            {(error && !isLoadingGetUser) && (
                 <div className="w-full flex flex-col justify-center items-center pt-20 h-screen">
                     <h1>Something went wrong :(</h1>
                     <p>Please try again.</p>
@@ -43,23 +43,24 @@ const Profile: React.FC<IProps> = (props) => {
                         Try again
                     </button>
                 </div>
-            ) : (
-                    <div className="pt-14">
-                        <Header
-                            auth={auth}
-                            profile={profile}
-                            isLoadingGetUser={isLoadingGetUser}
-                        />
-                        <div className="contain relative flex min-h-10rem items-start transform -translate-y-20">
-                            <div className="w-1/4 mr-4 sticky top-44">
-                                <Sidebar bio={profile.info.bio} />
-                            </div>
-                            <div className="w-2/4">
-                                {props.children}
-                            </div>
+            )}
+            {(!error && !isLoadingGetUser) && (
+                <div className="pt-14">
+                    <Header
+                        auth={auth}
+                        profile={profile}
+                        isLoadingGetUser={isLoadingGetUser}
+                    />
+                    <div className="contain relative flex min-h-10rem items-start transform -translate-y-20">
+                        <div className="w-1/4 mr-4 sticky top-44">
+                            <Sidebar bio={profile.info.bio} />
+                        </div>
+                        <div className="w-2/4">
+                            {props.children}
                         </div>
                     </div>
-                )}
+                </div>
+            )}
         </Boundary>
     );
 };

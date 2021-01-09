@@ -17,8 +17,6 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
         const currentNav = splitPath[splitPath.length - 1];
 
         setActiveNav(currentNav);
-
-        console.log(pathname)
     }, [pathname]);
 
     return (
@@ -26,7 +24,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
             <li>
                 <Link
                     to={`/${username}/`}
-                    className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'posts' && 'border-indigo-700  border-b-4'}`}
+                    className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${(activeNav === username || activeNav === '') && 'border-indigo-700  border-b-4'}`}
                 >
                     Posts
                 </Link>

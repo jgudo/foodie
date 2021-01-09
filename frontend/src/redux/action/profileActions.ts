@@ -1,4 +1,4 @@
-import { GET_USER_START, GET_USER_SUCCESS } from "~/constants/actionType";
+import { GET_USER_START, GET_USER_SUCCESS, UPDATE_PROFILE_INFO } from "~/constants/actionType";
 import { IProfile } from "~/types/types";
 
 export const getUserStart = (username: string) => (<const>{
@@ -11,6 +11,12 @@ export const getUserSuccess = (user: IProfile) => (<const>{
     payload: user
 });
 
+export const updateProfileInfo = (user: IProfile) => (<const>{
+    type: UPDATE_PROFILE_INFO,
+    payload: user
+});
+
 export type TProfileActionTypes =
+    | ReturnType<typeof updateProfileInfo>
     | ReturnType<typeof getUserStart>
     | ReturnType<typeof getUserSuccess>;
