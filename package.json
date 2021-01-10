@@ -18,5 +18,10 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^5.3.0"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^5.7.1",
+    "firebase": "^8.2.2",
+    "multer": "^1.4.2"
   }
 }

@@ -89,16 +89,25 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                         </span>
                     )}
                 </div>
+                {/* --- COMMENTS COUNT ----- */}
                 <div>
                     {post.commentsCount > 0 && (
-                        <span className="text-gray-700">{post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}</span>
+                        <span
+                            className="text-gray-700 cursor-pointer"
+                            onClick={handleToggleComment}
+                        >
+                            {post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}
+                        </span>
                     )}
                 </div>
             </div>
             {/* --- LIKE/COMMENT BUTTON */}
             <div className="flex items-center justify-around py-2 border-b border-gray-200">
                 <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
-                <span className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4">
+                <span
+                    className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4"
+                    onClick={handleToggleComment}
+                >
                     <CommentOutlined />&nbsp;Comment
                     </span>
             </div>

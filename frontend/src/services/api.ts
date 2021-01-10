@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICreatePost, IFetchParams, IPost, IProfile, IRegister } from '~/types/types';
+import { IFetchParams, IPost, IProfile, IRegister } from '~/types/types';
 
 const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
@@ -93,7 +93,7 @@ export const getSinglePost = async (postID: string) => {
     }
 }
 
-export const createPost = async (post: ICreatePost) => {
+export const createPost = async (post: FormData) => {
     try {
         const req = await axios({
             method: 'POST',

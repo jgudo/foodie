@@ -50,3 +50,7 @@
     background: #e1e1e1;
   }
 }
+
+.Toastify {
+  z-index: 9999;
+}

@@ -1,4 +1,4 @@
-import { EditOutlined } from '@ant-design/icons';
+import { CameraOutlined, EditOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import FollowButton from '~/components/main/FollowButton';
 import { IProfile, IUser } from "~/types/types";
@@ -30,6 +30,10 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                         className="w-60 h-60 object-cover rounded-full border-4 border-white bg-gray-400"
                         src={profile.profilePicture || `https://i.pravatar.cc/500?${new Date().getTime()}`}
                     />
+                    {/* ---- UPDLOAD PROFILE PICTURE ---- */}
+                    <div className="flex items-center w-10 h-10 justify-center cursor-pointer p-4 bg-indigo-700 rounded-full absolute bottom-0 left-14 hover:bg-indigo-800">
+                        <CameraOutlined className="text-xl flex items-center justify-center text-white" />
+                    </div>
                 </div>
                 <div className="flex w-full  flex-col self-end">
                     <div className="w-full flex justify-between mr-14 ml-2 mb-2">

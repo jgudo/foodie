@@ -9,16 +9,26 @@ const NewsFeed = require('../../../schemas/NewsFeedSchema');
 const Notification = require('../../../schemas/NotificationSchema');
 const Comment = require('../../../schemas/CommentSchema');
 const Bookmark = require('../../../schemas/BookmarkSchema');
+const { multer, uploadImageToStorage } = require('../../../storage/filestorage');
 
 const router = require('express').Router({ mergeParams: true });
 
 router.post(
     '/v1/post',
     isAuthenticated,
+    multer.array('photos', 5),
     validateBody(schemas.createPostSchema),
     async (req, res, next) => {
         try {
             const { description, privacy } = req.body;
+
+            let photos = [];
+            if (req.files) {
+                const photosToSave = req.files.map((file) => uploadImageToStorage(file));
+                photos = await Promise.all(photosToSave);
+                console.log(photos);
+            }
+
             const post = new Post({
                 _author_id: req.user._id,
                 // author: req.user._id,
@@ -287,6 +297,5 @@ router.get(
         }
     }
 );
-
 
 module.exports = router;

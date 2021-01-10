@@ -7,7 +7,7 @@ import {
     GET_FEED_SUCCESS,
     UPDATE_FEED_POST
 } from "~/constants/actionType";
-import { ICreatePost, IFetchParams, IPost } from "~/types/types";
+import { IFetchParams, IPost } from "~/types/types";
 
 export const getNewsFeedStart = (options?: IFetchParams) => (<const>{
     type: GET_FEED_START,
@@ -19,7 +19,7 @@ export const getNewsFeedSuccess = (posts: IPost[]) => (<const>{
     payload: posts
 });
 
-export const createPostStart = (post: ICreatePost) => (<const>{
+export const createPostStart = (post: FormData) => (<const>{
     type: CREATE_POST_START,
     payload: post
 });

@@ -2,9 +2,10 @@ import { StarOutlined, TeamOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CreatePost from "~/components/main/CreatePost";
+import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from "~/components/main/PostItem";
 import Loader from "~/components/shared/Loader";
+import useModal from "~/hooks/useModal";
 import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
 import { clearNewsFeed, deleteFeedPost, getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
 import { IPost, IRootReducer } from "~/types/types";
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
         isLoading: state.loading.isLoadingFeed
     }));
     const dispatch = useDispatch();
+    const { isOpen, openModal, closeModal } = useModal();
 
     useEffect(() => {
         dispatch(getNewsFeedStart({ offset: 0 }));
@@ -78,12 +80,27 @@ const Home: React.FC = () => {
                 </ul>
             </div>
             <div className="w-2/4">
-                <CreatePost />
+                {/* --- CREATE POST INPUT ---- */}
+                <input
+                    type="text"
+                    placeholder="Create a post."
+                    className=""
+                    onClick={openModal}
+                    readOnly={isLoading}
+                />
+                {/* --- CREATE POST MODAL ----- */}
+                <CreatePostModal
+                    isOpen={isOpen}
+                    openModal={openModal}
+                    closeModal={closeModal}
+                />
+                {/* ---- LOADING INDICATOR ----- */}
                 {(isLoading && !error) && (
-                    <div className="flex w-full min-h-10-screen items-center justify-center">
+                    <div className="flex w-full min-h-10rem items-center justify-center">
                         <Loader />
                     </div>
                 )}
+                {/* ---- NEWS FEED ---- */}
                 {(newsFeed.items.length !== 0) && (
                     <>
                         {newsFeed.items.map((post: IPost) => (
