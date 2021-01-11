@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import useFileHandler from '~/hooks/useFileHandler';
 import { createPostStart } from '~/redux/action/feedActions';
-import { IRootReducer } from '~/types/types';
+import { IImage, IRootReducer } from '~/types/types';
 
 interface IProps {
     isOpen: boolean;
@@ -19,7 +19,7 @@ const CreatePostModal: React.FC<IProps> = (props) => {
     const [description, setDescription] = useState('');
     const isLoadingCreatePost = useSelector((state: IRootReducer) => state.loading.isLoadingCreatePost);
     const dispatch = useDispatch();
-    const { imageFile, onFileChange, clearFiles, removeImage } = useFileHandler();
+    const { imageFile, onFileChange, clearFiles, removeImage } = useFileHandler<IImage[]>('multiple', []);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -33,9 +33,10 @@ const CreatePostModal: React.FC<IProps> = (props) => {
 
             if (imageFile.length !== 0) {
                 imageFile.forEach((image) => {
-                    formData.append('photos', image.file);
+                    if (image.file) formData.append('photos', image.file);
                 });
             }
+
             dispatch(createPostStart(formData));
             setDescription('');
             clearFiles();

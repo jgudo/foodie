@@ -52,6 +52,7 @@ function App() {
             autoClose={5000}
             transition={Slide}
             draggable={false}
+            hideProgressBar={true}
             bodyStyle={{ paddingLeft: '15px' }}
           />
           <NavBar />

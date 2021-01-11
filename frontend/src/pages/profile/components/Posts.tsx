@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import PostItem from '~/components/main/PostItem';
 import Loader from "~/components/shared/Loader";
@@ -11,15 +11,21 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
     const [offset, setOffset] = useState(0); // Pagination
     const [error, setError] = useState('');
     const { username } = match.params;
+    let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         fetchPosts();
+
+        if (isMountedRef) isMountedRef.current = true;
+
+        return () => {
+            if (isMountedRef) isMountedRef.current = false;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const likeCallback = (post: IPost) => {
         updatePostState(post);
-
     };
 
     const updateSuccessCallback = (post: IPost) => {
@@ -55,11 +61,13 @@ const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) 
             setIsLoading(true);
             const fetchedPosts = await getPosts(username, { offset });
 
-            setPosts([...posts, ...fetchedPosts]);
-            setIsLoading(false);
+            if (isMountedRef.current) {
+                setPosts([...posts, ...fetchedPosts]);
+                setIsLoading(false);
 
-            if (fetchedPosts.length !== 0) {
-                setOffset(offset + 1);
+                if (fetchedPosts.length !== 0) {
+                    setOffset(offset + 1);
+                }
             }
         } catch (e) {
             if (posts.length === 0) {

@@ -7,8 +7,8 @@
 }
 
 .animate-loader {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     animation-duration: .5s;
     animation-iteration-count: infinite;
@@ -47,7 +47,7 @@
 
 @keyframes blink-light {
   to {
-    background: #e1e1e1;
+    opacity: .3;
   }
 }
 

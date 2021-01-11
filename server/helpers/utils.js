@@ -42,7 +42,7 @@ module.exports = {
      * 
      * @param {{type?: string, status_code: number, message: string}} param0 
      */
-    makeErrorJson: ({ type, message, status_code }) => {
+    makeErrorJson: ({ type, message, status_code } = {}) => {
         switch (type) {
             case INVALID_INPUT:
                 return {

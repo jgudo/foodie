@@ -385,3 +385,17 @@ export const bookmarkPost = async (postID: string): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const uploadPhoto = async (data: FormData, field: string): Promise<string> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/upload/${field}`,
+            data
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

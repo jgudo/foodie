@@ -113,3 +113,9 @@ export interface IFetchParams {
     skip?: number;
     sort?: 'asc' | 'desc';
 }
+
+export interface IImage {
+    id: string;
+    url: string;
+    file: File | null;
+}

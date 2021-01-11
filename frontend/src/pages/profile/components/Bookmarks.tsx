@@ -1,7 +1,7 @@
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from 'react-redux';
 import { Link, Redirect } from "react-router-dom";
 import BookmarkButton from "~/components/main/BookmarkButton";
@@ -27,9 +27,16 @@ const Bookmarks = () => {
     }));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         fetchBookmarks();
+
+        if (isMountedRef) isMountedRef.current = true;
+
+        return () => {
+            if (isMountedRef) isMountedRef.current = false;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -39,16 +46,18 @@ const Bookmarks = () => {
 
             const { bookmarks: result, total } = await getBookmarks();
 
-            if (!result || result.length === 0) {
-                setError('You don\'t have any bookmarks.');
-            } else {
-                setBookmarks({
-                    items: [...bookmarks.items, ...result],
-                    total
-                });
-            }
+            if (isMountedRef.current) {
+                if (!result || result.length === 0) {
+                    setError('You don\'t have any bookmarks.');
+                } else {
+                    setBookmarks({
+                        items: [...bookmarks.items, ...result],
+                        total
+                    });
+                }
 
-            setIsLoading(false);
+                setIsLoading(false);
+            }
         } catch (e) {
             console.log(e);
             setIsLoading(false);

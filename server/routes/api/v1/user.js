@@ -1,9 +1,9 @@
 const omit = require('lodash.omit');
 const { isAuthenticated, validateObjectID } = require('../../../middlewares/middlewares');
-const { makeResponseJson } = require('../../../helpers/utils');
+const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const User = require('../../../schemas/UserSchema');
 const { validateBody, schemas } = require('../../../validations/validations');
-const mongoose = require('mongoose');
+const { multer, uploadImageToStorage } = require('../../../storage/filestorage');
 const Follow = require('../../../schemas/FollowSchema');
 
 const router = require('express').Router({ mergeParams: true });
@@ -99,5 +99,35 @@ router.patch(
         }
     }
 )
+
+router.post(
+    '/v1/upload/:field',
+    isAuthenticated,
+    multer.single('photo'),
+    async (req, res, next) => {
+        try {
+            const { field } = req.params;
+            const file = req.file;
+
+            if (!file) return res.status(400).send(makeErrorJson({ status_code: 400, message: 'File not provided.' }))
+            if (!['picture', 'cover'].includes(field)) return res.status(400).send(makeErrorJson({ message: 'Unexpected field.' + field }));
+
+
+            const url = await uploadImageToStorage(file);
+            const fieldToUpdate = field === 'picture' ? 'profilePicture' : 'coverPhoto';
+
+            await User.findByIdAndUpdate(req.user._id, {
+                $set: {
+                    [fieldToUpdate]: url
+                }
+            });
+
+            res.status(200).send(makeResponseJson(url));
+        } catch (e) {
+            console.log('CANT UPLOAD FILE: ', e);
+            res.status(500).send(makeErrorJson());
+        }
+    }
+);
 
 module.exports = router;

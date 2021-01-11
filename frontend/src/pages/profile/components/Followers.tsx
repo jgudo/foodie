@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import UserCard from "~/components/main/UserCard";
 import Loader from "~/components/shared/Loader";
@@ -15,9 +15,16 @@ const Followers: React.FC<RouteComponentProps<{ username: string; }>> = ({ match
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     const { username } = match.params;
+    let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         fetchFollowers();
+
+        if (isMountedRef) isMountedRef.current = true;
+
+        return () => {
+            if (isMountedRef) isMountedRef.current = false;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -26,8 +33,10 @@ const Followers: React.FC<RouteComponentProps<{ username: string; }>> = ({ match
             setIsLoading(true);
             const fetchedFollowers = await getFollowers(username, { offset });
 
-            setFollowers([...followers, ...fetchedFollowers]);
-            setIsLoading(false);
+            if (isMountedRef.current) {
+                setFollowers([...followers, ...fetchedFollowers]);
+                setIsLoading(false);
+            }
         } catch (e) {
             console.log(e);
         }

@@ -16,6 +16,7 @@ module.exports = {
     extend: {
       height: {
         '60px': '60px',
+        '20rem': '20rem',
         '25rem': '25rem',
       },
       maxHeight: {
@@ -25,6 +26,7 @@ module.exports = {
         '10rem': '10rem'
       },
       width: {
+        '20rem': '20rem',
         '30rem': '30rem',
         '40rem': '40rem'
       },

@@ -26,7 +26,8 @@ router.post(
             if (req.files) {
                 const photosToSave = req.files.map((file) => uploadImageToStorage(file));
                 photos = await Promise.all(photosToSave);
-                console.log(photos);
+
+                console.log(photos)
             }
 
             const post = new Post({
