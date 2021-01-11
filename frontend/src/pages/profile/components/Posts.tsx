@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
 import PostItem from '~/components/main/PostItem';
 import Loader from "~/components/shared/Loader";
 import { getPosts } from "~/services/api";
 import { IPost } from "~/types/types";
 
-const Posts: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) => {
+interface IProps {
+    username: string;
+}
+
+const Posts: React.FC<IProps> = ({ username }) => {
     const [posts, setPosts] = useState<IPost[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     const [error, setError] = useState('');
-    const { username } = match.params;
+
     let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {

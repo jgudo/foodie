@@ -2,29 +2,29 @@ import { StarFilled, StarOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from 'react-redux';
 import { Link, Redirect } from "react-router-dom";
 import BookmarkButton from "~/components/main/BookmarkButton";
 import Loader from '~/components/shared/Loader';
 import { getBookmarks } from "~/services/api";
-import { IBookmark, IRootReducer } from "~/types/types";
+import { IBookmark } from "~/types/types";
 
 dayjs.extend(relativeTime);
+
+interface IProps {
+    username: string;
+    isOwnProfile: boolean;
+}
 
 interface IBookmarkState {
     items: IBookmark[];
     total: number;
 }
 
-const Bookmarks = () => {
+const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
     const [bookmarks, setBookmarks] = useState<IBookmarkState>({
         items: [],
         total: 0
     });
-    const { isOwnProfile, username } = useSelector((state: IRootReducer) => ({
-        username: state.profile.username,
-        isOwnProfile: state.auth.username === state.profile.username
-    }));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     let isMountedRef = useRef<boolean | null>(null);

@@ -1,20 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
 import UserCard from "~/components/main/UserCard";
 import Loader from "~/components/shared/Loader";
 import { getFollowers } from "~/services/api";
 import { IProfile } from "~/types/types";
+
+interface IProps {
+    username: string;
+}
 
 interface IFollowerState {
     user: IProfile;
     isFollowing: boolean;
 }
 
-const Followers: React.FC<RouteComponentProps<{ username: string; }>> = ({ match }) => {
+const Followers: React.FC<IProps> = ({ username }) => {
     const [followers, setFollowers] = useState<IFollowerState[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
-    const { username } = match.params;
     let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {

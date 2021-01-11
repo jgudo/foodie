@@ -1,17 +1,18 @@
 import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Redirect, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { updateProfileInfo } from '~/redux/action/profileActions';
 import { updateUser } from '~/services/api';
-import { IRootReducer } from "~/types/types";
+import { IProfile } from "~/types/types";
 
-const EditInfo: React.FC = () => {
-    const { isOwnProfile, profile } = useSelector((state: IRootReducer) => ({
-        profile: state.profile,
-        isOwnProfile: state.auth.username === state.profile.username
-    }));
+interface IProps {
+    isOwnProfile: boolean;
+    profile: IProfile;
+}
+
+const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [field, setField] = useState({
         firstname: profile?.firstname || '',

@@ -10,15 +10,9 @@ import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Post from "./pages/post";
-import Bookmarks from "./pages/profile/components/Bookmarks";
-import EditInfo from "./pages/profile/components/EditInfo";
-import Followers from "./pages/profile/components/Followers";
-import Following from "./pages/profile/components/Following";
-import Info from "./pages/profile/components/Info";
-import Posts from "./pages/profile/components/Posts";
+import Profile from "./pages/profile";
 import Register from "./pages/register";
 import { loginSuccess } from "./redux/action/authActions";
-import ProfileRoute from "./routers/ProfileRoute";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
 import { checkAuthSession } from "./services/api";
@@ -62,12 +56,7 @@ function App() {
               <ProtectedRoute path={ROUTE.POST} component={Post} />
               <PublicRoute path={ROUTE.REGISTER} component={Register} />
               <PublicRoute path={ROUTE.LOGIN} component={Login} />
-              <ProfileRoute path={ROUTE.PROFILE_POSTS} exact component={Posts} />
-              <ProfileRoute path={ROUTE.PROFILE_FOLLOWERS} component={Followers} />
-              <ProfileRoute path={ROUTE.PROFILE_FOLLOWING} component={Following} />
-              <ProfileRoute path={ROUTE.PROFILE_INFO} component={Info} />
-              <ProfileRoute path={ROUTE.PROFILE_EDIT_INFO} component={EditInfo} />
-              <ProfileRoute path={ROUTE.PROFILE_BOOKMARKS} component={Bookmarks} />
+              <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
               <Route component={PageNotFound} />
             </Switch>
           </main>
