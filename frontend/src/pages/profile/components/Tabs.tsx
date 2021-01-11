@@ -23,7 +23,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
         <ul className="flex items-center space-x-4">
             <li>
                 <Link
-                    to={`/${username}/`}
+                    to={`/user/${username}/`}
                     className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${(activeNav === username || activeNav === '') && 'border-indigo-700  border-b-4'}`}
                 >
                     Posts
@@ -31,7 +31,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
             </li>
             <li>
                 <Link
-                    to={`/${username}/info`}
+                    to={`/user/${username}/info`}
                     className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'info' && 'border-indigo-700  border-b-4'}`}
                 >
                     Info
@@ -39,7 +39,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
             </li>
             <li>
                 <Link
-                    to={`/${username}/followers`}
+                    to={`/user/${username}/followers`}
                     className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'followers' && 'border-indigo-700 border-b-4'}`}
                 >
                     <span className="text-lg text-indigo-700">{followersCount}</span>
@@ -49,7 +49,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
             </li>
             <li>
                 <Link
-                    to={`/${username}/following`}
+                    to={`/user/${username}/following`}
                     className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'following' && 'border-indigo-700 border-b-4'}`}
                 >
                     <span className="text-lg text-indigo-700">{followingCount}</span>
@@ -60,7 +60,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
             {isOwnProfile && (
                 <li>
                     <Link
-                        to={`/${username}/bookmarks`}
+                        to={`/user/${username}/bookmarks`}
                         className={`text-lg font-medium text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-t-md cursor-pointer px-4 py-2 ${activeNav === 'bookmarks' && 'border-indigo-700 border-b-4'}`}
                     >
                         Bookmarks

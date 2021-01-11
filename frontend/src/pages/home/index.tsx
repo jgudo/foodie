@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from "~/components/main/PostItem";
+import SuggestedPeople from "~/components/main/SuggestedPeople";
 import Loader from "~/components/shared/Loader";
 import useModal from "~/hooks/useModal";
 import { setNewsFeedErrorMessage } from "~/redux/action/errorActions";
@@ -56,38 +57,45 @@ const Home: React.FC = () => {
                                 className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-4"
                                 style={{ background: `#f8f8f8 url(${auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
                             />
-                            <h6>My Profile</h6>
+                            <h6 className="text-sm">My Profile</h6>
                         </Link>
                     </li>
                     <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
                         <Link to={`/${auth.username}/following`} className="flex items-center text-black">
                             <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6>Following</h6>
+                            <h6 className="text-sm">Following</h6>
                         </Link>
                     </li>
                     <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
                         <Link to={`/${auth.username}/followers`} className="flex items-center text-black">
                             <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6>Followers</h6>
+                            <h6 className="text-sm">Followers</h6>
                         </Link>
                     </li>
                     <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
                         <Link to={`/${auth.username}/bookmarks`} className="flex items-center text-black">
                             <StarOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6>Bookmarks</h6>
+                            <h6 className="text-sm">Bookmarks</h6>
                         </Link>
                     </li>
                 </ul>
             </div>
             <div className="w-2/4">
                 {/* --- CREATE POST INPUT ---- */}
-                <input
-                    type="text"
-                    placeholder="Create a post."
-                    className=""
-                    onClick={openModal}
-                    readOnly={isLoading}
-                />
+                <div className="flex items-center justify-start">
+                    <div
+                        className="w-12 h-12 !bg-cover !bg-no-repeat rounded-full mr-2"
+                        style={{ background: `#f8f8f8 url(${auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
+                    />
+                    <div className="flex-grow">
+                        <input
+                            type="text"
+                            placeholder="Create a post."
+                            onClick={openModal}
+                            readOnly={isLoading}
+                        />
+                    </div>
+                </div>
                 {/* --- CREATE POST MODAL ----- */}
                 <CreatePostModal
                     isOpen={isOpen}
@@ -124,6 +132,9 @@ const Home: React.FC = () => {
                         )}
                     </>
                 )}
+            </div>
+            <div className="w-1/4 sticky top-20 ml-4">
+                <SuggestedPeople />
             </div>
         </div>
     );

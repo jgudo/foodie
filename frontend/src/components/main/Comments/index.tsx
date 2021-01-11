@@ -140,14 +140,14 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                                 className="flex py-2"
                                 key={comment.id}
                             >
-                                <Link to={`/${comment.author.username}`} className="mr-2">
+                                <Link to={`/user/${comment.author.username}`} className="mr-2">
                                     <div
                                         className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full"
                                         style={{ background: `#f8f8f8 url(${comment.author.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
                                     />
                                 </Link>
                                 <div className="inline-flex items-start flex-col flex-grow">
-                                    <Link to={`/${comment.author.username}`}>
+                                    <Link to={`/user/${comment.author.username}`}>
                                         <h5>{comment.author.username}</h5>
                                     </Link>
                                     <p className="text-gray-800 min-w-full break-all">{comment.body}</p>

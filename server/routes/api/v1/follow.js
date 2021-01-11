@@ -1,5 +1,5 @@
 const { Types } = require('mongoose');
-const { makeResponseJson } = require('../../../helpers/utils');
+const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const { validateObjectID, isAuthenticated } = require('../../../middlewares/middlewares');
 const Follow = require('../../../schemas/FollowSchema');
 const User = require('../../../schemas/UserSchema');
@@ -52,7 +52,7 @@ router.post(
                 type: 'follow',
                 initiator: req.user._id,
                 target: Types.ObjectId(follow_id),
-                link: `/${req.user.username}`,
+                link: `/user/${req.user.username}`,
                 createdAt: Date.now()
             });
 
@@ -252,5 +252,43 @@ router.get(
             res.status(500).send(makeErrorJson());
         }
     });
+
+router.get(
+    '/v1/people/suggested',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const offset = parseInt(req.query.offset) || 0;
+            const skipParam = parseInt(req.query.skip) || 0;
+
+            const limit = parseInt(req.query.limit) || 10;
+            const skip = skipParam || offset * limit;
+
+            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const people = await User
+                .find({
+                    _id: {
+                        $nin: [...myFollowing.following, req.user._id]
+                    }
+                })
+                .limit(limit)
+                .skip(skip);
+
+            if (people.length === 0) return res.status(404).send(makeErrorJson({ message: 'No suggested people.' }))
+
+            const result = people.map((user) => {
+                return {
+                    ...user.toUserJSON(),
+                    isFollowing: false
+                }
+            });
+
+            res.status(200).send(makeResponseJson(result));
+        } catch (e) {
+            console.log('CANT GET SUGGESTED PEOPLE', e);
+            res.status(500).send(makeErrorJson());
+        }
+    }
+)
 
 module.exports = router;

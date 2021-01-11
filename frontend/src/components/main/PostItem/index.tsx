@@ -48,7 +48,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                         />
                     </div>
                     <div className="flex flex-col">
-                        <Link to={`/${post.author.username}`}>
+                        <Link to={`/user/${post.author.username}`}>
                             <h5 className="font-bold">{post.author.username}</h5>
                         </Link>
                         <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>

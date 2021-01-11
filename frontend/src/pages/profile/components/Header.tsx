@@ -131,7 +131,7 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
             <div className="w-full h-80 bg-gray-200 relative overflow-hidden" ref={coverPhotoRef}>
                 {/* ---- OVERLAY FOR CHOOSING PHOTO AND SHOWING LOADER ----- */}
                 <div
-                    className="w-full h-full bg-black bg-opacity-50 absolute flex items-center justify-center invisible"
+                    className="w-full h-full bg-black bg-opacity-50 absolute flex items-center justify-center invisible transition-all"
                     ref={coverPhotoOverlayRef}
                 >
                     <input

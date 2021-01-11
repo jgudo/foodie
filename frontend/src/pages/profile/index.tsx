@@ -5,6 +5,7 @@ import Boundary from "~/components/shared/Boundary";
 import * as ROUTE from "~/constants/routes";
 import { getUserStart } from "~/redux/action/profileActions";
 import { IRootReducer } from "~/types/types";
+import PageNotFound from "../error/PageNotFound";
 import Sidebar from './components/Bio';
 import Bookmarks from "./components/Bookmarks";
 import EditInfo from "./components/EditInfo";
@@ -43,14 +44,7 @@ const Profile: React.FC<IProps> = (props) => {
     return (
         <Boundary>
             {(error && !isLoadingGetUser) && (
-                <div className="w-full flex flex-col justify-center items-center pt-20 h-screen">
-                    <h1>Something went wrong :(</h1>
-                    <p>Please try again.</p>
-                    <br />
-                    <button onClick={() => dispatch(getUserStart(username))}>
-                        Try again
-                    </button>
-                </div>
+                <PageNotFound />
             )}
             {(!error && !isLoadingGetUser) && (
                 <div className="pt-14">

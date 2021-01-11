@@ -5,6 +5,7 @@ import { followUser, unfollowUser } from "~/services/api";
 interface IProps {
     isFollowing: boolean;
     userID: string;
+    size?: string;
 }
 
 const FollowButton: React.FC<IProps> = (props) => {
@@ -36,17 +37,19 @@ const FollowButton: React.FC<IProps> = (props) => {
     return (
         <div>
             <button
-                className={`${isFollowing && '!hover:bg-gray-200 !bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center`}
+                className={`${isFollowing && '!hover:bg-gray-200 !bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center ${props.size === 'sm' && '!py-2 !px-3 !text-sm'}`}
                 disabled={isLoading}
                 onClick={dispatchFollow}
             >
                 {isFollowing ? <CheckOutlined /> : <UserOutlined />}
                 &nbsp;&nbsp;
-                {isLoading
-                    ? 'Following'
-                    : !isLoading && !isFollowing
-                        ? 'Follow'
-                        : 'Following'}
+                <span className={`${props.size === 'sm' && 'text-sm'}`}>
+                    {isLoading
+                        ? 'Following'
+                        : !isLoading && !isFollowing
+                            ? 'Follow'
+                            : 'Following'}
+                </span>
             </button>
         </div>
     );

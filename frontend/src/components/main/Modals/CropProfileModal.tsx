@@ -18,7 +18,7 @@ Modal.setAppElement('#root');
 
 const CropProfileModal: React.FC<IProps> = (props) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
+    const [zoom, setZoom] = useState(1.5);
     const [aspect, setAspect] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [isCropping, setIsCropping] = useState(false);
@@ -120,15 +120,6 @@ const CropProfileModal: React.FC<IProps> = (props) => {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onZoomChange(Number(e.target.value))}
                             type="range"
                         />
-                        {/* <Slider
-                        value={zoom}
-                        min={1}
-                        max={3}
-                        step={0.1}
-                        aria-labelledby="Zoom"
-                        onChange={(e, zoom) => this.onZoomChange(zoom)}
-                        classes={{ container: 'slider' }}
-                    /> */}
                     </div>
                 </div>
             </Modal>

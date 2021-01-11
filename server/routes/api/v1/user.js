@@ -125,7 +125,7 @@ router.post(
             res.status(200).send(makeResponseJson(url));
         } catch (e) {
             console.log('CANT UPLOAD FILE: ', e);
-            res.status(500).send(makeErrorJson());
+            res.status(500).send(makeErrorJson({ status_code: 400, message: e }));
         }
     }
 );

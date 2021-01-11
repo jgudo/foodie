@@ -54,7 +54,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                     isAuth ? (
                         <div className="flex items-center">
                             {/* ---- AVATAR WITH  USERNAME ----------- */}
-                            <Link to={`/${auth.username}`} className="cursor-pointer">
+                            <Link to={`/user/${auth.username}`} className="cursor-pointer">
                                 <div className="flex items-center">
                                     <div
                                         className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"

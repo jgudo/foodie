@@ -1,3 +1,7 @@
+.button {
+    @extend button;
+}
+
 .button--stretch {
     @extend button;
     width: 100%;

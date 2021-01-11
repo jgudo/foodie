@@ -399,3 +399,17 @@ export const uploadPhoto = async (data: FormData, field: string): Promise<string
         return Promise.reject(e.response.data);
     }
 }
+
+export const getSuggestedPeople = async (params: IFetchParams): Promise<IProfile[]> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/people/suggested`,
+            params
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

@@ -56,11 +56,12 @@ const Followers: React.FC<IProps> = ({ username }) => {
                     <h6 className="text-gray-400 italic">{username} has no followers.</h6>
                 </div>
             ) : followers.map(follower => (
-                <UserCard
-                    key={follower.user._id}
-                    profile={follower.user}
-                    isFollowing={follower.isFollowing}
-                />
+                <div className="bg-white rounded-md mb-4 shadow-md" key={follower.user._id}>
+                    <UserCard
+                        profile={follower.user}
+                        isFollowing={follower.isFollowing}
+                    />
+                </div>
             ))}
         </div>
     );
