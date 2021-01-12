@@ -47,6 +47,7 @@ router.post(
 
             await bulk.execute();
 
+            // TODO ---- FILTER OUT DUPLICATES
             const io = req.app.get('io');
             const notification = new Notification({
                 type: 'follow',
@@ -75,7 +76,8 @@ router.post(
                     return {
                         follower: req.user._id,
                         post: post._id,
-                        post_owner: post._author_id
+                        post_owner: post._author_id,
+                        createdAt: post.createdAt
                     }
                 });
 
@@ -146,6 +148,7 @@ router.get(
         try {
             const { username } = req.params;
 
+            console.log('ERRRRRoo')
             const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
             console.log('MY FOLLOWING: ', selfFollowing.following)
             const user = await User.findOne({ username });
@@ -205,43 +208,48 @@ router.get(
             const { username } = req.params;
 
             const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
+            let following = [];
+
+            if (selfFollowing) following = selfFollowing.following;
+
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
 
-            const doc = await Follow.aggregate([{
-                $match: {
-                    _user_id: Types.ObjectId(user._id)
-                }
-            },
-            { $unwind: '$followers' },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'followers',
-                    foreignField: '_id',
-                    as: 'userFollowers'
-                }
-            },
-            { $unwind: '$userFollowers' },
-            {
-                $addFields: {
-                    isFollowing: {
-                        $in: ['$userFollowers._id', selfFollowing.following]
+            const doc = await Follow.aggregate([
+                {
+                    $match: {
+                        _user_id: Types.ObjectId(user._id)
+                    }
+                },
+                { $unwind: '$followers' },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'followers',
+                        foreignField: '_id',
+                        as: 'userFollowers'
+                    }
+                },
+                { $unwind: '$userFollowers' },
+                {
+                    $addFields: {
+                        isFollowing: {
+                            $in: ['$userFollowers._id', following]
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        followers: { $push: { user: '$userFollowers', isFollowing: '$isFollowing' } }
+                    }
+                },
+                {
+                    $project: {
+                        _user_id: 1,
+                        followers: 1
                     }
                 }
-            },
-            {
-                $group: {
-                    _id: '$_id',
-                    followers: { $push: { user: '$userFollowers', isFollowing: '$isFollowing' } }
-                }
-            },
-            {
-                $project: {
-                    _user_id: 1,
-                    followers: 1
-                }
-            }
             ]);
 
             const { followers } = doc[0] || {};
@@ -265,10 +273,14 @@ router.get(
             const skip = skipParam || offset * limit;
 
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            let following = [];
+
+            if (myFollowing) following = myFollowing.following;
+
             const people = await User
                 .find({
                     _id: {
-                        $nin: [...myFollowing.following, req.user._id]
+                        $nin: [...following, req.user._id]
                     }
                 })
                 .limit(limit)

@@ -114,6 +114,11 @@ UserSchema.methods.isBookmarked = function (postID) {
 }
 
 UserSchema.pre('save', function (next) {
+    if (this.info.gender === null) this.info.gender = 'unspecified';
+    if (this.firstname === null) this.firstname = '';
+    if (this.lastname === null) this.lastname = '';
+    if (this.info.birthday === null) this.info.birthday = '';
+
     if (this.isNew || this.isModified('password')) {
         bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(this.password, salt, (err, hash) => {

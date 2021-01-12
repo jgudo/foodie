@@ -229,7 +229,7 @@ const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
                         ) : (
                                 <button
                                     className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-0 flex items-center justify-center"
-                                    onClick={() => history.push(`/${profile.username}/edit`)}
+                                    onClick={() => history.push(`/user/${profile.username}/edit`)}
                                 >
                                     <EditOutlined className="text-xl mr-4" />
                                     Edit Profile

@@ -186,16 +186,17 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                         className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
                         style={{ background: `#f8f8f8 url(${user.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
                     />
-                    <input
-                        className="flex-grow"
-                        type="text"
-                        placeholder="Write a comment..."
-                        readOnly={isLoading}
-                        ref={commentInputRef}
-                        onChange={handleCommentBodyChange}
-                        onKeyDown={handleSubmitComment}
-                        value={commentBody}
-                    />
+                    <div className="flex-grow">
+                        <input
+                            type="text"
+                            placeholder="Write a comment..."
+                            readOnly={isLoading}
+                            ref={commentInputRef}
+                            onChange={handleCommentBodyChange}
+                            onKeyDown={handleSubmitComment}
+                            value={commentBody}
+                        />
+                    </div>
                 </div>
             </div>
             <DeleteCommentModal

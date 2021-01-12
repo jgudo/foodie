@@ -17,6 +17,7 @@ const Following: React.FC<IProps> = ({ username }) => {
     const [followings, setFollowing] = useState<IFollowingState[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
+    const [error, setError] = useState('');
     let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
@@ -38,24 +39,33 @@ const Following: React.FC<IProps> = ({ username }) => {
             if (isMountedRef.current) {
                 setFollowing([...followings, ...fetchedFollowing]);
                 setIsLoading(false);
+
+                if (fetchedFollowing.length === 0) {
+                    setError(`${username} is not following anyone.`);
+                } else {
+                    setError('');
+                }
             }
         } catch (e) {
             console.log(e);
+            setIsLoading(false);
+            setError(e.error.message);
         }
     };
 
     return (
         <div className="w-full">
-            {isLoading && (
+            {(isLoading && !error) && (
                 <div className="flex min-h-10rem items-center justify-center">
                     <Loader />
                 </div>
             )}
-            {!isLoading && followings.length === 0 ? (
+            {!isLoading && followings.length === 0 && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
-                    <h6 className="text-gray-400 italic">{username} is not following anyone.</h6>
+                    <h6 className="text-gray-400 italic">{error}</h6>
                 </div>
-            ) : followings.map(following => (
+            )}
+            {(!isLoading && !error) && followings.map(following => (
                 <div className="bg-white rounded-md mb-4 shadow-md" key={following.user._id}>
                     <UserCard
                         profile={following.user}

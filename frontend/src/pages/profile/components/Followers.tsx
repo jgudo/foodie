@@ -18,6 +18,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     let isMountedRef = useRef<boolean | null>(null);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchFollowers();
@@ -38,8 +39,16 @@ const Followers: React.FC<IProps> = ({ username }) => {
             if (isMountedRef.current) {
                 setFollowers([...followers, ...fetchedFollowers]);
                 setIsLoading(false);
+
+                if (fetchFollowers.length === 0) {
+                    setError(`${username} has no followers.`);
+                } else {
+                    setError('');
+                }
             }
         } catch (e) {
+            setIsLoading(false);
+            setError(e.error.message)
             console.log(e);
         }
     };
@@ -53,7 +62,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
             )}
             {!isLoading && followers.length === 0 ? (
                 <div className="w-full min-h-10rem flex items-center justify-center">
-                    <h6 className="text-gray-400 italic">{username} has no followers.</h6>
+                    <h6 className="text-gray-400 italic">{error}</h6>
                 </div>
             ) : followers.map(follower => (
                 <div className="bg-white rounded-md mb-4 shadow-md" key={follower.user._id}>

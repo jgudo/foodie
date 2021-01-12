@@ -54,11 +54,12 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                 console.log(user);
                 setIsUpdating(false);
 
-                history.push(`/${profile.username}/info`);
+                history.push(`/user/${profile.username}/info`);
                 toast.dark('Profile updated successfully.')
             }
         } catch (e) {
             setIsUpdating(false);
+            toast.dismiss();
             toast.error(e.error.message || 'Unable to comment.')
         }
     };
@@ -84,7 +85,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     }
 
     const handleBack = () => {
-        history.push(`/${profile.username}/info`)
+        history.push(`/user/${profile.username}/info`)
     };
 
     const handleSubmit = (e: FormEvent) => {
@@ -128,7 +129,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                             id="gender"
                             onChange={handleGenderChange}
                             disabled={isUpdating}
-                            value={field.gender}
+                            value={field.gender === null ? '' : field.gender}
                         >
                             <option disabled value="">Select Gender</option>
                             <option value="male">Male</option>

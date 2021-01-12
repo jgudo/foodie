@@ -17,7 +17,7 @@ const Info = () => {
                 {isOwnProfile && (
                     <span
                         className="underline cursor-pointer text-indigo-700 pr-4"
-                        onClick={() => history.push(`/${profile.username}/edit`)}
+                        onClick={() => history.push(`/user/${profile.username}/edit`)}
                     >
                         Edit
                     </span>

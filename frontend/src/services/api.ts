@@ -299,7 +299,10 @@ export const getFollowing = async (username: string, { offset = 0 }: IFetchParam
     try {
         const req = await axios({
             method: 'GET',
-            url: `/${username}/following`
+            url: `/${username}/following`,
+            params: {
+                offset
+            }
         });
 
         return Promise.resolve(req.data.data)

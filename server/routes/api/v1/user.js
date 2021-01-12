@@ -79,11 +79,12 @@ router.patch(
             const update = { info: {} };
             if (username !== req.user.username) return res.sendStatus(401);
 
-            if (typeof firstname !== undefined) update.firstname = firstname;
-            if (typeof lastname !== undefined) update.lastname = lastname;
-            if (typeof bio !== undefined) update.info.bio = bio;
-            if (typeof birthday !== undefined) update.info.birthday = birthday;
-            if (typeof gender !== undefined) update.info.gender = gender;
+
+            if (firstname) update.firstname = firstname;
+            if (lastname) update.lastname = lastname;
+            if (bio) update.info.bio = bio;
+            if (birthday) update.info.birthday = birthday;
+            if (gender) update.info.gender = gender;
 
             const newUser = await User
                 .findOneAndUpdate({ username }, {

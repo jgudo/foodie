@@ -73,7 +73,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                 </div>
             )}
             {(bookmarks.items.length === 0 && error && !isLoading) && (
-                <div className="w-full p-4 flex items-center justify-center">
+                <div className="w-full p-4 flex min-h-10rem items-center justify-center">
                     <span className="text-gray-400 text-lg italic">{error}</span>
                 </div>
             )}

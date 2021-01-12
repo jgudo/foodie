@@ -40,22 +40,24 @@ router.post(
 
             await post.save();
             await post.populate('author', 'profilePicture username fullname').execPopulate();
-            const userFollowers = await Follow.findOne({ _user_id: req.user._id });
+            const myFollowers = await Follow.findOne({ _user_id: req.user._id });
             let newsFeeds = [];
 
             // add post to follower's newsfeed
-            if (userFollowers && userFollowers.followers) {
-                newsFeeds = userFollowers.followers.map(follower => ({
+            if (myFollowers && myFollowers.followers) {
+                newsFeeds = myFollowers.followers.map(follower => ({
                     follower: Types.ObjectId(follower._id),
                     post: Types.ObjectId(post._id),
-                    post_owner: req.user._id
+                    post_owner: req.user._id,
+                    createdAt: post.createdAt
                 }));
             }
             // append own post on newsfeed
             newsFeeds = newsFeeds.concat({
                 follower: req.user._id,
                 post_owner: req.user._id,
-                post: Types.ObjectId(post._id)
+                post: Types.ObjectId(post._id),
+                createdAt: post.createdAt
             });
 
             if (newsFeeds.length !== 0) {

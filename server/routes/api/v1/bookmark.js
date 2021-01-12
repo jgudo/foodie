@@ -3,6 +3,7 @@ const { isAuthenticated, validateObjectID } = require('../../../middlewares/midd
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const Post = require('../../../schemas/PostSchema');
 const User = require('../../../schemas/UserSchema');
+const { Types } = require('mongoose');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -21,10 +22,14 @@ router.post(
                 return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You can\'t bookmark your own post.' }))
             }
 
-            const isPostBookmarked = await Bookmark.findOne({ _author_id: req.user._id });
+            const isPostBookmarked = await Bookmark
+                .findOne({
+                    _author_id: req.user._id,
+                    _post_id: Types.ObjectId(post_id)
+                });
 
             if (isPostBookmarked) {
-                await Bookmark.findOneAndDelete({ _author_id: req.user._id });
+                await Bookmark.findOneAndDelete({ _author_id: req.user._id, _post_id: Types.ObjectId(post_id) });
                 await User.findByIdAndUpdate(req.user._id, { $pull: { bookmarks: post_id } });
                 res.status(200).send(makeResponseJson({ state: false }));
             } else {
@@ -73,7 +78,7 @@ router.get(
             }
 
             const result = bookmarks.map((item) => {
-                const isBookmarked = req.user.isBookmarked(item.post.id);
+                const isBookmarked = req.user.isBookmarked(item._post_id);
 
                 return {
                     ...item.toObject(),

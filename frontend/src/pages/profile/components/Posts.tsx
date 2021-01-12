@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 import PostItem from '~/components/main/PostItem';
 import Loader from "~/components/shared/Loader";
 import { getPosts } from "~/services/api";
@@ -83,6 +84,14 @@ const Posts: React.FC<IProps> = ({ username }) => {
         }
     };
 
+    const infiniteRef = useInfiniteScroll({
+        loading: isLoading,
+        hasNextPage: !error,
+        onLoadMore: fetchPosts,
+        scrollContainer: 'window',
+        threshold: 200
+    });
+
     return (
         <div className="w-full">
             {(isLoading && posts.length === 0) && (
@@ -96,7 +105,7 @@ const Posts: React.FC<IProps> = ({ username }) => {
                 </div>
             )}
             {(posts.length !== 0 && error !== null) && (
-                <div>
+                <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                     {posts.map(post => (
                         <PostItem
                             key={post.id}
@@ -106,9 +115,9 @@ const Posts: React.FC<IProps> = ({ username }) => {
                             deleteSuccessCallback={deleteSuccessCallback}
                         />
                     ))}
-                    {posts.length !== 0 && !error && (
+                    {(posts.length !== 0 && !error && isLoading) && (
                         <div className="flex justify-center py-6">
-                            <button onClick={fetchPosts} disabled={isLoading}>Load More</button>
+                            <Loader />
                         </div>
                     )}
                     {(posts.length !== 0 && error) && (

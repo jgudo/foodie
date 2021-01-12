@@ -15,7 +15,8 @@ const NewsFeedSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         required: true,
         ref: 'User'
-    }
+    },
+    createdAt: Date
 });
 
 module.exports = mongoose.model('NewsFeed', NewsFeedSchema);

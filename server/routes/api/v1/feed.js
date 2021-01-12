@@ -10,25 +10,22 @@ router.get(
     async (req, res, next) => {
 
         try {
-            const { offset: off } = req.query;
-            let offset = 0;
-            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
-
-            const limit = 5;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = 10;
             const skip = offset * limit;
 
             const feeds = await NewsFeed
                 .find({ follower: req.user._id })
+                .sort({ createdAt: -1 })
                 .populate({
                     path: 'post',
                     populate: {
                         path: 'author likesCount commentsCount',
-                        select: 'profilePicture username fullname'
+                        select: 'profilePicture username fullname',
                     },
                 })
-                .sort({ 'post.createdAt': -1 })
+                .limit(limit)
                 .skip(skip)
-                .limit(limit);
 
             const filteredFeed = feeds.map((feed) => {
                 const isPostLiked = feed.post.isPostLiked(req.user._id);

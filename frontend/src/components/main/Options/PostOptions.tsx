@@ -62,7 +62,7 @@ const PostOptions: React.FC<IProps> = (props) => {
                                         ) : (
                                                 <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
                                             )}
-                                        <span>Bookmark Post</span>
+                                        <span>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
                                     </h4>
                                 )}
                             </BookmarkButton>
