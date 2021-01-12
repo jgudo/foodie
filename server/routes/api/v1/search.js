@@ -13,7 +13,7 @@ router.get(
         try {
             const { q, type } = req.query;
             const offset = parseInt(req.query.offset) || 0;
-            const limit = 10;
+            const limit = parseInt(req.query.limit) || 10;
             const skip = offset * limit;
 
             if (!q) return res.status(400).send(makeErrorJson());

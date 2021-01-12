@@ -121,7 +121,7 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                                     }}
                                 >
                                     <CloseCircleOutlined
-                                        className="flex items-center justify-center p-2 absolute top-0 left-0 right-0 bottom-0 margin-auto text-3xl text-white hover:bg-red-600 cursor-pointer outline-none"
+                                        className="flex items-center justify-center p-2 absolute top-0 left-0 right-0 bottom-0 margin-auto text-3xl text-white hover:bg-red-600 cursor-pointer outline-none opacity-75 hover:opacity-100"
                                         onClick={() => removeImage(image.id)}
                                     />
                                 </div>
