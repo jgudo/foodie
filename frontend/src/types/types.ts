@@ -111,6 +111,8 @@ export interface IFetchParams {
     offset?: number;
     limit?: number;
     skip?: number;
+    q?: string;
+    type?: string;
     sort?: 'asc' | 'desc';
 }
 

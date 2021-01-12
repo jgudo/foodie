@@ -92,7 +92,7 @@ UserSchema.methods.passwordMatch = function (password, cb) {
 }
 
 UserSchema.methods.toUserJSON = function () {
-    const user = omit(this.toObject(), ['password', 'facebook', 'createdAt', 'updatedAt']);
+    const user = omit(this.toObject(), ['password', 'facebook', 'createdAt', 'updatedAt', 'bookmarks']);
 
     return user;
 }

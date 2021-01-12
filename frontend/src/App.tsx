@@ -12,6 +12,7 @@ import Login from "./pages/login";
 import Post from "./pages/post";
 import Profile from "./pages/profile";
 import Register from "./pages/register";
+import Search from "./pages/search";
 import { loginSuccess } from "./redux/action/authActions";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
@@ -52,10 +53,11 @@ function App() {
           <NavBar />
           <main className="min-h-screen">
             <Switch>
-              <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
-              <ProtectedRoute path={ROUTE.POST} component={Post} />
               <PublicRoute path={ROUTE.REGISTER} component={Register} />
               <PublicRoute path={ROUTE.LOGIN} component={Login} />
+              <ProtectedRoute path={ROUTE.SEARCH} exact component={Search} />
+              <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
+              <ProtectedRoute path={ROUTE.POST} component={Post} />
               <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
               <Route component={PageNotFound} />
             </Switch>

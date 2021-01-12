@@ -1,6 +1,7 @@
 import { MessageOutlined, SearchOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useHistory, useLocation } from "react-router-dom";
 import { LOGIN, REGISTER } from '~/constants/routes';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
@@ -13,11 +14,26 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
         isLoadingAuth: state.loading.isLoadingAuth,
         auth: state.auth
     }));
+    const [searchInput, setSearchInput] = useState('');
+    const history = useHistory();
     const { pathname } = useLocation();
 
     const onLogout = () => {
         dispatch(logoutStart());
     };
+
+    const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(e.target.value);
+    }
+
+    const onSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && searchInput) {
+            history.push({
+                pathname: '/search',
+                search: `q=${searchInput.trim()}`
+            });
+        }
+    }
 
     const hideNavToPaths = [LOGIN, REGISTER];
 
@@ -37,6 +53,8 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                         className="!border-gray-100 !pl-10 !py-2"
                         placeholder="Search..."
                         type="text"
+                        onChange={onSearchInputChange}
+                        onKeyDown={onSearchSubmit}
                     />
                 </li>
             </ul>

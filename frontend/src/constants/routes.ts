@@ -8,3 +8,4 @@ export const PROFILE_EDIT_INFO = '/user/:username/edit';
 export const PROFILE_FOLLOWERS = '/user/:username/followers';
 export const PROFILE_FOLLOWING = '/user/:username/following';
 export const PROFILE_BOOKMARKS = '/user/:username/bookmarks';
+export const SEARCH = '/search';

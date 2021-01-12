@@ -416,3 +416,17 @@ export const getSuggestedPeople = async (params: IFetchParams): Promise<IProfile
         return Promise.reject(e.response.data);
     }
 }
+
+export const search = async (params: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/search`,
+            params
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
