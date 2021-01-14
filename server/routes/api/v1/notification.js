@@ -9,9 +9,7 @@ router.get(
     isAuthenticated,
     async (req, res, next) => {
         try {
-            const { offset: off } = req.query;
-            let offset = 0;
-            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
+            let offset = parseInt(req.query.offset) || 0;
 
             const limit = 10;
             const skip = offset * limit;
@@ -20,8 +18,8 @@ router.get(
                 .find({ target: req.user._id })
                 .populate('target initiator', 'profilePicture username fullname')
                 .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit);
+                .limit(limit)
+                .skip(skip);
             const unreadCount = await Notification.find({ target: req.user._id, unread: true });
             const count = await Notification.find({ target: req.user._id });
             const result = { notifications, unreadCount: unreadCount.length, count: count.length };

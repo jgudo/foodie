@@ -243,11 +243,14 @@ export const updateComment = async (postID: string, body: string): Promise<any> 
     }
 }
 
-export const getNotifications = async (): Promise<any> => {
+export const getNotifications = async (params: IFetchParams): Promise<any> => {
     try {
         const req = await axios({
             method: 'GET',
-            url: `/notifications`
+            url: `/notifications`,
+            params: {
+                offset: params.offset
+            }
         });
 
         return Promise.resolve(req.data.data)

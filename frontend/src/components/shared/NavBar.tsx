@@ -1,10 +1,10 @@
-import { MessageOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { LOGIN, REGISTER } from '~/constants/routes';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
+import Messages from '../main/Messages';
 import Notification from '../main/Notification';
 import SearchInput from './SearchInput';
 
@@ -41,7 +41,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                 {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
                 <ul className="flex items-center space-x-8 mr-8">
                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                        <MessageOutlined className=" text-xl" />
+                        <Messages />
                     </li>
                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
                         <Notification />

@@ -1,5 +1,6 @@
 import { BellOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
 import Loader from '~/components/shared/Loader';
@@ -18,6 +19,8 @@ const Notification: React.FC = () => {
     const [isNotificationOpen, setNotificationOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [offset, setOffset] = useState(0);
+    const [error, setError] = useState('');
     const [notifications, setNotifications] = useState<any>({
         items: [],
         count: 0
@@ -80,14 +83,20 @@ const Notification: React.FC = () => {
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            const notifs = await getNotifications();
+            setError('');
+            const notifs = await getNotifications({ offset });
 
             setNotifications({
-                items: notifs.notifications,
+                items: [...notifications.items, ...notifs.notifications],
                 count: notifs.count,
                 unreadCount: notifs.unreadCount
             });
+            setOffset(offset + 1);
             setLoading(false);
+
+            if (notifs.notifications.length === 0) {
+                setError('No more notifications.')
+            }
         } catch (e) {
             setLoading(false);
             console.log(e);
@@ -139,6 +148,14 @@ const Notification: React.FC = () => {
         }
     }
 
+    const infiniteRef = useInfiniteScroll({
+        loading: isLoading,
+        hasNextPage: !error && notifications.items.length !== 0,
+        onLoadMore: fetchNotifications,
+        scrollContainer: 'parent',
+        threshold: 200
+    });
+
     return (
         <div className="relative">
             <Badge count={unreadCount}>
@@ -164,11 +181,23 @@ const Notification: React.FC = () => {
                             <Loader />
                         </div>
                     ) : (
-                            <NotificationList
-                                notifications={notifications.items}
-                                readNotification={handleReadNotification}
-                                toggleNotification={setNotificationOpen}
-                            />
+                            <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+                                <NotificationList
+                                    notifications={notifications.items}
+                                    readNotification={handleReadNotification}
+                                    toggleNotification={setNotificationOpen}
+                                />
+                                {(notifications.items.length !== 0 && !error && isLoading) && (
+                                    <div className="flex justify-center py-2">
+                                        <Loader />
+                                    </div>
+                                )}
+                                {(notifications.items.length !== 0 && error) && (
+                                    <div className="flex justify-center py-6">
+                                        <p className="text-gray-400 italic">{error}</p>
+                                    </div>
+                                )}
+                            </div>
                         )}
                 </div>
             )}

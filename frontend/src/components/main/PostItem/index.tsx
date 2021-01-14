@@ -66,8 +66,8 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             <div className="mb-3 mt-2">
                 <p className="text-gray-700">{post.description}</p>
             </div>
-            {/* --- IMAGE ----- */}
-            <ImageGrid images={post.photos} />
+            {/* --- IMAGE GRID ----- */}
+            {post.photos.length !== 0 && <ImageGrid images={post.photos} />}
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
                 <div>

@@ -19,3 +19,12 @@
     z-index: 999;
     background-color: rgba(0,0,0, .3);
   }
+
+.ril-next-button,
+.ril-prev-button {
+    border-radius: 15px;
+}
+
+.ril-toolbar {
+    background: transparent;
+}

@@ -14,7 +14,7 @@ const SuggestedPeople: React.FC = () => {
         (async function () {
             try {
                 setIsLoading(true);
-                const users = await getSuggestedPeople({ offset: 0, limit: 10 });
+                const users = await getSuggestedPeople({ offset: 0, limit: 6 });
 
                 setPeople(users);
                 setIsLoading(false);

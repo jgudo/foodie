@@ -1,32 +1,55 @@
+import { useState } from "react";
+import useModal from "~/hooks/useModal";
+import ImageLightbox from "../main/Modals/ImageLightbox";
+
 interface IProps {
     images: string[];
 }
 
 const ImageGrid: React.FC<IProps> = ({ images }) => {
+    const { isOpen, closeModal, openModal } = useModal();
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const onClickImage = (e: any) => {
+        if (e.target.dataset) {
+            const idx = e.target.dataset.index;
+
+            setActiveIndex(idx);
+            // setting state is async
+            // so we need to add set timeout so that we give the correct index to lightbox
+            setTimeout(openModal, 100);
+        }
+    }
+
+    const onCloseLightbox = () => {
+        closeModal();
+        setActiveIndex(0);
+    }
+
     const renderGrid = () => {
         switch (images.length) {
             case 1:
                 return `
                     <div class="grid">
-                        <img src=${images[0]} class="grid-img"/>
+                        <img src=${images[0]} class="grid-img" data-index="0"/>
                     </div>
                 `
             case 2:
                 return `
                     <div class="grid grid-rows-2">
-                        <img src=${images[0]} class="grid-img" />
-                        <img src=${images[1]} class="grid-img" />
+                        <img src=${images[0]} class="grid-img" data-index="0"/>
+                        <img src=${images[1]} class="grid-img" data-index="1"/>
                     </div>
                 `
             case 3:
                 return `
                     <div class="grid grid-rows-2">
                         <div class="grid">
-                            <img src=${images[0]} class="grid-img" />
+                            <img src=${images[0]} class="grid-img" data-index="0"/>
                         </div>
                         <div class="grid grid-cols-2">
-                            <img src=${images[1]} class="grid-img" />
-                            <img src=${images[2]} class="grid-img" />
+                            <img src=${images[1]} class="grid-img" data-index="1"/>
+                            <img src=${images[2]} class="grid-img" data-index="2"/>
                         </div>
                     </div>
                 `
@@ -34,12 +57,12 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
                 return `
                     <div class="grid grid-rows-2">
                         <div class="grid grid-cols-2">
-                            <img src=${images[0]} class="grid-img" />
-                            <img src=${images[1]} class="grid-img" />
+                            <img src=${images[0]} class="grid-img" data-index="0"/>
+                            <img src=${images[1]} class="grid-img" data-index="1"/>
                         </div>
                         <div class="grid grid-cols-2">
-                            <img src=${images[2]} class="grid-img" />
-                            <img src=${images[3]} class="grid-img" />
+                            <img src=${images[2]} class="grid-img" data-index="2"/>
+                            <img src=${images[3]} class="grid-img" data-index="3"/>
                         </div>
                     </div>
                 `
@@ -47,13 +70,13 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
                 return `
                     <div class="grid grid-rows-2">
                         <div class="grid grid-cols-2">
-                            <img src=${images[0]} class="grid-img" />
-                            <img src=${images[1]} class="grid-img" />
+                            <img src=${images[0]} class="grid-img" data-index="0" />
+                            <img src=${images[1]} class="grid-img" data-index="1" />
                         </div>
                         <div class="grid grid-cols-3">
-                            <img src=${images[2]} class="grid-img" />
-                            <img src=${images[3]} class="grid-img" />
-                            <img src=${images[4]} class="grid-img" />
+                            <img src=${images[2]} class="grid-img" data-index="2" />
+                            <img src=${images[3]} class="grid-img" data-index="3" />
+                            <img src=${images[4]} class="grid-img" data-index="4" />
                         </div>
                     </div>
                 `
@@ -66,11 +89,21 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
         }
     }
     return (
-        <div
-            className="w-full h-25rem"
-            dangerouslySetInnerHTML={{ __html: renderGrid() }}
-        >
-        </div>
+        <>
+            <div
+                className="w-full h-25rem"
+                dangerouslySetInnerHTML={{ __html: renderGrid() }}
+                onClick={onClickImage}
+            >
+
+            </div>
+            <ImageLightbox
+                activeIndex={activeIndex}
+                isOpen={isOpen}
+                closeLightbox={onCloseLightbox}
+                images={images}
+            />
+        </>
     )
 };
 

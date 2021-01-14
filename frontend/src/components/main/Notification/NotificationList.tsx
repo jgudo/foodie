@@ -41,7 +41,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                                 background: `#f8f8f8 url(${notif.initiator.profilePicture || 'https://i.pravatar.cc/60'}`
                                             }}
                                         />
-                                        <span className="text-indigo-700">@{notif.initiator.username}</span>
+                                        <span className="text-indigo-700">{notif.initiator.username}</span>
                                 &nbsp;
                                                 <span className="text-gray-700">
                                             {

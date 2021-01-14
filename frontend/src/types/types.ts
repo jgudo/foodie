@@ -89,6 +89,14 @@ export interface INotification {
     link: string;
 }
 
+export interface IMessage {
+    id: string;
+    sender: IUser,
+    receiver: IUser,
+    createdAt: Date,
+    viewed: boolean
+}
+
 export interface IBookmark {
     id: string;
     isBookmarked: boolean;
