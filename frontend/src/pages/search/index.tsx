@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { Redirect, RouteComponentProps, useLocation } from "react-router-dom";
 import Loader from "~/components/shared/Loader";
@@ -21,8 +21,17 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     const [isLoadingUser, setIsLoadingUser] = useState(false);
     const [isLoadingPost, setIsLoadingPost] = useState(false);
     const query = useQuery();
+    let isMountedRef = useRef<boolean | null>(null);
     const searchQuery = query.get('q');
     const searchType = query.get('type');
+
+    useEffect(() => {
+        if (isMountedRef) isMountedRef.current = true;
+
+        return () => {
+            if (isMountedRef) isMountedRef.current = false;
+        }
+    }, []);
 
     useEffect(() => {
         if (searchType === 'posts') {
@@ -40,12 +49,14 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 setError('');
                 const fetchedPosts = await search({ q: searchQuery, type: 'posts', offset: postOffset });
 
-                setPosts([...posts, ...fetchedPosts]);
-                setIsLoadingPost(false);
-                setPostOffset(postOffset + 1);
+                if (isMountedRef.current) {
+                    setPosts([...posts, ...fetchedPosts]);
+                    setIsLoadingPost(false);
+                    setPostOffset(postOffset + 1);
 
-                if (fetchedPosts.length === 0) {
-                    setError('No posts found.');
+                    if (fetchedPosts.length === 0) {
+                        setError('No posts found.');
+                    }
                 }
             }
         } catch (e) {
@@ -61,12 +72,14 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 setIsLoadingUser(true);
                 const fetchedUsers = await search({ q: searchQuery, offset: userOffset });
 
-                setUsers([...users, ...fetchedUsers]);
-                setIsLoadingUser(false);
-                setUserOffset(userOffset + 1);
+                if (isMountedRef.current) {
+                    setUsers([...users, ...fetchedUsers]);
+                    setIsLoadingUser(false);
+                    setUserOffset(userOffset + 1);
 
-                if (fetchedUsers.length === 0) {
-                    setError('No users found.');
+                    if (fetchedUsers.length === 0) {
+                        setError('No users found.');
+                    }
                 }
             }
         } catch (e) {
@@ -85,7 +98,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
 
     const infiniteUserRef = useInfiniteScroll({
         loading: isLoadingUser,
-        hasNextPage: !error,
+        hasNextPage: !error && users.length !== 0,
         onLoadMore: dispatchSearchUsers,
         scrollContainer: 'window',
         threshold: 100
@@ -93,7 +106,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
 
     const infinitePostRef = useInfiniteScroll({
         loading: isLoadingPost,
-        hasNextPage: !error,
+        hasNextPage: !error && posts.length !== 0,
         onLoadMore: dispatchSearchPosts,
         scrollContainer: 'window',
         threshold: 100

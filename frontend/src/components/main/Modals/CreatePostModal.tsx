@@ -1,9 +1,9 @@
-import { CloseCircleOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, CloseOutlined, FileImageOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import useFileHandler from '~/hooks/useFileHandler';
-import { createPostStart } from '~/redux/action/feedActions';
 import { IImage, IRootReducer } from '~/types/types';
 
 interface IProps {
@@ -11,6 +11,7 @@ interface IProps {
     onAfterOpen?: () => void;
     closeModal: () => void;
     openModal: () => void;
+    dispatchCreatePost: (form: FormData) => void;
 }
 
 Modal.setAppElement('#root');
@@ -18,7 +19,6 @@ Modal.setAppElement('#root');
 const CreatePostModal: React.FC<IProps> = (props) => {
     const [description, setDescription] = useState('');
     const isLoadingCreatePost = useSelector((state: IRootReducer) => state.loading.isLoadingCreatePost);
-    const dispatch = useDispatch();
     const { imageFile, onFileChange, clearFiles, removeImage } = useFileHandler<IImage[]>('multiple', []);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -37,18 +37,13 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                 });
             }
 
-            dispatch(createPostStart(formData));
+            props.dispatchCreatePost(formData);
+            toast('Creating post...');
             setDescription('');
             clearFiles();
             props.closeModal();
         }
     };
-
-    const handleCancel = () => {
-        setDescription('');
-        clearFiles();
-        props.closeModal();
-    }
 
     useEffect(() => {
         console.log(imageFile);
@@ -97,11 +92,11 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                                     id="photos"
                                 />
                                 <label
-                                    className="inline-flex items-center cursor-pointer justify-start border-gray-200 text-gray-600 py-2"
+                                    className="inline-flex items-center cursor-pointer justify-start border-gray-200 text-gray-400 py-2 text-xs"
                                     htmlFor="photos"
                                 >
                                     <div className="group flex items-center justify-center w-10 h-10 border-2 border-dashed border-gray-400 hover:border-indigo-700">
-                                        <PlusOutlined className="text-xl flex items-center justify-center text-gray-400 hover:text-indigo-700" />
+                                        <FileImageOutlined className="text-xl flex items-center justify-center text-gray-400 hover:text-indigo-700" />
                                     </div>
                                 </label>
                             </div>

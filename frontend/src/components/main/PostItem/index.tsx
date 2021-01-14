@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
+import ImageGrid from '~/components/shared/ImageGrid';
 import useModal from '~/hooks/useModal';
 import { IPost, IRootReducer } from "~/types/types";
 import Comments from '../Comments';
@@ -66,15 +67,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 <p className="text-gray-700">{post.description}</p>
             </div>
             {/* --- IMAGE ----- */}
-            <Link to={`/post/${post.id}`}>
-                <div
-
-                    className="w-full h-25rem !bg-cover !bg-no-repeat !bg-center"
-                    style={{
-                        background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
-                    }}
-                />
-            </Link>
+            <ImageGrid images={post.photos} />
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
                 <div>

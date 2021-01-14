@@ -10,7 +10,6 @@ const initState: INewsFeed = {
 const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
     switch (action.type) {
         case GET_FEED_SUCCESS:
-            console.log('HEY', action.payload)
             return {
                 items: [...state.items, ...action.payload],
                 offset: state.offset + 1

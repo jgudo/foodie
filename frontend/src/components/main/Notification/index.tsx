@@ -2,6 +2,7 @@ import { BellOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
+import Loader from '~/components/shared/Loader';
 import {
     getNotifications,
     getUnreadNotifications,
@@ -78,13 +79,17 @@ const Notification: React.FC = () => {
 
     const fetchNotifications = async () => {
         try {
+            setLoading(true);
             const notifs = await getNotifications();
+
             setNotifications({
                 items: notifs.notifications,
                 count: notifs.count,
                 unreadCount: notifs.unreadCount
             });
+            setLoading(false);
         } catch (e) {
+            setLoading(false);
             console.log(e);
         }
     };
@@ -118,6 +123,8 @@ const Notification: React.FC = () => {
     };
 
     const handleMarkAllUnread = async () => {
+        if (notifications.items.length === 0) return;
+
         try {
             const { state } = await markAllAsUnreadNotifications();
             const updatedNotifs = notifications.items.map((notif: INotification) => {
@@ -152,12 +159,17 @@ const Notification: React.FC = () => {
                             Mark all as read
                         </span>
                     </div>
-                    {/* ----- LIST ---- */}
-                    <NotificationList
-                        notifications={notifications.items}
-                        readNotification={handleReadNotification}
-                        toggleNotification={setNotificationOpen}
-                    />
+                    {isLoading ? (
+                        <div className="flex items-center justify-center py-8">
+                            <Loader />
+                        </div>
+                    ) : (
+                            <NotificationList
+                                notifications={notifications.items}
+                                readNotification={handleReadNotification}
+                                toggleNotification={setNotificationOpen}
+                            />
+                        )}
                 </div>
             )}
         </div>

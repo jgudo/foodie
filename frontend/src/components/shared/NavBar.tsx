@@ -26,7 +26,12 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
         <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full">
             <div className="flex items-center space-x-8">
                 {/* ---- LOGO -------- */}
-                <NavLink to="/">
+                <NavLink
+                    to={{
+                        pathname: '/',
+                        state: { from: pathname }
+                    }}
+                >
                     <h2 className="text-2xl">Foodie</h2>
                 </NavLink>
                 {/* -------- SEARCH BAR ------- */}

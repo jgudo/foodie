@@ -35,6 +35,12 @@ const DeletePostModal: React.FC<IProps> = (props) => {
         }
     };
 
+    const onCloseModal = () => {
+        if (!isDeleting) {
+            props.closeModal();
+        }
+    }
+
     return (
         <div>
             <Modal
@@ -46,7 +52,10 @@ const DeletePostModal: React.FC<IProps> = (props) => {
                 shouldCloseOnOverlayClick={!isDeleting}
                 overlayClassName="modal-overlay"
             >
-                <CloseOutlined className="p-2 absolute right-2 top-2 outline-none text-gray-500" onClick={props.closeModal} />
+                <CloseOutlined
+                    className="p-2 absolute right-2 top-2 outline-none text-gray-500"
+                    onClick={onCloseModal}
+                />
                 {error && <span className="p-4 bg-red-100 text-red-500 w-full">{error}</span>}
                 <div className="p-4 px-8">
                     <h1>Delete Post</h1>
@@ -56,6 +65,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
                         <button
                             className="button--muted !rounded-full"
                             onClick={props.closeModal}
+                            disabled={isDeleting}
                         >
                             Cancel
                         </button>

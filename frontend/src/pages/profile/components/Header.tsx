@@ -16,13 +16,12 @@ import Tabs from './Tabs';
 
 interface IProps {
     profile: IProfile,
-    isLoadingGetUser: boolean;
     auth: IUser;
 }
 
 const initImageState = { id: '', file: null, url: '' };
 
-const Header: React.FC<IProps> = ({ profile, auth, isLoadingGetUser }) => {
+const Header: React.FC<IProps> = ({ profile, auth }) => {
     const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false);
     const [isUploadingCoverPhoto, setIsUploadingCoverPhoto] = useState(false);
     const history = useHistory();

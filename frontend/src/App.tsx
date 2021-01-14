@@ -1,6 +1,7 @@
+import { createBrowserHistory } from 'history';
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Route, Router, Switch } from "react-router-dom";
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as ROUTE from "~/constants/routes";
@@ -17,6 +18,8 @@ import { loginSuccess } from "./redux/action/authActions";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
 import { checkAuthSession } from "./services/api";
+
+export const history = createBrowserHistory();
 
 function App() {
   const [isCheckingSession, setCheckingSession] = useState(true);
@@ -40,8 +43,8 @@ function App() {
   return isCheckingSession ? (
     <Preloader />
   ) : (
-      <BrowserRouter>
-        <div className="App">
+      <Router history={history}>
+        <main className="min-h-screen">
           <ToastContainer
             position="bottom-left"
             autoClose={5000}
@@ -51,19 +54,17 @@ function App() {
             bodyStyle={{ paddingLeft: '15px' }}
           />
           <NavBar />
-          <main className="min-h-screen">
-            <Switch>
-              <PublicRoute path={ROUTE.REGISTER} component={Register} />
-              <PublicRoute path={ROUTE.LOGIN} component={Login} />
-              <ProtectedRoute path={ROUTE.SEARCH} exact component={Search} />
-              <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
-              <ProtectedRoute path={ROUTE.POST} component={Post} />
-              <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
-              <Route component={PageNotFound} />
-            </Switch>
-          </main>
-        </div>
-      </BrowserRouter>
+          <Switch>
+            <PublicRoute path={ROUTE.REGISTER} component={Register} />
+            <PublicRoute path={ROUTE.LOGIN} component={Login} />
+            <ProtectedRoute path={ROUTE.SEARCH} exact component={Search} />
+            <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
+            <ProtectedRoute path={ROUTE.POST} component={Post} />
+            <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
+            <Route component={PageNotFound} />
+          </Switch>
+        </main>
+      </Router>
     );
 }
 

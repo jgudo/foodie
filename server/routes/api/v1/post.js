@@ -9,7 +9,7 @@ const NewsFeed = require('../../../schemas/NewsFeedSchema');
 const Notification = require('../../../schemas/NotificationSchema');
 const Comment = require('../../../schemas/CommentSchema');
 const Bookmark = require('../../../schemas/BookmarkSchema');
-const { multer, uploadImageToStorage } = require('../../../storage/filestorage');
+const { multer, uploadImageToStorage, deleteImageFromStorage } = require('../../../storage/filestorage');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -34,6 +34,7 @@ router.post(
                 _author_id: req.user._id,
                 // author: req.user._id,
                 description,
+                photos,
                 privacy: privacy || 'public',
                 createdAt: Date.now()
             });
@@ -249,6 +250,7 @@ router.delete(
             if (!post) return res.sendStatus(404);
 
             if (req.user._id.toString() === post._author_id.toString()) {
+                await deleteImageFromStorage(...post.photos);
                 await Post.findByIdAndDelete(post_id);
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
                 await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) });
@@ -262,6 +264,8 @@ router.delete(
                         bookmarks: post_id
                     }
                 });
+
+
                 res.sendStatus(200);
             } else {
                 res.sendStatus(401);

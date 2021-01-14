@@ -1,3 +1,4 @@
+import { CommentOutlined, LikeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useHistory } from 'react-router-dom';
@@ -23,6 +24,7 @@ const boldString = (str: string, substr: string) => {
 
 const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
     const history = useHistory();
+
     const onClickPost = (id: string) => {
         history.push(`/post/${id}`);
     };
@@ -43,7 +45,7 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                     <div
                         className="w-32 h-full !bg-cover !bg-no-repeat !bg-center"
                         style={{
-                            background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
+                            background: `#f7f7f7 url(${post.photos[0]})`
                         }}
                     />
                     <div className="flex-grow p-2 pb-4 max-w-sm">
@@ -52,18 +54,30 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                             dangerouslySetInnerHTML={{ __html: boldString(post.description, searchQuery) }}
                         >
                         </h4>
-                        <h6 className="text-xs text-gray-400 self-end">
-                            Posted by
-                            &nbsp;
+                        <div className="flex space-x-8 self-end">
+                            <h6 className="text-xs text-gray-400">
+                                Posted by
+                                &nbsp;
                             <span
-                                className="underline text-indigo-700 cursor-pointer hover:text-indigo-400"
-                                onClick={(e) => onClickAuthor(e, post.author.username)}
-                            >
-                                {post.author.username}
-                            </span>
+                                    className="underline text-indigo-700 cursor-pointer hover:text-indigo-400"
+                                    onClick={(e) => onClickAuthor(e, post.author.username)}
+                                >
+                                    {post.author.username}
+                                </span>
                             &nbsp;
                             {dayjs(post.createdAt).fromNow()}
-                        </h6>
+                            </h6>
+                            <h6 className="text-sm text-gray-600 flex items-center">
+                                {post.likesCount}
+                                &nbsp;
+                                <LikeOutlined className="flex items-center justify-center" />
+                            </h6>
+                            <h6 className="text-sm text-gray-600 flex items-center">
+                                {post.commentsCount}
+                                &nbsp;
+                                <CommentOutlined className="flex items-center justify-center" />
+                            </h6>
+                        </div>
                     </div>
                 </div>
             ))}

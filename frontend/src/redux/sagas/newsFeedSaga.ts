@@ -32,7 +32,6 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
                 yield put(isCreatingPost(true));
 
                 const post = yield call(createPost, payload);
-                console.log('FROM SAGA', payload);
 
                 yield put(createPostSuccess(post));
                 yield put(isCreatingPost(false));

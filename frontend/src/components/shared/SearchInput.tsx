@@ -56,8 +56,9 @@ const SearchInput: React.FC = () => {
         })();
     }
 
-    const onFocusInput = () => {
+    const onFocusInput = (e: React.FocusEvent<HTMLInputElement>) => {
         setVisibleSuggestion(true);
+        e.target.select();
     }
 
     const onClickItem = (username: string) => {
@@ -83,7 +84,7 @@ const SearchInput: React.FC = () => {
                 placeholder="Search..."
                 type="text"
                 onFocus={onFocusInput}
-                onChange={debounce(onSearchInputChange, 500)}
+                onChange={debounce(onSearchInputChange, 200)}
                 onKeyDown={onSearchSubmit}
             />
             {(!error && searchInput && isVisibleSuggestion) && (
