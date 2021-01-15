@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import authReducer from './authReducer';
+import chatReducer from './chatReducer';
 import errorReducer from './errorReducer';
 import loadingReducer from './loadingReducer';
 import newsFeedReducer from './newsFeedReducer';
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
     error: errorReducer,
     loading: loadingReducer,
     newsFeed: newsFeedReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    chats: chatReducer
 });
 
 export default rootReducer;

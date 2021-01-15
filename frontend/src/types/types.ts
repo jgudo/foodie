@@ -5,6 +5,7 @@ export interface IRootReducer {
     loading: TLoading;
     newsFeed: INewsFeed;
     profile: IProfile;
+    chats: IChatState
 }
 
 export interface IError {
@@ -55,6 +56,19 @@ export interface IComment {
     createdAt: Date;
     updatedAt: Date;
     author: IUser;
+}
+
+export interface IChatItemsState {
+    target: string;
+    id: string;
+    profilePicture: string | null;
+    minimized: boolean;
+    chats: IMessage[]
+}
+
+export interface IChatState {
+    items: IChatItemsState[],
+    active: string;
 }
 
 export interface IProfile {

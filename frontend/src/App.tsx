@@ -5,6 +5,7 @@ import { Route, Router, Switch } from "react-router-dom";
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as ROUTE from "~/constants/routes";
+import Chats from './components/main/Chats';
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
 import PageNotFound from "./pages/error/PageNotFound";
@@ -63,6 +64,7 @@ function App() {
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
             <Route component={PageNotFound} />
           </Switch>
+          <Chats />
         </main>
       </Router>
     );

@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Badge from '~/components/shared/Badge';
-import { IMessage } from "~/types/types";
+import { IMessage, IUser } from "~/types/types";
 
 dayjs.extend(relativeTime);
 
 interface IProps {
     messages: IMessage[];
     userID: string;
-    handleReadMessage: (senderID: string) => void;
+    handleReadMessage: (sender: IUser) => void;
 }
 
 const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage }) => {
@@ -19,7 +19,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                     <p className="text-gray-400 italic">No Messages.</p>
                 </div>
             ) : (
-                    <div>
+                    <div className="max-h-80vh overflow-y-scroll divide-y divide-gray-100">
                         {messages.map(message => {
                             const self = message.to.id !== userID;
 
@@ -27,11 +27,11 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                                 <div
                                     className={`flex justify-start cursor-pointer hover:bg-gray-100 px-2 py-3 relative ${(!message.seen && !self) && 'bg-indigo-100 hover:bg-indigo-200'}`}
                                     key={message.id}
-                                    onClick={() => handleReadMessage(message.from.id)}
+                                    onClick={() => handleReadMessage(self ? message.to : message.from)}
                                 >
                                     {/* --- IMAGE--- */}
                                     <div
-                                        className="w-12 h-12 !bg-cover !bg-no-repeat rounded-full mr-2"
+                                        className="w-12 h-12 !bg-cover !bg-no-repeat rounded-full mr-4"
                                         style={{ background: `#f8f8f8 url(${!self ? message.from.profilePicture : message.to.profilePicture})` }}
                                     />
                                     <div className="relative flex-grow">

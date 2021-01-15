@@ -26,8 +26,13 @@ router.post(
                 from: req.user._id,
                 to: Types.ObjectId(user_id),
                 text,
+                seen: false,
                 createdAt: Date.now(),
             });
+
+            // Notify user
+            const io = req.app.get('io');
+            io.to(user_id).emit('newMessage', message);
 
             await message.save();
             await message.populate('from to', 'username profilePicture fullname').execPopulate();
@@ -152,6 +157,51 @@ router.get(
             }, 0);
 
             res.status(200).send(makeResponseJson({ items: agg, totalUnseen }));
+        } catch (e) {
+            console.log('CANT GET MESSAGES', e);
+            res.status(500).send(makeErrorJson());
+        }
+    }
+);
+
+router.get(
+    '/v1/messages/unread',
+    isAuthenticated,
+    async (req, res, next) => {
+        try {
+            const agg = await Message.aggregate([
+                {
+                    $match: {
+                        to: req.user._id
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$from',
+                        seenCount: {
+                            $push: {
+                                $cond: [
+                                    { $eq: ['$seen', false] },
+                                    '$_id',
+                                    '$$REMOVE'
+                                ]
+                            }
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        count: {
+                            $size: '$seenCount'
+                        }
+                    }
+                }
+            ]);
+
+            const totalUnseen = agg.reduce((acc, obj) => acc + obj.count, 0);
+
+            res.status(200).send(makeResponseJson({ count: totalUnseen }));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
             res.status(500).send(makeErrorJson());

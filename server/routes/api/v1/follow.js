@@ -148,9 +148,7 @@ router.get(
         try {
             const { username } = req.params;
 
-            console.log('ERRRRRoo')
             const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
-            console.log('MY FOLLOWING: ', selfFollowing.following)
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
 

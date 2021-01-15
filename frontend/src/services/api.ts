@@ -459,3 +459,16 @@ export const readMessage = async (senderID: string): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const getUnreadMessages = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/messages/unread`
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

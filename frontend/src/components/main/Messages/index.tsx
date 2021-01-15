@@ -1,11 +1,12 @@
 import { MessageOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
 import Loader from '~/components/shared/Loader';
-import { getMessages, readMessage } from '~/services/api';
+import { initiateChat } from '~/redux/action/chatActions';
+import { getMessages, getUnreadMessages, readMessage } from '~/services/api';
 import socket from "~/socket/socket";
-import { IMessage, IRootReducer } from "~/types/types";
+import { IMessage, IRootReducer, IUser } from "~/types/types";
 import MessagesList from "./MessagesList";
 
 interface IMessageState {
@@ -19,10 +20,12 @@ const Messages: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState('');
+    const [hasNewMessage, setHasNewMessage] = useState(false);
     const [messages, setMessages] = useState<IMessageState>({
         items: [],
         totalUnseen: 0
     });
+    const dispatch = useDispatch();
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -34,8 +37,19 @@ const Messages: React.FC = () => {
             }
         });
 
-        // socket.on('newMessage', ({ notification, count }: { notification: INotification, count: number }) => {
-        // });
+        socket.on('newMessage', (message: IMessage) => {
+            console.log(message);
+            if (message.from.id !== id) {
+                setMessages({ ...messages, totalUnseen: messages.totalUnseen + 1 });
+            }
+
+            setHasNewMessage(true);
+        });
+
+        getUnreadMessages()
+            .then(({ count }) => {
+                setMessages({ ...messages, totalUnseen: count });
+            });
 
         return () => {
             socket.emit('userDisconnect', id);
@@ -74,9 +88,11 @@ const Messages: React.FC = () => {
         }
     };
 
-    const handleReadMessage = async (senderID: string) => {
+    const handleReadMessage = async (sender: IUser) => {
         try {
-            await readMessage(senderID);
+            dispatch(initiateChat(sender));
+
+            await readMessage(sender.id);
             const updated = messages.items.map(msg => ({
                 ...msg,
                 unseenCount: 0,
@@ -95,8 +111,9 @@ const Messages: React.FC = () => {
         setMessages({ ...messages, totalUnseen: 0 });
 
         // Since setting state is asynchronous, we should flip the value of isMessagesOpen
-        if (!isMessagesOpen && messages.items.length === 0) {
+        if ((!isMessagesOpen && messages.items.length === 0) || hasNewMessage) {
             fetchMessages();
+            setHasNewMessage(false);
         }
     }
 

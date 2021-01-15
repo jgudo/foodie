@@ -20,10 +20,11 @@ module.exports = {
         '25rem': '25rem',
       },
       maxHeight: {
-        '80vh': '80vh'
+        '80vh': '80vh',
       },
       minHeight: {
-        '10rem': '10rem'
+        '10rem': '10rem',
+        '18rem': '18rem'
       },
       width: {
         '20rem': '20rem',

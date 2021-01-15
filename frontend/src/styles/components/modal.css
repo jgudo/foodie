@@ -20,9 +20,19 @@
     background-color: rgba(0,0,0, .3);
   }
 
+  
 .ril-next-button,
 .ril-prev-button {
     border-radius: 15px;
+}
+.ril-next-button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0
+}
+
+.ril-prev-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0
 }
 
 .ril-toolbar {
