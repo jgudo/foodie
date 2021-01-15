@@ -22,6 +22,7 @@ const followRouter = require('./routes/api/v1/follow');
 const bookmarkRouter = require('./routes/api/v1/bookmark');
 const commentRouter = require('./routes/api/v1/comment');
 const searchRouter = require('./routes/api/v1/search');
+const messageRouter = require('./routes/api/v1/message');
 const notificationRouter = require('./routes/api/v1/notification');
 
 app.disable('x-powered-by');
@@ -70,6 +71,7 @@ app.use(passport.session());
 
 app.use('/api', [
   searchRouter,
+  messageRouter,
   feedRouter,
   authRouter,
   notificationRouter,
