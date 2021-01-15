@@ -99,6 +99,7 @@ const Notification: React.FC = () => {
             }
         } catch (e) {
             setLoading(false);
+            setError(e.error.message);
             console.log(e);
         }
     };

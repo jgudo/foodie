@@ -1,3 +1,4 @@
+import { CommentOutlined, LikeOutlined, UserAddOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useHistory } from 'react-router-dom';
@@ -33,7 +34,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                 key={notif.id}
                                 onClick={() => handleNotificationClick(notif.link, notif.id)}
                             >
-                                <div>
+                                <div className="relative">
                                     <div className="flex flex-wrap items-center">
                                         <div
                                             className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
@@ -53,6 +54,13 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                         </span>
                                     </div>
                                     <span className="text-gray-500 text-sm ml-14">{dayjs(notif.createdAt).fromNow()}</span>
+                                    {notif.type === 'like' ? (
+                                        <LikeOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                    ) : notif.type === 'comment' ? (
+                                        <CommentOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                    ) : (
+                                                <UserAddOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                            )}
                                 </div>
                             </div>
                         ))}

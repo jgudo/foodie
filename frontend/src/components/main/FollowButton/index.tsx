@@ -1,4 +1,4 @@
-import { CheckOutlined, UserOutlined } from "@ant-design/icons";
+import { CheckOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { followUser, unfollowUser } from "~/services/api";
 
@@ -41,7 +41,7 @@ const FollowButton: React.FC<IProps> = (props) => {
                 disabled={isLoading}
                 onClick={dispatchFollow}
             >
-                {isFollowing ? <CheckOutlined /> : <UserOutlined />}
+                {isFollowing ? <CheckOutlined /> : <UserAddOutlined />}
                 &nbsp;&nbsp;
                 <span className={`${props.size === 'sm' && 'text-sm'}`}>
                     {isLoading

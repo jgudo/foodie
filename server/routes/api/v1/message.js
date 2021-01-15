@@ -70,6 +70,7 @@ router.get(
                                 ]
                             }
                         },
+                        id: { $first: '$_id' },
                         from: { $first: '$from' },
                         text: { $first: '$text' },
                         createdAt: { $first: '$createdAt' },
@@ -93,8 +94,10 @@ router.get(
                         profilePicture: '$from.profilePicture',
                         user_id: '$from._id',
                         seenCount: 1,
+                        seen: 1,
                         text: 1,
                         to: '$_id',
+                        id: 1,
                         createdAt: 1
                     }
                 },
@@ -112,6 +115,7 @@ router.get(
                         to: 1,
                         text: 1,
                         seen: 1,
+                        id: 1,
                         createdAt: 1
                     }
                 },
@@ -137,17 +141,47 @@ router.get(
                         text: 1,
                         seen: 1,
                         createdAt: 1,
-                        unseenCount: 1
+                        unseenCount: 1,
+                        id: 1
                     }
                 }
             ]);
 
-            res.status(200).send(agg);
+            const totalUnseen = agg.reduce((acc, obj) => {
+                return acc + (req.user._id.toString() === obj.from.id.toString() ? 0 : obj.unseenCount)
+            }, 0);
+
+            res.status(200).send(makeResponseJson({ items: agg, totalUnseen }));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
             res.status(500).send(makeErrorJson());
         }
     }
-)
+);
+
+router.patch(
+    '/v1/message/read/:from_id',
+    isAuthenticated,
+    validateObjectID('from_id'),
+    async (req, res, next) => {
+        try {
+            const { from_id } = req.params;
+
+            await Message
+                .updateMany({
+                    from: Types.ObjectId(from_id),
+                    to: req.user._id,
+                    seen: false
+                }, {
+                    $set: { seen: true }
+                });
+
+            res.status(200).send(makeResponseJson({ state: true }));
+        } catch (e) {
+            console.log('CANT READ MESSAGES');
+            res.status(500).send(makeErrorJson());
+        }
+    }
+);
 
 module.exports = router;

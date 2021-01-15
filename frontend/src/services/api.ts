@@ -433,3 +433,29 @@ export const search = async (params: IFetchParams): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const getMessages = async (): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/messages`
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const readMessage = async (senderID: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'PATCH',
+            url: `/message/read/${senderID}`
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

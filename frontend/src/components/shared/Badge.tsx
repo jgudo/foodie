@@ -1,5 +1,5 @@
 interface IProps {
-    children: React.ReactNode,
+    children?: React.ReactNode,
     count: number;
 }
 
@@ -11,7 +11,7 @@ const Badge: React.FC<IProps> = ({ children, count = 0 }) => {
                     {count}
                 </div>
             )}
-            {children}
+            {children && children}
         </div>
     );
 };

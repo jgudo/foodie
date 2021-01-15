@@ -3,17 +3,25 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
 import Loader from '~/components/shared/Loader';
+import { getMessages, readMessage } from '~/services/api';
 import socket from "~/socket/socket";
-import { IRootReducer } from "~/types/types";
+import { IMessage, IRootReducer } from "~/types/types";
 import MessagesList from "./MessagesList";
+
+interface IMessageState {
+    items: IMessage[],
+    totalUnseen: number;
+}
 
 const Messages: React.FC = () => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isMessagesOpen, setMessagesOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
-    const [messages, setMessages] = useState<any>({
+    const [offset, setOffset] = useState(0);
+    const [error, setError] = useState('');
+    const [messages, setMessages] = useState<IMessageState>({
         items: [],
-        count: 0
+        totalUnseen: 0
     });
 
     useEffect(() => {
@@ -46,12 +54,45 @@ const Messages: React.FC = () => {
 
     const fetchMessages = async () => {
         try {
+            setLoading(true);
+            setError('');
+            const { items, totalUnseen } = await getMessages();
+
+            setMessages({
+                items: [...messages.items, ...items],
+                totalUnseen
+            });
+            setOffset(offset + 1);
+            setLoading(false);
+
+            if (items.length === 0) {
+                setError('No more messages.')
+            }
         } catch (e) {
+            setError(e.error.message);
+            setLoading(false);
         }
     };
 
+    const handleReadMessage = async (senderID: string) => {
+        try {
+            await readMessage(senderID);
+            const updated = messages.items.map(msg => ({
+                ...msg,
+                unseenCount: 0,
+                seen: true
+            }));
+
+            setMessagesOpen(false);
+            setMessages({ items: updated, totalUnseen: 0 });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     const toggleMessages = () => {
         setMessagesOpen(!isMessagesOpen);
+        setMessages({ ...messages, totalUnseen: 0 });
 
         // Since setting state is asynchronous, we should flip the value of isMessagesOpen
         if (!isMessagesOpen && messages.items.length === 0) {
@@ -61,7 +102,7 @@ const Messages: React.FC = () => {
 
     return (
         <div className="relative">
-            <Badge count={0}>
+            <Badge count={messages.totalUnseen}>
                 <MessageOutlined
                     className="messages-toggle text-xl focus:outline-none"
                     onClick={toggleMessages}
@@ -78,7 +119,11 @@ const Messages: React.FC = () => {
                             <Loader />
                         </div>
                     ) : (
-                            <MessagesList messages={messages.items} />
+                            <MessagesList
+                                messages={messages.items}
+                                userID={id}
+                                handleReadMessage={handleReadMessage}
+                            />
                         )}
                 </div>
             )}

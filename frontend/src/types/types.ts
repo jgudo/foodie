@@ -91,10 +91,12 @@ export interface INotification {
 
 export interface IMessage {
     id: string;
-    sender: IUser,
-    receiver: IUser,
+    from: IUser,
+    to: IUser,
+    text: string,
     createdAt: Date,
-    viewed: boolean
+    seen: boolean,
+    unseenCount?: number;
 }
 
 export interface IBookmark {
