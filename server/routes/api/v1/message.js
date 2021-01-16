@@ -32,7 +32,10 @@ router.post(
 
             // Notify user
             const io = req.app.get('io');
-            io.to(user_id).emit('newMessage', message);
+
+            [user_id, req.user._id.toString()].forEach((user) => {
+                io.to(user).emit('newMessage', message);
+            });
 
             await message.save();
             await message.populate('from to', 'username profilePicture fullname').execPopulate();
@@ -229,6 +232,37 @@ router.patch(
             res.status(200).send(makeResponseJson({ state: true }));
         } catch (e) {
             console.log('CANT READ MESSAGES');
+            res.status(500).send(makeErrorJson());
+        }
+    }
+);
+
+router.get(
+    '/v1/messages/:target_id',
+    isAuthenticated,
+    validateObjectID('target_id'),
+    async (req, res, next) => {
+        try {
+            const { target_id } = req.params;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = 10;
+            const skip = offset * limit;
+
+            const messages = await Message
+                .find({
+                    $or: [
+                        { from: req.user._id, to: Types.ObjectId(target_id) },
+                        { from: Types.ObjectId(target_id), to: req.user._id }
+                    ]
+                })
+                .populate('from', 'username profilePicture')
+                .sort({ createdAt: -1 })
+                .limit(limit)
+                .skip(skip)
+
+            res.status(200).send(makeResponseJson(messages));
+        } catch (e) {
+            console.log('CANT GET MESSAGES FROM USER', e);
             res.status(500).send(makeErrorJson());
         }
     }

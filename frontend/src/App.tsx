@@ -19,6 +19,7 @@ import { loginSuccess } from "./redux/action/authActions";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
 import { checkAuthSession } from "./services/api";
+import socket from './socket/socket';
 
 export const history = createBrowserHistory();
 
@@ -32,6 +33,12 @@ function App() {
         const { auth } = await checkAuthSession();
 
         dispatch(loginSuccess(auth));
+
+        socket.on('connect', () => {
+          socket.emit('userConnect', auth.id);
+          console.log('Client connected to socket.');
+        });
+
         setCheckingSession(false);
       } catch (e) {
         console.log('ERROR', e);

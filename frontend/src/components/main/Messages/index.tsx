@@ -28,14 +28,9 @@ const Messages: React.FC = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        socket.on('connect', () => {
-            socket.emit('userConnect', id);
-            console.log('Client connected to socket.');
-
-            if (isMessagesOpen) {
-                fetchMessages();
-            }
-        });
+        if (isMessagesOpen) {
+            fetchMessages();
+        }
 
         socket.on('newMessage', (message: IMessage) => {
             console.log(message);

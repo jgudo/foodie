@@ -61,6 +61,8 @@ module.exports = {
     borderRadius: ['important'],
     textColor: ['important', 'hover'],
     borderColor: ['important', 'focus', 'hover'],
+    outlineOffset: ['hover'],
+    border: ['hover'],
     extend: {
       cursor: ['disabled'],
       opacity: ['disabled', 'readonly'],

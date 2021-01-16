@@ -81,13 +81,15 @@ const Posts: React.FC<IProps> = (props) => {
                 }
             }
         } catch (e) {
-            if (posts.length === 0) {
-                setError(`${props.username} hasn't posted anything yet.`);
-            } else {
-                setError(e.error.message || 'Something went wrong while trying to fetch posts.');
-            }
+            if (isMountedRef.current) {
+                if (posts.length === 0) {
+                    setError(`${props.username} hasn't posted anything yet.`);
+                } else {
+                    setError(e.error.message || 'Something went wrong while trying to fetch posts.');
+                }
 
-            setIsLoading(false);
+                setIsLoading(false);
+            }
         }
     };
 

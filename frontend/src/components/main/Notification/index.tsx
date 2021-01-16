@@ -27,14 +27,9 @@ const Notification: React.FC = () => {
     });
 
     useEffect(() => {
-        socket.on('connect', () => {
-            socket.emit('userConnect', id);
-            console.log('Client connected to socket.');
-
-            if (isNotificationOpen) {
-                fetchNotifications();
-            }
-        });
+        if (isNotificationOpen) {
+            fetchNotifications();
+        }
 
         socket.on('notifyFollow', ({ notification, count }: { notification: INotification, count: number }) => {
             console.log('STATE: ', notifications);

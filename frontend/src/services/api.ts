@@ -472,3 +472,36 @@ export const getUnreadMessages = async (): Promise<any> => {
         return Promise.reject(e.response.data);
     }
 }
+
+export const sendMessage = async (text: string, to: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/message/${to}`,
+            data: {
+                text
+            }
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
+export const getUserMessages = async (targetID: string, params?: IFetchParams): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/messages/${targetID}`,
+            params: {
+                offset: params?.offset,
+                limit: params?.limit
+            }
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}

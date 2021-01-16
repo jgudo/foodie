@@ -1,4 +1,4 @@
-import { CLOSE_CHAT, INITIATE_CHAT, MINIMIZE_CHAT } from "~/constants/actionType";
+import { CLOSE_CHAT, GET_MESSAGES_SUCCESS, INITIATE_CHAT, MINIMIZE_CHAT, NEW_MESSAGE_ARRIVED } from "~/constants/actionType";
 import { IChatState } from "~/types/types";
 import { TChatActionType } from "../action/chatActions";
 
@@ -12,17 +12,33 @@ const chatReducer = (state = initState, action: TChatActionType) => {
         case INITIATE_CHAT:
             const exists = state.items.some(chat => (chat.id as unknown) === action.payload.id);
             const initChat = {
-                target: action.payload.username,
+                username: action.payload.username,
                 id: action.payload.id,
                 profilePicture: action.payload.profilePicture,
                 minimized: false,
                 chats: []
             };
 
-            return !exists ? {
-                active: action.payload.id,
-                items: [...state.items, initChat]
-            } : {
+            const maxItems = 4;
+            const hasReachedLimit = state.items.length === maxItems;
+
+            // Delete first and set minimized to true
+            const mapped = state.items.map(chat => ({
+                ...chat,
+                minimized: true
+            }));
+            const deletedFirstItem = mapped.splice(1);
+
+            if (!exists) {
+                return {
+                    active: action.payload.id,
+                    items: hasReachedLimit
+                        ? [...deletedFirstItem, initChat]
+                        : [...mapped, initChat]
+                }
+            } else {
+                console.log('not exist')
+                return {
                     active: action.payload.id,
                     items: state.items.map((chat) => {
                         if ((chat.id as unknown) === action.payload.id) {
@@ -32,14 +48,18 @@ const chatReducer = (state = initState, action: TChatActionType) => {
                             }
                         }
 
-                        return chat;
+                        return {
+                            ...chat,
+                            minimized: true
+                        };
                     })
                 };
+            }
         case MINIMIZE_CHAT:
             return {
                 active: '',
                 items: state.items.map((chat) => {
-                    if (chat.target === action.payload) {
+                    if (chat.username === action.payload) {
                         return {
                             ...chat,
                             minimized: true
@@ -51,7 +71,23 @@ const chatReducer = (state = initState, action: TChatActionType) => {
         case CLOSE_CHAT:
             return {
                 active: '',
-                items: state.items.filter(chat => chat.target !== action.payload)
+                items: state.items.filter(chat => chat.username !== action.payload)
+            }
+        case GET_MESSAGES_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map(chat => chat.username !== action.payload.username ? chat : {
+                    ...chat,
+                    chats: [...action.payload.messages, ...chat.chats]
+                })
+            }
+        case NEW_MESSAGE_ARRIVED:
+            return {
+                ...state,
+                items: state.items.map(chat => chat.username !== action.payload.username ? chat : {
+                    ...chat,
+                    chats: [...chat.chats, action.payload.message]
+                })
             }
         default:
             return state;

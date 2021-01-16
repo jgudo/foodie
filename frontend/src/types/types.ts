@@ -59,9 +59,10 @@ export interface IComment {
 }
 
 export interface IChatItemsState {
-    target: string;
+    username: string;
     id: string;
-    profilePicture: string | null;
+    offset: number;
+    profilePicture?: string;
     minimized: boolean;
     chats: IMessage[]
 }
