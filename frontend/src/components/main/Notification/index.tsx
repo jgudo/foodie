@@ -31,23 +31,7 @@ const Notification: React.FC = () => {
             fetchNotifications();
         }
 
-        socket.on('notifyFollow', ({ notification, count }: { notification: INotification, count: number }) => {
-            console.log('STATE: ', notifications);
-            setUnreadCount(unreadCount + 1);
-            setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));
-
-            console.log(notification);
-        });
-
-        socket.on('notifyLike', ({ notification, count }: { notification: INotification, count: number }) => {
-            console.log('STATE: ', notifications);
-            setUnreadCount(unreadCount + 1);
-            setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));
-
-            console.log(notification);
-        });
-
-        socket.on('notifyComment', ({ notification, count }: { notification: INotification, count: number }) => {
+        socket.on('newNotification', ({ notification, count }: { notification: INotification, count: number }) => {
             console.log('STATE: ', notifications);
             setUnreadCount(unreadCount + 1);
             setNotifications((prev: any) => ({ ...prev, items: [notification, ...prev.items] }));

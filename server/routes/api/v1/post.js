@@ -186,7 +186,7 @@ router.post(
                     const doc = await notification.save();
                     await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
 
-                    io.to(targetUserID).emit('notifyLike', { notification: doc, count: 1 });
+                    io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
                 } else {
                     await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
                 }

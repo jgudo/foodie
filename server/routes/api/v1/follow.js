@@ -62,7 +62,7 @@ router.post(
                 .then(async (doc) => {
                     await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
 
-                    io.to(follow_id).emit('notifyFollow', { notification: doc, count: 1 });
+                    io.to(follow_id).emit('newNotification', { notification: doc, count: 1 });
                 });
 
             // SUBSCRIBE TO USER'S FEED

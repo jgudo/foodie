@@ -54,7 +54,7 @@ router.post(
                     .then(async (doc) => {
                         await doc.populate('target initiator', 'fullname profilePicture username').execPopulate();
 
-                        io.to(post._author_id.toString()).emit('notifyComment', { notification: doc, count: 1 });
+                        io.to(post._author_id.toString()).emit('newNotification', { notification: doc, count: 1 });
                     });
             }
 

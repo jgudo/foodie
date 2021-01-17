@@ -78,6 +78,7 @@ const chatReducer = (state = initState, action: TChatActionType) => {
                 ...state,
                 items: state.items.map(chat => chat.username !== action.payload.username ? chat : {
                     ...chat,
+                    offset: (chat.offset || 0) + 1,
                     chats: [...action.payload.messages, ...chat.chats]
                 })
             }
