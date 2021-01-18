@@ -112,6 +112,7 @@ export interface IMessage {
     createdAt: Date,
     seen: boolean,
     unseenCount?: number;
+    isOwnMessage?: boolean;
 }
 
 export interface IBookmark {

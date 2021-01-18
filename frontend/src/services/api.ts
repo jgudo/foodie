@@ -434,11 +434,12 @@ export const search = async (params: IFetchParams): Promise<any> => {
     }
 }
 
-export const getMessages = async (): Promise<any> => {
+export const getMessages = async (params?: IFetchParams): Promise<any> => {
     try {
         const req = await axios({
             method: 'GET',
-            url: `/messages`
+            url: `/messages`,
+            params
         });
 
         return Promise.resolve(req.data.data);

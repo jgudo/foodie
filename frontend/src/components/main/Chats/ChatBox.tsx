@@ -1,4 +1,6 @@
 import { CloseOutlined, LineOutlined, SendOutlined } from "@ant-design/icons";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,6 +9,8 @@ import { closeChat, getMessagesSuccess, minimizeChat, newMessageArrived } from "
 import { getUserMessages, sendMessage } from "~/services/api";
 import socket from "~/socket/socket";
 import { IChatItemsState, IMessage, IUser } from "~/types/types";
+
+dayjs.extend(relativeTime);
 
 interface IProps {
     target: IChatItemsState;
@@ -20,6 +24,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     const [isLoading, setLoading] = useState(false);
     const [isSending, setSending] = useState(false);
     let isMountedRef = useRef<boolean | null>(null);
+    let dummyEl = useRef<HTMLSpanElement | null>(null);
 
     useEffect(() => {
         if (target.chats.length === 0) fetchMessages();
@@ -30,6 +35,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
             if (isMountedRef.current) {
                 dispatch(newMessageArrived(target.username, message));
+            }
+
+            if (dummyEl.current) {
+                dummyEl.current.scrollIntoView();
             }
         });
 
@@ -79,6 +88,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
             if (isMountedRef.current) {
                 setSending(false);
+                setText('');
             }
         } catch (e) {
             if (isMountedRef.current) {
@@ -120,7 +130,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-18rem p-2 bg-gray-100 overflow-y-scroll scrollbar">
+            <div className="min-h-18rem max-h-80 p-2 bg-gray-100 overflow-y-scroll">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center h-full py-2">
                         <Loader />
@@ -131,24 +141,34 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                         <span className="text-gray-400">No messages.</span>
                     </div>
                 )}
+                {(!isLoading && !error && target.chats.length !== 0) && (
+                    <div className={`flex justify-center items-center py-2 mb-4 bg-indigo-100 cursor-pointer`}>
+                        <span className="text-indigo-700 text-xs">Older messages</span>
+                    </div>
+                )}
                 {(!isLoading && !error) && target.chats.map(msg => {
-                    const isSenderSelf = target.id !== msg.from.id;
                     return (
-                        <div
-                            className={`flex mb-1  ${isSenderSelf ? 'justify-end' : 'justify-start'}`}
-                            key={msg.id}
-                        >
-                            <div className="flex">
-                                {/* -- AVATAR --- */}
-                                <div
-                                    className={`w-5 h-5 self-end !bg-cover !bg-no-repeat rounded-full ${isSenderSelf ? 'ml-1 order-2' : 'mr-1 order-1'}`}
-                                    style={{ background: `#f8f8f8 url(${isSenderSelf ? user.profilePicture : target.profilePicture}` }}
-                                />
-                                {/*  -- MESSAGE-- */}
-                                <span
-                                    className={`py-2 px-3  text-sm rounded-xl ${isSenderSelf ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
-                                    {msg.text}
-                                </span>
+                        <div className="flex flex-col">
+                            <div
+                                className={`flex mb-1  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                                key={msg.id}
+                            >
+                                <div className="flex">
+                                    {/* -- AVATAR --- */}
+                                    <div
+                                        className={`w-5 h-5 self-end !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
+                                        style={{ background: `#f8f8f8 url(${msg.isOwnMessage ? user.profilePicture : target.profilePicture}` }}
+                                    />
+                                    {/*  -- MESSAGE-- */}
+                                    <span
+                                        className={`py-2 px-3  text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
+                                        {msg.text}
+                                    </span>
+                                    <span ref={dummyEl}></span>
+                                </div>
+                            </div>
+                            <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
+                                <span className="text-gray-400 text-xs">{dayjs(msg.createdAt).fromNow()}</span>
                             </div>
                         </div>
                     )

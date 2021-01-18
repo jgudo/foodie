@@ -1,5 +1,5 @@
 import { BellOutlined } from '@ant-design/icons';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
@@ -25,12 +25,14 @@ const Notification: React.FC = () => {
         items: [],
         count: 0
     });
+    const isNotificationOpenRef = useRef(isNotificationOpen);
+
 
     useEffect(() => {
-        if (isNotificationOpen) {
-            fetchNotifications();
-        }
+        isNotificationOpenRef.current = isNotificationOpen;
+    }, [isNotificationOpen]);
 
+    useEffect(() => {
         socket.on('newNotification', ({ notification, count }: { notification: INotification, count: number }) => {
             console.log('STATE: ', notifications);
             setUnreadCount(unreadCount + 1);
@@ -38,6 +40,8 @@ const Notification: React.FC = () => {
 
             console.log(notification);
         });
+
+        document.addEventListener('click', handleClickOutside);
 
         getUnreadNotifications()
             .then(({ count }) => {
@@ -50,14 +54,15 @@ const Notification: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    document.addEventListener('click', (e: Event) => {
+
+    const handleClickOutside = (e: Event) => {
         const toggle = (e.target as HTMLElement).closest('.notification-toggle');
         const wrapper = (e.target as HTMLElement).closest('.notification-wrapper');
 
-        if (!toggle && isNotificationOpen && !wrapper) {
+        if (!toggle && isNotificationOpenRef.current && !wrapper) {
             setNotificationOpen(false);
         }
-    });
+    }
 
     const fetchNotifications = async () => {
         try {
@@ -156,29 +161,30 @@ const Notification: React.FC = () => {
                             Mark all as read
                         </span>
                     </div>
-                    {isLoading ? (
+                    {(isLoading && !error && notifications.items.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
                         </div>
-                    ) : (
-                            <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
-                                <NotificationList
-                                    notifications={notifications.items}
-                                    readNotification={handleReadNotification}
-                                    toggleNotification={setNotificationOpen}
-                                />
-                                {(notifications.items.length !== 0 && !error && isLoading) && (
-                                    <div className="flex justify-center py-2">
-                                        <Loader />
-                                    </div>
-                                )}
-                                {(notifications.items.length !== 0 && error) && (
-                                    <div className="flex justify-center py-6">
-                                        <p className="text-gray-400 italic">{error}</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                    )}
+                    {(notifications.items.length !== 0) && (
+                        <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+                            <NotificationList
+                                notifications={notifications.items}
+                                readNotification={handleReadNotification}
+                                toggleNotification={setNotificationOpen}
+                            />
+                            {(notifications.items.length !== 0 && !error && isLoading) && (
+                                <div className="flex justify-center py-2">
+                                    <Loader />
+                                </div>
+                            )}
+                            {(notifications.items.length !== 0 && error) && (
+                                <div className="flex justify-center py-6">
+                                    <p className="text-gray-400 italic">{error}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
         </div>
