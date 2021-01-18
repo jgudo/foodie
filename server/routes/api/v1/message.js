@@ -30,15 +30,19 @@ router.post(
                 createdAt: Date.now(),
             });
 
+            await message.save();
+            await message.populate('from to', 'username profilePicture fullname').execPopulate();
+
             // Notify user
             const io = req.app.get('io');
 
             [user_id, req.user._id.toString()].forEach((user) => {
-                io.to(user).emit('newMessage', message);
+                io.to(user).emit('newMessage', {
+                    ...message.toObject(),
+                    isOwnMessage: req.user._id.toString() === message.from.id ? true : false
+                });
             });
 
-            await message.save();
-            await message.populate('from to', 'username profilePicture fullname').execPopulate();
             res.status(200).send(makeResponseJson(message));
         } catch (e) {
             console.log('CANT SEND MESSAGE: ', e);
@@ -52,6 +56,11 @@ router.get(
     isAuthenticated,
     async (req, res, next) => {
         try {
+            let offset = parseInt(req.query.offset) || 0;
+
+            const limit = 10;
+            const skip = offset * limit;
+
             const agg = await Message.aggregate([
                 {
                     $match: {
@@ -71,21 +80,29 @@ router.get(
                             {
                                 $group: {
                                     _id: '$to',
-                                    message_id: { $first: '$_id' },
+                                    id: { $first: '$_id' },
+                                    seen: { $first: '$seen' },
                                     from: { $first: '$from' },
                                     text: { $first: '$text' },
                                     createdAt: { $first: '$createdAt' }
                                 }
                             },
                             // ADD FIELD UNSEENCOUNT TO 0 SINCE IT'S SENT BY YOURSELF AND NO NEED TO ADD SEEN COUNT
-                            { $addFields: { unseenCount: 0 } },
+                            {
+                                $addFields: {
+                                    unseenCount: 0,
+                                    isOwnMessage: true
+                                }
+                            },
                             {
                                 $project: {
                                     _id: 0,
-                                    message_id: 1,
+                                    id: 1,
                                     to: '$_id',
                                     from: 1,
+                                    seen: 1,
                                     text: 1,
+                                    isOwnMessage: 1,
                                     unseenCount: 1,
                                     createdAt: 1
                                 }
@@ -98,7 +115,7 @@ router.get(
                             {
                                 $group: {
                                     _id: '$from',
-                                    message_id: { $first: '$_id' },
+                                    id: { $first: '$_id' },
                                     to: { $first: '$to' },
                                     text: { $first: '$text' },
                                     seenCount: {
@@ -110,16 +127,24 @@ router.get(
                                             ]
                                         }
                                     },
+                                    seen: { $first: '$seen' },
                                     createdAt: { $first: '$createdAt' }
+                                }
+                            },
+                            {
+                                $addFields: {
+                                    isOwnMessage: false
                                 }
                             },
                             {
                                 $project: {
                                     _id: 0,
-                                    message_id: 1,
+                                    id: 1,
                                     from: '$_id',
                                     to: 1,
+                                    isOwnMessage: 1,
                                     text: 1,
+                                    seen: 1,
                                     unseenCount: { $size: '$seenCount' },
                                     createdAt: 1
                                 }
@@ -155,7 +180,9 @@ router.get(
                         to: '$result.to',
                         unseenCount: '$result.unseenCount',
                         createdAt: '$result.createdAt',
-                        message_id: '$result.message_id',
+                        id: '$result.id',
+                        isOwnMessage: '$result.isOwnMessage',
+                        seen: '$result.seen',
                         from: {
                             username: '$result.from.username',
                             profilePicture: '$result.from.profilePicture',
@@ -186,8 +213,9 @@ router.get(
                         text: 1,
                         seen: 1,
                         createdAt: 1,
+                        isOwnMessage: 1,
                         unseenCount: 1,
-                        message_id: 1
+                        id: 1
                     }
                 },
                 {
@@ -201,8 +229,9 @@ router.get(
                                 text: '$text',
                                 seen: '$seen',
                                 createdAt: '$createdAt',
+                                isOwnMessage: '$isOwnMessage',
                                 unseenCount: '$unseenCount',
-                                message_id: '$message_id'
+                                id: '$id'
                             }
                         }
                     }
@@ -213,10 +242,40 @@ router.get(
                         messages: 1,
                         totalUnseen: 1
                     }
+                },
+                {
+                    $limit: limit
+                },
+                {
+                    $skip: skip
                 }
             ]);
 
-            res.status(200).send(makeResponseJson(agg[0] || {}));
+            const aggMessages = typeof agg[0] === 'undefined' ? [] : agg[0].messages;
+            const aggTotalUnseen = typeof agg[0] === 'undefined' ? 0 : agg[0].totalUnseen;
+
+            const getKey = (msg) => [msg.to.username, msg.from.username]
+                .sort((a, b) => a.localeCompare(b))
+                .join('#');
+            const messagesByKey = {};
+            for (const msg of aggMessages) {
+                const key = getKey(msg);
+                if (!messagesByKey[key]) {
+                    messagesByKey[key] = [];
+                }
+                messagesByKey[key].push(msg);
+            }
+
+            const grouped = Object.values(messagesByKey);
+            const filtered = grouped.map((msg) => {
+                const selected = msg.reduce((acc, msg) => {
+                    return new Date(acc.createdAt) > new Date(msg.createdAt) ? acc : msg;
+                });
+
+                return selected;
+            });
+
+            res.status(200).send(makeResponseJson({ messages: filtered, totalUnseen: aggTotalUnseen }));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
             res.status(500).send(makeErrorJson());
@@ -315,9 +374,16 @@ router.get(
                 .populate('from', 'username profilePicture')
                 .sort({ createdAt: -1 })
                 .limit(limit)
-                .skip(skip)
+                .skip(skip);
 
-            res.status(200).send(makeResponseJson(messages));
+            const mapped = messages.map((msg) => {
+                return {
+                    ...msg.toObject(),
+                    isOwnMessage: msg.from.id === req.user._id.toString() ? true : false
+                }
+            });
+
+            res.status(200).send(makeResponseJson(mapped));
         } catch (e) {
             console.log('CANT GET MESSAGES FROM USER', e);
             res.status(500).send(makeErrorJson());
