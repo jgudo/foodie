@@ -1,4 +1,5 @@
 import {
+    CLEAR_CHAT,
     CLOSE_CHAT,
     GET_MESSAGES_SUCCESS,
     INITIATE_CHAT,
@@ -38,9 +39,14 @@ export const newMessageArrived = (target: string, message: IMessage) => (<const>
     }
 });
 
+export const clearChat = () => (<const>{
+    type: CLEAR_CHAT
+});
+
 export type TChatActionType =
     | ReturnType<typeof minimizeChat>
     | ReturnType<typeof closeChat>
     | ReturnType<typeof getMessagesSuccess>
     | ReturnType<typeof newMessageArrived>
-    | ReturnType<typeof initiateChat>;
+    | ReturnType<typeof initiateChat>
+    | ReturnType<typeof clearChat>;

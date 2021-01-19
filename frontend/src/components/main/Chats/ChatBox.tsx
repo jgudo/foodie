@@ -186,7 +186,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                 </div>
                             </div>
                             <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
-                                <span className="text-gray-400 text-xs">
+                                <span className="text-gray-400 text-1xs">
                                     {displayTime(msg.createdAt)}
                                 </span>
                             </div>

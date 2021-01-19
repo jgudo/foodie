@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { Dispatch, RefObject, SetStateAction, useState } from 'react';
+import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
 import { IComment } from '~/types/types';
 
 interface IProps {
@@ -17,6 +17,28 @@ interface IProps {
 
 const CommentOptions: React.FC<IProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
+    const isOpenRef = useRef(isOpen);
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        }
+    }, []);
+
+    useEffect(() => {
+        isOpenRef.current = isOpen;
+    }, [isOpen]);
+
+    const handleClickOutside = (e: Event) => {
+        const option = (e.target as HTMLDivElement).closest('.comment-option-wrapper');
+
+        if (!option && isOpenRef.current) {
+            setIsOpen(false);
+        }
+    }
+
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     }
@@ -35,15 +57,15 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }
 
     return (
-        <div className="relative z-10">
+        <div className="comment-option-wrapper relative z-10">
             <div
-                className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                 onClick={toggleOpen}
             >
                 <EllipsisOutlined style={{ fontSize: '20px' }} />
             </div>
             {isOpen && (
-                <div className="post-option-wrapper w-56 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
+                <div className=" w-56 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
                     {props.isOwnComment && (
                         <h4
                             className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer"

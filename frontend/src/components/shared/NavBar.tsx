@@ -36,20 +36,22 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                     <h2 className="text-2xl">Foodie</h2>
                 </NavLink>
                 {/* -------- SEARCH BAR ------- */}
-                <SearchInput />
+                {isAuth && (
+                    <SearchInput />
+                )}
             </div>
             <div className="flex items-center">
-                {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
-                <ul className="flex items-center space-x-8 mr-8">
-                    <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                        <Messages />
-                    </li>
-                    <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                        <Notification />
-                    </li>
-                </ul>
-                {
-                    isAuth ? (
+                {isAuth ? (
+                    <>
+                        {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
+                        <ul className="flex items-center space-x-8 mr-8">
+                            <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
+                                <Messages />
+                            </li>
+                            <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
+                                <Notification />
+                            </li>
+                        </ul>
                         <div className="flex items-center">
                             {/* ---- AVATAR WITH  USERNAME ----------- */}
                             <Link to={`/user/${auth.username}`} className="cursor-pointer">
@@ -63,18 +65,19 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                                 {isLoadingAuth ? 'Logging Out...' : 'Logout'}
                             </button>
                         </div>
-                    ) : (
-                            <ul className="flex items-center">
-                                <li className="group inline-block mx-3">
-                                    <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">Login</NavLink>
-                                </li>
-                                <li className="group inline-block mx-3">
-                                    <NavLink to="/register" className="button group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">
-                                        Create Account
+                    </>
+                ) : (
+                        <ul className="flex items-center">
+                            <li className="group inline-block mx-3">
+                                <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">Login</NavLink>
+                            </li>
+                            <li className="group inline-block mx-3">
+                                <NavLink to="/register" className="button group-hover:text-indigo-600" activeClassName="nav-active">
+                                    Create Account
                                     </NavLink>
-                                </li>
-                            </ul>
-                        )
+                            </li>
+                        </ul>
+                    )
                 }
             </div>
         </nav>

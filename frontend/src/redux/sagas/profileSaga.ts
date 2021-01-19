@@ -18,7 +18,7 @@ function* profileSaga({ type, payload }: IProfileSaga) {
                 const user = yield call(getUser, payload);
 
                 yield put(isGettingUser(false));
-                yield put(setProfileErrorMessage(''));
+                yield put(setProfileErrorMessage(null));
                 yield put(getUserSuccess(user));
             } catch (e) {
                 yield put(setProfileErrorMessage(e));

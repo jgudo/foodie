@@ -11,9 +11,9 @@ export interface IRootReducer {
 }
 
 export interface IErrorState {
-    authError?: string;
-    profileError?: string;
-    newsFeedError?: string;
+    authError: IError | null;
+    profileError: IError | null;
+    newsFeedError: IError | null;
 }
 
 export interface TLoading {

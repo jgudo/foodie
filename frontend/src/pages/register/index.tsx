@@ -15,7 +15,7 @@ const Register: React.FC = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(setAuthErrorMessage(''));
+            dispatch(setAuthErrorMessage(null));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -53,21 +53,21 @@ const Register: React.FC = () => {
     return (
         <div className="min-h-screen flex bg-white">
             <div
-                className="w-2/5 h-screen !bg-cover !bg-no-repeat !bg-center"
+                className="w-7/12 h-screen !bg-cover !bg-no-repeat !bg-center"
                 style={{
                     background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
                 }}
 
             />
-            <div className="w-3/5 flex items-center justify-start relative">
+            <div className="w-5/12 flex items-center justify-start relative">
                 {error && (
                     <div className="p-4 w-full text-center bg-red-100 border-red-400 absolute top-0 left-0">
-                        <p className="text-red-500">{error}</p>
+                        <p className="text-red-500">{error.error.message}</p>
                     </div>
                 )}
-                <div className="w-full px-20%">
+                <div className="w-full px-14">
                     <div>
-                        <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+                        <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
                             Create your account
                         </h2>
                     </div>

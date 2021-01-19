@@ -4,20 +4,21 @@ import {
 	SET_NEWSFEED_ERR_MSG,
 	SET_PROFILE_ERR_MSG
 } from "~/constants/actionType";
+import { IError } from "~/types/types";
 
-export const setAuthErrorMessage = (message: string) => (<const>{
+export const setAuthErrorMessage = (error: IError | null) => (<const>{
 	type: SET_AUTH_ERR_MSG,
-	payload: message
+	payload: error
 });
 
-export const setProfileErrorMessage = (message: string) => (<const>{
+export const setProfileErrorMessage = (error: IError | null) => (<const>{
 	type: SET_PROFILE_ERR_MSG,
-	payload: message
+	payload: error
 });
 
-export const setNewsFeedErrorMessage = (message: string) => (<const>{
+export const setNewsFeedErrorMessage = (error: IError | null) => (<const>{
 	type: SET_NEWSFEED_ERR_MSG,
-	payload: message
+	payload: error
 });
 
 export const clearAuthErrorMessage = () => (<const>{

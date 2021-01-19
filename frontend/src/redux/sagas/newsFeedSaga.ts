@@ -23,7 +23,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
             } catch (e) {
                 console.log(e);
                 yield put(isGettingFeed(false));
-                yield put(setNewsFeedErrorMessage(e.error?.message || 'Unknown error occured.'))
+                yield put(setNewsFeedErrorMessage(e))
             }
 
             break;

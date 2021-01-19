@@ -14,6 +14,9 @@ module.exports = {
       sans: ['SF Pro Display', 'sans-serif'],
     },
     extend: {
+      fontSize: {
+        '1xs': '11px'
+      },
       height: {
         '60px': '60px',
         '20rem': '20rem',

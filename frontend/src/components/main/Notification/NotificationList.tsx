@@ -49,7 +49,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                             }
                                         </span>
                                     </div>
-                                    <span className="text-gray-500 text-xs ml-14">{displayTime(notif.createdAt)}</span>
+                                    <span className="text-gray-500 text-1xs ml-12 transform -translate-y-1 block">{displayTime(notif.createdAt)}</span>
                                     {notif.type === 'like' ? (
                                         <LikeOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
                                     ) : notif.type === 'comment' ? (

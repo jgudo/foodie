@@ -8,9 +8,9 @@ import { IErrorState } from "~/types/types";
 import { ErrorActionType } from "../action/errorActions";
 
 const initState: IErrorState = {
-    authError: '',
-    profileError: '',
-    newsFeedError: ''
+    authError: null,
+    profileError: null,
+    newsFeedError: null
 }
 
 const errorReducer = (state = initState, action: ErrorActionType) => {

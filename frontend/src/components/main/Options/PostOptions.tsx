@@ -5,7 +5,7 @@ import {
     StarFilled,
     StarOutlined
 } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IPost } from '~/types/types';
 import BookmarkButton from '../BookmarkButton';
 
@@ -18,13 +18,34 @@ interface IProps {
 
 const PostOptions: React.FC<IProps> = (props) => {
     const [isOpenOption, setIsOpenOption] = useState(false);
+    const isOpenOptionRef = useRef(isOpenOption);
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        }
+    }, []);
+
+    useEffect(() => {
+        isOpenOptionRef.current = isOpenOption;
+    }, [isOpenOption]);
+
+    const handleClickOutside = (e: Event) => {
+        const option = (e.target as HTMLDivElement).closest('.post-option-wrapper');
+
+        if (!option && isOpenOptionRef.current) {
+            setIsOpenOption(false);
+        }
+    }
 
     const toggleOpen = () => {
         setIsOpenOption(!isOpenOption);
     }
 
     return (
-        <div className="relative z-10">
+        <div className="post-option-wrapper relative z-10">
             <div
                 className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                 onClick={toggleOpen}
@@ -32,7 +53,7 @@ const PostOptions: React.FC<IProps> = (props) => {
                 <EllipsisOutlined style={{ fontSize: '20px' }} />
             </div>
             {isOpenOption && (
-                <div className="post-option-wrapper w-60 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
+                <div className="w-60 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
                     {props.isOwnPost ? (
                         <>
                             <h4

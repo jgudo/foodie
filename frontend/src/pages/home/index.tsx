@@ -112,7 +112,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                     closeModal={closeModal}
                     dispatchCreatePost={dispatchCreatePost}
                 />
-                {(!state.isLoadingFeed && state.error && state.newsFeed.items.length === 0) && (
+                {(state.error && state.newsFeed.items.length === 0) && (
                     <div className="flex flex-col w-full min-h-screen items-center justify-center">
                         <CoffeeOutlined className="text-8xl text-gray-300 mb-4" />
                         <h5 className="text-gray-500">News feed is empty</h5>
@@ -120,7 +120,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                     </div>
                 )}
                 {/* ---- LOADING INDICATOR ----- */}
-                {(state.isLoadingFeed && !state.error) && (
+                {(state.isLoadingFeed) && (
                     <div className="flex w-full min-h-10rem items-center justify-center">
                         <Loader />
                     </div>
@@ -137,14 +137,14 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                                 deleteSuccessCallback={deleteSuccessCallback}
                             />
                         ))}
-                        {(state.newsFeed.items.length !== 0 && !state.error && state.isLoadingFeed) && (
+                        {state.isLoadingFeed && (
                             <div className="flex justify-center py-6">
                                 <Loader />
                             </div>
                         )}
-                        {(state.newsFeed.items.length !== 0 && state.error) && (
+                        {state.error && (
                             <div className="flex justify-center py-6">
-                                <p className="text-gray-400 italic">{state.error}</p>
+                                <p className="text-gray-400 italic">{state.error.error.message}</p>
                             </div>
                         )}
                     </>

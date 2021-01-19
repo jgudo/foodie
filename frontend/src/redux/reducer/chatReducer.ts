@@ -1,4 +1,4 @@
-import { CLOSE_CHAT, GET_MESSAGES_SUCCESS, INITIATE_CHAT, MINIMIZE_CHAT, NEW_MESSAGE_ARRIVED } from "~/constants/actionType";
+import { CLEAR_CHAT, CLOSE_CHAT, GET_MESSAGES_SUCCESS, INITIATE_CHAT, MINIMIZE_CHAT, NEW_MESSAGE_ARRIVED } from "~/constants/actionType";
 import { IChatState } from "~/types/types";
 import { TChatActionType } from "../action/chatActions";
 
@@ -93,6 +93,8 @@ const chatReducer = (state = initState, action: TChatActionType) => {
                     chats: [...chat.chats, action.payload.message]
                 })
             }
+        case CLEAR_CHAT:
+            return initState;
         default:
             return state;
     }
