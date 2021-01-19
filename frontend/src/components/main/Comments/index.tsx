@@ -151,7 +151,16 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                                         <h5>{comment.author.username}</h5>
                                     </Link>
                                     <p className="text-gray-800 min-w-full break-all">{comment.body}</p>
-                                    <span className="text-xs text-gray-400 mt-2">{dayjs(comment.createdAt).fromNow()}</span>
+                                    <div className="mt-2">
+                                        <span className="text-xs text-gray-400">
+                                            {dayjs(comment.createdAt).fromNow()}
+                                        </span>
+                                        {comment.isEdited && (
+                                            <span className="text-xs text-gray-400 ml-2">
+                                                Edited
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                                 {(user.id === comment.author.id || authorID === user.id) && (
                                     <CommentOptions

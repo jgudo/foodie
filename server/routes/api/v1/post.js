@@ -216,7 +216,7 @@ router.patch(
         try {
             const { post_id } = req.params;
             const { description, privacy } = req.body;
-            const obj = { updatedAt: Date.now() };
+            const obj = { updatedAt: Date.now(), isEdited: true };
 
             if (!description && !privacy) return res.sendStatus(400);
 

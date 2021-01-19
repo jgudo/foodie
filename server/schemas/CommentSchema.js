@@ -11,6 +11,10 @@ const CommentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    isEdited: {
+        type: Boolean,
+        default: false
+    },
     createdAt: Date,
     updatedAt: Date
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });

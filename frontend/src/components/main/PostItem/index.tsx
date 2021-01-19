@@ -83,7 +83,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             <div className="flex justify-between px-2 my-2">
                 <div>
                     {post.likesCount > 0 && (
-                        <span className="text-gray-700 text-sm">
+                        <span className="text-gray-700 text-sm cursor-pointer hover:underline">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
                         </span>
                     )}
@@ -92,7 +92,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 <div>
                     {post.commentsCount > 0 && (
                         <span
-                            className="text-gray-700 cursor-pointer text-sm"
+                            className="text-gray-700 cursor-pointer text-sm hover:underline"
                             onClick={handleToggleComment}
                         >
                             {post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}

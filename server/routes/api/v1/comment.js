@@ -187,7 +187,8 @@ router.patch(
                 const updatedComment = await Comment.findByIdAndUpdate(comment_id, {
                     $set: {
                         body,
-                        updatedAt: Date.now()
+                        updatedAt: Date.now(),
+                        isEdited: true
                     }
                 }, {
                     new: true

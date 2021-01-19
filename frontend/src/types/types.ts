@@ -58,6 +58,7 @@ export interface IComment {
     body: string;
     createdAt: Date;
     updatedAt: Date;
+    isEdited: boolean;
     author: IUser;
 }
 
