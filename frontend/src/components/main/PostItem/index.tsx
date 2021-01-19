@@ -34,6 +34,20 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             setCommentVisible(true);
         }
     }
+    const displayLikeMetric = (likesCount: number, isLiked: boolean) => {
+        const like = likesCount > 1 ? 'like' : 'likes';
+        const likeMinusSelf = (likesCount - 1) > 1 ? 'like' : 'likes';
+        const people = likesCount > 1 ? 'people' : 'person';
+        const peopleMinusSelf = (likesCount - 1) > 1 ? 'people' : 'person';
+
+        if (isLiked && likesCount <= 1) {
+            return 'You like this.'
+        } else if (isLiked && likesCount > 1) {
+            return `You and ${likesCount - 1} ${peopleMinusSelf} ${likeMinusSelf} this.`;
+        } else {
+            return `${likesCount} ${people} ${like} this.`;
+        }
+    }
 
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
@@ -69,13 +83,8 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             <div className="flex justify-between px-2 my-2">
                 <div>
                     {post.likesCount > 0 && (
-                        <span className="text-gray-700">
-                            {post.isLiked && post.likesCount <= 1
-                                ? 'You like this.'
-                                : post.isLiked && post.likesCount > 1
-                                    ? `You and ${post.likesCount - 1} people like this.`
-                                    : `${post.likesCount} ${post.likesCount <= 1 ? 'person likes' : 'people like'} this.`
-                            }
+                        <span className="text-gray-700 text-sm">
+                            {displayLikeMetric(post.likesCount, post.isLiked)}
                         </span>
                     )}
                 </div>
@@ -83,7 +92,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 <div>
                     {post.commentsCount > 0 && (
                         <span
-                            className="text-gray-700 cursor-pointer"
+                            className="text-gray-700 cursor-pointer text-sm"
                             onClick={handleToggleComment}
                         >
                             {post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}
