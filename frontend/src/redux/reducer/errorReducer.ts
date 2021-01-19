@@ -4,10 +4,10 @@ import {
     SET_NEWSFEED_ERR_MSG,
     SET_PROFILE_ERR_MSG
 } from "~/constants/actionType";
-import { IError } from "~/types/types";
+import { IErrorState } from "~/types/types";
 import { ErrorActionType } from "../action/errorActions";
 
-const initState: IError = {
+const initState: IErrorState = {
     authError: '',
     profileError: '',
     newsFeedError: ''

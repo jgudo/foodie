@@ -41,6 +41,7 @@ router.post(
 
             await post.save();
             await post.populate('author', 'profilePicture username fullname').execPopulate();
+
             const myFollowers = await Follow.findOne({ _user_id: req.user._id });
             let newsFeeds = [];
 
@@ -64,6 +65,12 @@ router.post(
             if (newsFeeds.length !== 0) {
                 await NewsFeed.insertMany(newsFeeds);
             }
+
+            // Notify followers that new post has been made 
+            const io = req.app.get('io');
+            myFollowers.followers.forEach((user) => {
+                io.to(user._id.toString()).emit('newFeed', post);
+            });
 
             return res.status(200).send(makeResponseJson(post));
         } catch (e) {

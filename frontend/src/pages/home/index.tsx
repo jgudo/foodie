@@ -1,4 +1,4 @@
-import { CoffeeOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, UndoOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +9,8 @@ import SuggestedPeople from "~/components/main/SuggestedPeople";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import useModal from "~/hooks/useModal";
-import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
+import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
+import socket from "~/socket/socket";
 import { IPost, IRootReducer } from "~/types/types";
 import SideMenu from "./SideMenu";
 
@@ -34,6 +35,10 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
             dispatch(clearNewsFeed());
             dispatch(getNewsFeedStart({ offset: 0 }));
         }
+
+        socket.on('newFeed', () => {
+            dispatch(hasNewFeed());
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -57,6 +62,12 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
         dispatch(createPostStart(form));
     }
 
+    const onClickNewFeed = () => {
+        dispatch(clearNewsFeed());
+        dispatch(getNewsFeedStart({ offset: 0 }));
+        dispatch(hasNewFeed(false));
+    }
+
     const infiniteRef = useInfiniteScroll({
         loading: state.isLoadingFeed,
         hasNextPage: !state.error && state.newsFeed.items.length !== 0,
@@ -71,7 +82,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
             <div className="w-1/4 rounded-md bg-white sticky top-20 mr-4 shadow-lg divide-y-2">
                 <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
             </div>
-            <div className="w-2/4" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+            <div className="w-2/4 relative" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                 {/* --- CREATE POST INPUT ---- */}
                 <div className="flex items-center justify-start">
                     <Avatar url={state.auth.profilePicture} className="mr-2" />
@@ -84,6 +95,16 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                         />
                     </div>
                 </div>
+                {/*  --- HAS NEW FEED NOTIF --- */}
+                {state.newsFeed.hasNewFeed && (
+                    <button
+                        className="sticky mt-2 top-16 left-0 right-0 mx-auto z-20 flex items-center"
+                        onClick={onClickNewFeed}
+                    >
+                        <UndoOutlined className="flex items-center justify-center text-xl mr-4" />
+                        New Feed Available
+                    </button>
+                )}
                 {/* --- CREATE POST MODAL ----- */}
                 <CreatePostModal
                     isOpen={isOpen}

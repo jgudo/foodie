@@ -5,6 +5,7 @@ import {
     DELETE_FEED_POST,
     GET_FEED_START,
     GET_FEED_SUCCESS,
+    HAS_NEW_FEED,
     UPDATE_FEED_POST
 } from "~/constants/actionType";
 import { IFetchParams, IPost } from "~/types/types";
@@ -43,6 +44,11 @@ export const clearNewsFeed = () => (<const>{
     type: CLEAR_FEED
 });
 
+export const hasNewFeed = (bool = true) => (<const>{
+    type: HAS_NEW_FEED,
+    payload: bool
+});
+
 export type TNewsFeedActionType =
     | ReturnType<typeof getNewsFeedStart>
     | ReturnType<typeof getNewsFeedSuccess>
@@ -50,4 +56,5 @@ export type TNewsFeedActionType =
     | ReturnType<typeof createPostSuccess>
     | ReturnType<typeof updateFeedPost>
     | ReturnType<typeof deleteFeedPost>
+    | ReturnType<typeof hasNewFeed>
     | ReturnType<typeof clearNewsFeed>;

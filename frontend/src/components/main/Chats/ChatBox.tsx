@@ -8,7 +8,7 @@ import { displayTime } from "~/helpers/utils";
 import { closeChat, getMessagesSuccess, minimizeChat, newMessageArrived } from "~/redux/action/chatActions";
 import { getUserMessages, sendMessage } from "~/services/api";
 import socket from "~/socket/socket";
-import { IChatItemsState, IMessage, IUser } from "~/types/types";
+import { IChatItemsState, IError, IMessage, IUser } from "~/types/types";
 
 interface IProps {
     target: IChatItemsState;
@@ -18,7 +18,7 @@ interface IProps {
 const ChatBox: React.FC<IProps> = ({ user, target }) => {
     const [text, setText] = useState('');
     const dispatch = useDispatch();
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const [isLoading, setLoading] = useState(false);
     const [isSending, setSending] = useState(false);
     let isMountedRef = useRef<boolean | null>(null);
@@ -31,15 +31,16 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
         socket.on('newMessage', (message: IMessage) => {
             console.log('CHATBOX: ', message);
 
-            if (isMountedRef.current) {
-                dispatch(newMessageArrived(target.username, message));
-            }
+            dispatch(newMessageArrived(target.username, message));
 
             if (dummyEl.current) {
                 dummyEl.current.scrollIntoView();
             }
         });
 
+        if (dummyEl.current) {
+            dummyEl.current.scrollIntoView();
+        }
 
         return () => {
             if (isMountedRef) isMountedRef.current = false;
@@ -60,15 +61,12 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
             setLoading(true);
             const messages = await getUserMessages(target.id, { offset: target.offset });
 
-            if (messages.length === 0) {
-                if (isMountedRef.current) setError('No messages.');
-            } else {
-                dispatch(getMessagesSuccess(target.username, messages.reverse()));
-            }
+            dispatch(getMessagesSuccess(target.username, messages.reverse()));
 
             if (isMountedRef.current) {
                 setText('');
                 setLoading(false);
+                setError(null);
             }
 
 
@@ -78,7 +76,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
         } catch (e) {
             if (isMountedRef.current) {
                 setLoading(false);
-                setError(e.error.message);
+                setError(e);
             }
         }
     }
@@ -92,11 +90,12 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
             if (isMountedRef.current) {
                 setSending(false);
                 setText('');
+                setError(null);
             }
         } catch (e) {
             if (isMountedRef.current) {
                 setSending(false);
-                setError(e.error.message);
+                setError(e);
             }
         }
     }
@@ -138,8 +137,14 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 )}
                 {(!isLoading && target.chats.length === 0 && error) && (
                     <div className="flex flex-col items-center h-full justify-center py-2">
-                        <span className="text-gray-400 mb-4">No messages.</span>
-                        <span className="text-gray-400 text-sm">Send a message to {target.username}</span>
+                        {error.status_code === 404 ? (
+                            <>
+                                <span className="text-gray-400 mb-4">No messages.</span>
+                                <span className="text-gray-400 text-sm">Send a message to {target.username}</span>
+                            </>
+                        ) : (
+                                <span className="text-gray-400 mb-4">{error.error.message}</span>
+                            )}
                     </div>
                 )}
                 {(!error && target.chats.length !== 0) && (

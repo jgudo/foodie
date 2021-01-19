@@ -94,6 +94,7 @@ const Messages: React.FC = () => {
             if (!items || items.length === 0) {
                 setError('No more messages.')
             }
+
         } catch (e) {
             setError(e.error.message);
             setLoading(false);
@@ -104,6 +105,7 @@ const Messages: React.FC = () => {
         try {
             dispatch(initiateChat(sender));
 
+            console.log(sender);
             await readMessage(sender.id);
             const updated = messages.items.map(msg => ({
                 ...msg,

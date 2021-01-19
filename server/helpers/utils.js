@@ -102,7 +102,7 @@ module.exports = {
             default:
                 return {
                     ...initStatus,
-                    status_code: initStatus.status_code || status_code,
+                    status_code: status_code || initStatus.status_code,
                     error: {
                         type: 'REQUEST_ERROR',
                         title: 'Request Error',

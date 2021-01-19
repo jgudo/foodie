@@ -10,7 +10,7 @@ export interface IRootReducer {
     chats: IChatState
 }
 
-export interface IError {
+export interface IErrorState {
     authError?: string;
     profileError?: string;
     newsFeedError?: string;
@@ -25,6 +25,7 @@ export interface TLoading {
 
 export interface INewsFeed {
     items: IPost[];
+    hasNewFeed: boolean;
     offset: number;
 }
 
@@ -108,11 +109,11 @@ export interface INotification {
 
 export interface IMessage {
     id: string;
-    from: IUser,
-    to: IUser,
-    text: string,
-    createdAt: Date,
-    seen: boolean,
+    from: IUser;
+    to: IUser;
+    text: string;
+    createdAt: Date;
+    seen: boolean;
     unseenCount?: number;
     isOwnMessage?: boolean;
 }
@@ -142,6 +143,19 @@ export interface IFetchParams {
     q?: string;
     type?: string;
     sort?: 'asc' | 'desc';
+}
+
+export interface IError {
+    status_code: number;
+    data: any;
+    error: {
+        message: string;
+        title: string;
+        type: string;
+    };
+    success: boolean;
+    timestamp: string | Date;
+    [prop: string]: any;
 }
 
 export interface IImage {

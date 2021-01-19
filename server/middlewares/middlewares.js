@@ -35,7 +35,7 @@ function validateObjectID(...ObjectIDs) {
     return function (req, res, next) {
         ObjectIDs.forEach((id) => {
             if (!isValidObjectId(req.params[id])) {
-                return res.sendStatus(400);
+                return res.status(400).send(makeErrorJson({ status_code: 400, message: 'Something went wrong :(' }));
             } else {
                 next();
             }

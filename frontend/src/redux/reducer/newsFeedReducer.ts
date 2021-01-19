@@ -1,16 +1,18 @@
-import { CLEAR_FEED, CREATE_POST_SUCCESS, DELETE_FEED_POST, GET_FEED_SUCCESS, UPDATE_FEED_POST } from "~/constants/actionType";
+import { CLEAR_FEED, CREATE_POST_SUCCESS, DELETE_FEED_POST, GET_FEED_SUCCESS, HAS_NEW_FEED, UPDATE_FEED_POST } from "~/constants/actionType";
 import { INewsFeed, IPost } from "~/types/types";
 import { TNewsFeedActionType } from "../action/feedActions";
 
 const initState: INewsFeed = {
     items: [],
-    offset: 0
+    offset: 0,
+    hasNewFeed: false
 };
 
 const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
     switch (action.type) {
         case GET_FEED_SUCCESS:
             return {
+                ...state,
                 items: [...state.items, ...action.payload],
                 offset: state.offset + 1
             };
@@ -40,6 +42,11 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
                         return post;
                     }
                 })
+            }
+        case HAS_NEW_FEED:
+            return {
+                ...state,
+                hasNewFeed: action.payload
             }
         default:
             return state;

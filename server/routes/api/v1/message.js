@@ -39,7 +39,7 @@ router.post(
             [user_id, req.user._id.toString()].forEach((user) => {
                 io.to(user).emit('newMessage', {
                     ...message.toObject(),
-                    isOwnMessage: req.user._id.toString() === message.from.id ? true : false
+                    isOwnMessage: user === message.from.id ? true : false
                 });
             });
 
@@ -186,7 +186,7 @@ router.get(
                         from: {
                             username: '$result.from.username',
                             profilePicture: '$result.from.profilePicture',
-                            id: '$result.from.id',
+                            id: '$result.from._id',
                             fullname: '$result.from.fullname'
                         },
                     }
@@ -382,6 +382,10 @@ router.get(
                     isOwnMessage: msg.from.id === req.user._id.toString() ? true : false
                 }
             });
+
+            if (messages.length === 0) {
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No messages.' }));
+            }
 
             res.status(200).send(makeResponseJson(mapped));
         } catch (e) {
