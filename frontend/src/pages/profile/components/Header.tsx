@@ -1,4 +1,4 @@
-import { CameraOutlined, EditOutlined } from '@ant-design/icons';
+import { CameraOutlined, EditOutlined, MessageOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -8,7 +8,9 @@ import CropProfileModal from '~/components/main/Modals/CropProfileModal';
 import Loader from '~/components/shared/Loader';
 import useFileHandler from '~/hooks/useFileHandler';
 import useModal from '~/hooks/useModal';
+import avatar_placeholder from '~/images/avatar_placeholder.png';
 import { updateAuthPicture } from '~/redux/action/authActions';
+import { initiateChat } from '~/redux/action/chatActions';
 import { updateCoverPhoto, updateProfilePicture } from '~/redux/action/profileActions';
 import { uploadPhoto } from '~/services/api';
 import { IImage, IProfile, IUser } from "~/types/types";
@@ -31,13 +33,12 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
     const coverPhotoRef = useRef<HTMLDivElement | null>(null);
     const coverPhoto = useFileHandler<IImage>('single', initImageState);
     const profilePicture = useFileHandler<IImage>('single', initImageState);
-    const isOwnProfile = profile.username === auth.username;
 
     useEffect(() => {
         const cp = coverPhotoRef.current;
         const cpo = coverPhotoOverlayRef.current;
 
-        if (cp && cpo && isOwnProfile) {
+        if (cp && cpo && profile.isOwnProfile) {
             cp.addEventListener('mouseover', overlayOnMouseOver);
             cp.addEventListener('mouseout', overlayOnMouseOut);
         }
@@ -49,7 +50,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [coverPhoto.imageFile.file, isUploadingCoverPhoto, isOwnProfile]);
+    }, [coverPhoto.imageFile.file, isUploadingCoverPhoto, profile.isOwnProfile]);
 
     const overlayOnMouseOver = () => {
         if (!isUploadingCoverPhoto && coverPhotoOverlayRef.current) {
@@ -117,6 +118,15 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
         }
     }
 
+    const onClickMessage = () => {
+        dispatch(initiateChat({
+            username: profile.username,
+            id: profile.id,
+            fullname: profile.fullname || '',
+            profilePicture: profile.profilePicture || ''
+        }));
+    }
+
     return (
         <div>
             <CropProfileModal
@@ -141,7 +151,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                         readOnly={isUploadingCoverPhoto}
                         id="cover"
                     />
-                    {isOwnProfile && (
+                    {profile.isOwnProfile && (
                         <>
                             {isUploadingCoverPhoto ? <Loader mode="light" /> : (
                                 <>
@@ -185,7 +195,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
 
                         className="w-60 h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white overflow-hidden"
                         style={{
-                            background: `#f7f7f7 url(${profile.profilePicture})`
+                            background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
                         }}
                     >
                         {isUploadingProfileImage && (
@@ -195,7 +205,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                         )}
                     </div>
                     {/* ---- UPDLOAD PROFILE PICTURE ---- */}
-                    {isOwnProfile && (
+                    {profile.isOwnProfile && (
                         <div>
                             <input
                                 type="file"
@@ -222,9 +232,18 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                             <h2 className="text-3xl">{profile.fullname || `@${profile.username}`}</h2>
                             <span className="text-indigo-700">{profile.fullname && `@${profile.username}`}</span>
                         </div>
-                        {/* ---- FOLLOW/UNFOLLOW BUTTON */}
-                        {profile.username !== auth.username ? (
-                            <FollowButton isFollowing={profile.isFollowing} userID={profile.id} />
+                        {/* ---- FOLLOW/UNFOLLOW/MESSAGE BUTTON */}
+                        {!profile.isOwnProfile ? (
+                            <div className="flex space-x-4 items-start">
+                                <FollowButton isFollowing={profile.isFollowing} userID={profile.id} />
+                                <button
+                                    className="button--muted !border-gray-400 !rounded-full flex items-center"
+                                    onClick={onClickMessage}
+                                >
+                                    <MessageOutlined className="flex items-center justify-center mr-2" />
+                                    Message
+                                </button>
+                            </div>
                         ) : (
                                 <button
                                     className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-0 flex items-center justify-center"

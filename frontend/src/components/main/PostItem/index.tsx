@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
+import Avatar from '~/components/shared/Avatar';
 import ImageGrid from '~/components/shared/ImageGrid';
 import useModal from '~/hooks/useModal';
 import { IPost, IRootReducer } from "~/types/types";
@@ -40,14 +41,10 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             <div className="flex justify-between items-center w-full">
                 <div className="flex">
 
-                    <div className="rounded-full overflow-hidden relative w-10 h-10 mr-3 bg-gray-200">
-                        <img
-                            alt=""
-                            className="w-full h-full object-cover"
-                            src={post.author.profilePicture || `https://i.pravatar.cc/60?${new Date().getTime()}`}
-                        // src={post.author.profilePicture || 'https://source.unsplash.com/200x200/?person'}
-                        />
-                    </div>
+                    <Avatar
+                        url={post.author.profilePicture}
+                        className="mr-3"
+                    />
                     <div className="flex flex-col">
                         <Link to={`/user/${post.author.username}`}>
                             <h5 className="font-bold">{post.author.username}</h5>

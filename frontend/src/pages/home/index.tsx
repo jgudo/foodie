@@ -1,15 +1,17 @@
-import { CoffeeOutlined, StarOutlined, TeamOutlined } from "@ant-design/icons";
+import { CoffeeOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from "~/components/main/PostItem";
 import SuggestedPeople from "~/components/main/SuggestedPeople";
+import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import useModal from "~/hooks/useModal";
 import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, updateFeedPost } from "~/redux/action/feedActions";
 import { IPost, IRootReducer } from "~/types/types";
+import SideMenu from "./SideMenu";
 
 interface ILocation {
     from: string;
@@ -65,44 +67,14 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
 
     return (
         <div className="contain pt-20 flex items-start">
-            <div className="w-1/4 rounded-md bg-white sticky top-20 mr-4 shadow-sm divide-y-2">
-                <ul>
-                    <li className="px-4 py-3 cursor-pointer rounded-md hover:bg-indigo-100">
-                        <Link to={`/user/${state.auth.username}`} className="flex items-center text-black">
-                            <div
-                                className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-4"
-                                style={{ background: `#f8f8f8 url(${state.auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                            />
-                            <h6 className="text-sm">My Profile</h6>
-                        </Link>
-                    </li>
-                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
-                        <Link to={`/user/${state.auth.username}/following`} className="flex items-center text-black">
-                            <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6 className="text-sm">Following</h6>
-                        </Link>
-                    </li>
-                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
-                        <Link to={`/user/${state.auth.username}/followers`} className="flex items-center text-black">
-                            <TeamOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6 className="text-sm">Followers</h6>
-                        </Link>
-                    </li>
-                    <li className="px-4 py-3 cursor-pointer mt-4 rounded-md hover:bg-indigo-100">
-                        <Link to={`/user/${state.auth.username}/bookmarks`} className="flex items-center text-black">
-                            <StarOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
-                            <h6 className="text-sm">Bookmarks</h6>
-                        </Link>
-                    </li>
-                </ul>
+            {/*  --- SIDE MENU --- */}
+            <div className="w-1/4 rounded-md bg-white sticky top-20 mr-4 shadow-lg divide-y-2">
+                <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
             </div>
             <div className="w-2/4" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                 {/* --- CREATE POST INPUT ---- */}
                 <div className="flex items-center justify-start">
-                    <div
-                        className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                        style={{ background: `#f8f8f8 url(${state.auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                    />
+                    <Avatar url={state.auth.profilePicture} className="mr-2" />
                     <div className="flex-grow">
                         <input
                             type="text"
@@ -157,6 +129,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                     </>
                 )}
             </div>
+            {/* --- SUGGESTED PEOPLE --- */}
             <div className="w-1/4 sticky top-20 ml-4">
                 <SuggestedPeople />
             </div>

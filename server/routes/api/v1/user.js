@@ -60,6 +60,8 @@ router.get(
                 toObjectUser.isFollowing = isFollowing;
             }
 
+            toObjectUser.isOwnProfile = req.user.username === username
+
             res.status(200).send(makeResponseJson(toObjectUser));
         } catch (e) {
             console.log(e)

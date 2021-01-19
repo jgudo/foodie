@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { getSuggestedPeople } from "~/services/api";
 import { IProfile } from "~/types/types";
@@ -46,10 +47,7 @@ const SuggestedPeople: React.FC = () => {
                     <div className="flex items-center justify-between px-4 py-2">
                         <Link to={`/user/${user.username}`}>
                             <div className="flex items-center">
-                                <div
-                                    className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                                    style={{ background: `#f8f8f8 url(${user.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                                />
+                                <Avatar url={user.profilePicture} className="mr-2" />
                                 <h6 className="mr-10 text-sm max-w-md overflow-ellipsis overflow-hidden">{user.username}</h6>
                             </div>
                         </Link>

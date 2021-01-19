@@ -32,7 +32,6 @@ const Profile: React.FC<IProps> = (props) => {
         error: state.error.profileError,
         isLoadingGetUser: state.loading.isLoadingGetUser
     }));
-    const isOwnProfile = state.auth.username === state.profile.username;
 
     useEffect(() => {
         if (state.profile.username !== username) {
@@ -61,7 +60,7 @@ const Profile: React.FC<IProps> = (props) => {
                                 <Route exact path={ROUTE.PROFILE}>
                                     <Posts
                                         username={username}
-                                        isOwnProfile={isOwnProfile}
+                                        isOwnProfile={state.profile.isOwnProfile}
                                         auth={state.auth}
                                     />
                                 </Route>
@@ -72,13 +71,13 @@ const Profile: React.FC<IProps> = (props) => {
                                     <Following username={username} />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_BOOKMARKS}>
-                                    <Bookmarks username={username} isOwnProfile={isOwnProfile} />
+                                    <Bookmarks username={username} isOwnProfile={state.profile.isOwnProfile} />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_INFO}>
                                     <Info />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_EDIT_INFO}>
-                                    <EditInfo isOwnProfile={isOwnProfile} profile={state.profile} />
+                                    <EditInfo isOwnProfile={state.profile.isOwnProfile} profile={state.profile} />
                                 </Route>
                             </Switch>
                         </div>

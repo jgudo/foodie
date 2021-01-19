@@ -1,7 +1,13 @@
-import { CLOSE_CHAT, GET_MESSAGES_SUCCESS, INITIATE_CHAT, MINIMIZE_CHAT, NEW_MESSAGE_ARRIVED } from "~/constants/actionType";
-import { IMessage, IUser } from "~/types/types";
+import {
+    CLOSE_CHAT,
+    GET_MESSAGES_SUCCESS,
+    INITIATE_CHAT,
+    MINIMIZE_CHAT,
+    NEW_MESSAGE_ARRIVED
+} from "~/constants/actionType";
+import { IMessage, IUser, PartialBy } from "~/types/types";
 
-export const initiateChat = (user: IUser) => (<const>{
+export const initiateChat = (user: PartialBy<IUser, 'fullname'>) => (<const>{
     type: INITIATE_CHAT,
     payload: user
 });

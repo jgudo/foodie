@@ -1,9 +1,7 @@
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import Avatar from '~/components/shared/Avatar';
 import Badge from '~/components/shared/Badge';
+import { displayTime } from '~/helpers/utils';
 import { IMessage, IUser } from "~/types/types";
-
-dayjs.extend(relativeTime);
 
 interface IProps {
     messages: IMessage[];
@@ -28,9 +26,10 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                                     onClick={() => handleReadMessage(message.isOwnMessage ? message.to : message.from)}
                                 >
                                     {/* --- IMAGE--- */}
-                                    <div
-                                        className="w-12 h-12 !bg-cover !bg-no-repeat rounded-full mr-4"
-                                        style={{ background: `#f8f8f8 url(${!message.isOwnMessage ? message.from.profilePicture : message.to.profilePicture})` }}
+                                    <Avatar
+                                        url={!message.isOwnMessage ? message.from.profilePicture : message.to.profilePicture}
+                                        size="lg"
+                                        className="mr-4"
                                     />
                                     <div className="relative flex-grow">
                                         {/* --- USERNAME --- */}
@@ -43,7 +42,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                                         </span>
                                         {/* --- DATE --- */}
                                         <span className="absolute right-4 top-1 text-xs text-gray-400">
-                                            {dayjs(message.createdAt).fromNow()}
+                                            {displayTime(message.createdAt)}
                                         </span>
                                         {/* --- BADGE ---- */}
                                         {!message.isOwnMessage && (

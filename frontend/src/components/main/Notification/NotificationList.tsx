@@ -1,10 +1,8 @@
 import { CommentOutlined, LikeOutlined, UserAddOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { useHistory } from 'react-router-dom';
+import Avatar from '~/components/shared/Avatar';
+import { displayTime } from '~/helpers/utils';
 import { INotification } from "~/types/types";
-
-dayjs.extend(relativeTime);
 
 interface IProps {
     notifications: INotification[],
@@ -36,15 +34,13 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                             >
                                 <div className="relative">
                                     <div className="flex flex-wrap items-center">
-                                        <div
-                                            className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                                            style={{
-                                                background: `#f8f8f8 url(${notif.initiator.profilePicture || 'https://i.pravatar.cc/60'}`
-                                            }}
+                                        <Avatar
+                                            url={notif.initiator.profilePicture}
+                                            className="mr-2"
                                         />
                                         <span className="text-indigo-700">{notif.initiator.username}</span>
-                                &nbsp;
-                                                <span className="text-gray-700">
+                                        &nbsp;
+                                        <span className="text-gray-700">
                                             {
                                                 notif.type === 'like' ? 'likes your post.'
                                                     : notif.type === 'comment' ? 'commented on your post.'
@@ -53,7 +49,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                             }
                                         </span>
                                     </div>
-                                    <span className="text-gray-500 text-sm ml-14">{dayjs(notif.createdAt).fromNow()}</span>
+                                    <span className="text-gray-500 text-xs ml-14">{displayTime(notif.createdAt)}</span>
                                     {notif.type === 'like' ? (
                                         <LikeOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
                                     ) : notif.type === 'comment' ? (

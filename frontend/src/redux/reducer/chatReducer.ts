@@ -22,22 +22,25 @@ const chatReducer = (state = initState, action: TChatActionType) => {
             const maxItems = 4;
             const hasReachedLimit = state.items.length === maxItems;
 
-            // Delete first and set minimized to true
-            const mapped = state.items.map(chat => ({
-                ...chat,
-                minimized: true
-            }));
-            const deletedFirstItem = mapped.splice(1);
 
             if (!exists) {
+                // Delete first and set minimized to true
+                const mapped = state.items.map(chat => ({
+                    ...chat,
+                    minimized: true
+                }));
+                const deletedFirstItem = mapped.splice(1);
+
                 return {
                     active: action.payload.id,
                     items: hasReachedLimit
                         ? [...deletedFirstItem, initChat]
-                        : [...mapped, initChat]
+                        : [...(state.items.map(chat => ({
+                            ...chat,
+                            minimized: true
+                        }))), initChat]
                 }
             } else {
-                console.log('not exist')
                 return {
                     active: action.payload.id,
                     items: state.items.map((chat) => {

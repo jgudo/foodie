@@ -1,3 +1,5 @@
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export interface IRootReducer {
     auth: IUser;
@@ -77,7 +79,7 @@ export interface IProfile {
     id: string;
     username: string;
     email: string;
-    fullname: string | null;
+    fullname?: string;
     firstname: string;
     lastname: string;
     info: {
@@ -86,8 +88,8 @@ export interface IProfile {
         gender: string;
     },
     isEmailValidated: boolean;
-    profilePicture: string | null;
-    coverPhoto: string | null;
+    profilePicture?: string;
+    coverPhoto?: string;
     dateJoined: Date | null;
     followingCount: number;
     followersCount: number;

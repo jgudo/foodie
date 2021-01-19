@@ -6,6 +6,7 @@ import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
 import Messages from '../main/Messages';
 import Notification from '../main/Notification';
+import Avatar from "./Avatar";
 import SearchInput from './SearchInput';
 
 const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
@@ -53,10 +54,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                             {/* ---- AVATAR WITH  USERNAME ----------- */}
                             <Link to={`/user/${auth.username}`} className="cursor-pointer">
                                 <div className="flex items-center">
-                                    <div
-                                        className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                                        style={{ background: `#f8f8f8 url(${auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                                    />
+                                    <Avatar url={auth.profilePicture} className="mr-2" />
                                     <h6 className="mr-10">@{auth.username}</h6>
                                 </div>
                             </Link>
