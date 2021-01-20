@@ -6,7 +6,7 @@ import Loader from '~/components/shared/Loader';
 import { initiateChat } from '~/redux/action/chatActions';
 import { getMessages, getUnreadMessages, readMessage } from '~/services/api';
 import socket from "~/socket/socket";
-import { IMessage, IRootReducer, IUser } from "~/types/types";
+import { IError, IMessage, IRootReducer, IUser } from "~/types/types";
 import MessagesList from "./MessagesList";
 
 interface IMessageState {
@@ -19,7 +19,7 @@ const Messages: React.FC = () => {
     const [isMessagesOpen, setMessagesOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [offset, setOffset] = useState(0);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const [messages, setMessages] = useState<IMessageState>({
         items: [],
         totalUnseen: 0
@@ -81,7 +81,7 @@ const Messages: React.FC = () => {
     const fetchMessages = async (initOffset = 0) => {
         try {
             setLoading(true);
-            setError('');
+            setError(null);
             const { messages: items, totalUnseen } = await getMessages({ offset: initOffset });
 
             setMessages({
@@ -90,13 +90,8 @@ const Messages: React.FC = () => {
             });
             setOffset(offset + 1);
             setLoading(false);
-
-            if (!items || items.length === 0) {
-                setError('No more messages.')
-            }
-
         } catch (e) {
-            setError(e.error.message);
+            setError(e);
             setLoading(false);
         }
     };
@@ -141,12 +136,17 @@ const Messages: React.FC = () => {
             {isMessagesOpen && (
                 <div className="messages-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
                     {/*  ----- HEADER ----- */}
-                    <div className="p-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
+                    <div className="px-4 py-3 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
                         <h6 className="text-white">Messages</h6>
                     </div>
                     {(isLoading && !error && messages.items.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
+                        </div>
+                    )}
+                    {(messages.items.length === 0 && error) && (
+                        <div className="flex justify-center py-6">
+                            <p className="text-gray-400 italic">{error?.error?.message || 'You have no messages.'}</p>
                         </div>
                     )}
                     {(messages.items.length !== 0) && (

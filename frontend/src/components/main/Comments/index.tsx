@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
+import Avatar from '~/components/shared/Avatar';
 import Boundary from '~/components/shared/Boundary';
 import Loader from '~/components/shared/Loader';
 import useModal from '~/hooks/useModal';
@@ -141,10 +142,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                                 key={comment.id}
                             >
                                 <Link to={`/user/${comment.author.username}`} className="mr-2">
-                                    <div
-                                        className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full"
-                                        style={{ background: `#f8f8f8 url(${comment.author.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                                    />
+                                    <Avatar url={comment.author.profilePicture} />
                                 </Link>
                                 <div className="inline-flex items-start flex-col flex-grow">
                                     <Link to={`/user/${comment.author.username}`}>
@@ -191,10 +189,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                 )}
                 {/*  ---- INPUT COMMENT ----- */}
                 <div className={`flex items-center py-4 px-2 ${isUpdating && 'bg-yellow-100'}`}>
-                    <div
-                        className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                        style={{ background: `#f8f8f8 url(${user.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                    />
+                    <Avatar url={user.profilePicture} className="mr-2" />
                     <div className="flex-grow">
                         <input
                             type="text"

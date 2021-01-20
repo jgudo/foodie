@@ -11,7 +11,7 @@ import {
     markAllAsUnreadNotifications, readNotification
 } from "~/services/api";
 import socket from "~/socket/socket";
-import { INotification, IRootReducer } from "~/types/types";
+import { IError, INotification, IRootReducer } from "~/types/types";
 import NotificationList from "./NotificationList";
 
 const Notification: React.FC = () => {
@@ -20,7 +20,7 @@ const Notification: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [offset, setOffset] = useState(0);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const [notifications, setNotifications] = useState<any>({
         items: [],
         count: 0
@@ -67,7 +67,8 @@ const Notification: React.FC = () => {
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            setError('');
+            setError(null);
+
             const notifs = await getNotifications({ offset });
 
             setNotifications({
@@ -77,13 +78,9 @@ const Notification: React.FC = () => {
             });
             setOffset(offset + 1);
             setLoading(false);
-
-            if (notifs.notifications.length === 0) {
-                setError('No more notifications.')
-            }
         } catch (e) {
             setLoading(false);
-            setError(e.error.message);
+            setError(e);
             console.log(e);
         }
     };
@@ -152,7 +149,7 @@ const Notification: React.FC = () => {
             {isNotificationOpen && (
                 <div className="notification-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
                     {/*  ----- HEADER ----- */}
-                    <div className="p-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
+                    <div className="py-2 px-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
                         <h6 className="text-white">Notifications</h6>
                         <span
                             className="text-sm  p-2 text-white opacity-80 rounded-md hover:bg-indigo-500"
@@ -164,6 +161,11 @@ const Notification: React.FC = () => {
                     {(isLoading && !error && notifications.items.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
+                        </div>
+                    )}
+                    {(notifications.items.length === 0 && error) && (
+                        <div className="flex justify-center py-6">
+                            <p className="text-gray-400 italic">{error?.error?.message || 'No new notifications.'}</p>
                         </div>
                     )}
                     {(notifications.items.length !== 0) && (
@@ -180,7 +182,7 @@ const Notification: React.FC = () => {
                             )}
                             {(notifications.items.length !== 0 && error) && (
                                 <div className="flex justify-center py-6">
-                                    <p className="text-gray-400 italic">{error}</p>
+                                    <p className="text-gray-400 italic">{error?.error?.message || 'No new notifications.'}</p>
                                 </div>
                             )}
                         </div>

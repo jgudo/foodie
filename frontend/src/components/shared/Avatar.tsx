@@ -16,7 +16,7 @@ const Avatar: React.FC<IProps> = ({ url, size, className }) => {
                         ? 'w-8 h-8'
                         : size === 'lg'
                             ? 'w-12 h-12'
-                            : 'w-10 h-10'} !bg-cover !bg-no-repeat rounded-full ${className}`}
+                            : 'w-10 h-10'} !bg-cover !bg-no-repeat border border-gray-100 rounded-full ${className}`}
             style={{ background: `#f8f8f8 url(${url || placeholder})` }}
         />
     )

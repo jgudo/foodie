@@ -17,7 +17,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                     <p className="text-gray-400 italic">No Messages.</p>
                 </div>
             ) : (
-                    <div className="max-h-80vh overflow-y-scroll divide-y divide-gray-100">
+                    <div className="max-h-70vh overflow-y-scroll divide-y divide-gray-100">
                         {messages.map(message => {
                             return (
                                 <div

@@ -21,7 +21,7 @@ export const PostLoader: React.FC<any> = (props) => {
             <rect x="48" y="8" rx="3" ry="3" width="100" height="10" />
             <rect x="48" y="26" rx="3" ry="3" width="52" height="10" />
             <rect x="0" y="60" rx="3" ry="3" width="80%" height="10" />
-            <rect x="0" y="78" rx="3" ry="3" width="76%" height="10" />
+            <rect x="0" y="78" rx="3" ry="3" width="56%" height="10" />
             <rect x="0" y="98" rx="3" ry="3" width="65%" height="10" />
             <rect x="0" y="132" rx="3" ry="3" width="100%" height="420" />
         </ContentLoader>

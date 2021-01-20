@@ -58,7 +58,7 @@ router.get(
         try {
             let offset = parseInt(req.query.offset) || 0;
 
-            const limit = 10;
+            const limit = 1;
             const skip = offset * limit;
 
             const agg = await Message.aggregate([
@@ -71,6 +71,12 @@ router.get(
                     }
                 },
                 { $sort: { createdAt: -1 } },
+                {
+                    $skip: skip
+                },
+                {
+                    $limit: limit
+                },
                 {
                     $facet: {
                         // GROUP BY SENT MESSAGES
@@ -242,12 +248,6 @@ router.get(
                         messages: 1,
                         totalUnseen: 1
                     }
-                },
-                {
-                    $limit: limit
-                },
-                {
-                    $skip: skip
                 }
             ]);
 
@@ -274,6 +274,10 @@ router.get(
 
                 return selected;
             });
+
+            if (filtered.length === 0) {
+                return res.status(404).send(makeErrorJson({ message: 'You have no messages.' }));
+            }
 
             res.status(200).send(makeResponseJson({ messages: filtered, totalUnseen: aggTotalUnseen }));
         } catch (e) {

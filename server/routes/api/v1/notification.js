@@ -1,4 +1,4 @@
-const { makeResponseJson } = require('../../../helpers/utils');
+const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const { isAuthenticated } = require('../../../middlewares/middlewares');
 const Notification = require('../../../schemas/NotificationSchema');
 
@@ -23,6 +23,10 @@ router.get(
             const unreadCount = await Notification.find({ target: req.user._id, unread: true });
             const count = await Notification.find({ target: req.user._id });
             const result = { notifications, unreadCount: unreadCount.length, count: count.length };
+
+            if (notifications.length === 0) {
+                return res.status(404).send(makeErrorJson({ message: 'No more notifications' }));
+            }
 
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
