@@ -12,6 +12,7 @@ import { IPost, IRootReducer } from "~/types/types";
 import Comments from '../Comments';
 import LikeButton from '../LikeButton';
 import EditPostModal from '../Modals/EditPostModal';
+import PostLikesModal from '../Modals/PostLikesModal';
 import PostOptions from '../Options/PostOptions';
 
 dayjs.extend(relativeTime);
@@ -28,6 +29,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
     const [isCommentVisible, setCommentVisible] = useState(false);
     const deleteModal = useModal();
     const updateModal = useModal();
+    const likesModal = useModal();
 
     const handleToggleComment = () => {
         if (!isCommentVisible) {
@@ -81,7 +83,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             {post.photos.length !== 0 && <ImageGrid images={post.photos} />}
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
-                <div>
+                <div onClick={likesModal.openModal}>
                     {post.likesCount > 0 && (
                         <span className="text-gray-700 text-sm cursor-pointer hover:underline">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
@@ -124,6 +126,12 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 closeModal={updateModal.closeModal}
                 post={post}
                 updateSuccessCallback={updateSuccessCallback}
+            />
+            <PostLikesModal
+                isOpen={likesModal.isOpen}
+                openModal={likesModal.openModal}
+                closeModal={likesModal.closeModal}
+                postID={post.id}
             />
         </div>
     );

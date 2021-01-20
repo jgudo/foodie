@@ -121,7 +121,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
             <div className="bg-white rounded-b-md">
                 {(!error && comments.items.length !== 0) && (
                     <span
-                        className="text-indigo-700 font-bold cursor-pointer inline-block p-2"
+                        className="text-indigo-700 text-sm font-bold cursor-pointer inline-block p-2"
                         onClick={() => fetchComment({
                             offset: 1,
                             limit: 10,
@@ -133,7 +133,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                     </span>
                 )}
                 {(comments.commentsCount !== 0) && (
-                    <div className="py-4 px-2 mt-6 space-y-2 divide-y divide-gray-200">
+                    <div className="py-4 px-2 space-y-2 divide-y divide-gray-200">
                         {/* ----- COMMENT LIST ---------- */}
                         {comments.items.map((comment: IComment) => (
                             <div

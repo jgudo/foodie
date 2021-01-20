@@ -327,6 +327,20 @@ export const likePost = async (id: string): Promise<any> => {
     }
 }
 
+export const getPostLikes = async (postID: string, params: IFetchParams): Promise<any[]> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/post/likes/${postID}`,
+            params
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e.response.data);
+    }
+}
+
 export const readNotification = async (id: string): Promise<any> => {
     try {
         const req = await axios({

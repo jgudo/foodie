@@ -22,6 +22,9 @@ module.exports = {
         '20rem': '20rem',
         '25rem': '25rem',
       },
+      minWidth: {
+        '15rem': '15rem'
+      },
       maxHeight: {
         '80vh': '80vh',
       },

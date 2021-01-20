@@ -312,4 +312,51 @@ router.get(
     }
 );
 
+router.get(
+    '/v1/post/likes/:post_id',
+    isAuthenticated,
+    validateObjectID('post_id'),
+    async (req, res, next) => {
+        try {
+            const { post_id } = req.params;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = 10;
+            const skip = offset * limit;
+
+            const exist = await Post.findById(Types.ObjectId(post_id));
+            if (!exist) return res.status(400).send(makeErrorJson());
+
+            const post = await Post
+                .findById(Types.ObjectId(post_id))
+                .populate({
+                    path: 'likes',
+                    select: 'profilePicture username fullname',
+                    options: {
+                        skip,
+                        limit,
+                    }
+                });
+
+            if (post.likes.length === 0) {
+                return res.status(404).send(makeErrorJson({ message: 'No likes found.' }));
+            }
+
+            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const following = myFollowing.following || [];
+
+            const result = post.likes.map((user) => {
+                return {
+                    ...user.toObject(),
+                    isFollowing: following.includes(user.id)
+                }
+            });
+
+            res.status(200).send(makeResponseJson(result));
+        } catch (e) {
+            console.log('CANT GET POST LIKERS', e);
+            res.status(500).send(makeErrorJson());
+        }
+    }
+);
+
 module.exports = router;

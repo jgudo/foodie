@@ -53,7 +53,7 @@ const PostOptions: React.FC<IProps> = (props) => {
                 <EllipsisOutlined style={{ fontSize: '20px' }} />
             </div>
             {isOpenOption && (
-                <div className="w-60 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3">
+                <div className="w-60 flex flex-col bg-white rounded-md shadow-lg overflow-hidden absolute top-8 right-3 border border-gray-200 divide-y divide-gray-100">
                     {props.isOwnPost ? (
                         <>
                             <h4

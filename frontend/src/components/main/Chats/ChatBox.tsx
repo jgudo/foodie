@@ -129,7 +129,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-18rem max-h-80 p-2 bg-gray-100 overflow-y-scroll">
+            <div className="min-h-18rem max-h-80 bg-gray-100 overflow-y-scroll">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center h-full py-2">
                         <Loader />
@@ -167,7 +167,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     return (
                         <div className="flex flex-col">
                             <div
-                                className={`flex mb-1  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                                className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
                                 key={`${msg.id}_${msg.from.id}`}
                             >
                                 <div className="flex">

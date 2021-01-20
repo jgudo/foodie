@@ -3,6 +3,7 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import { toast } from "react-toastify";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from '~/components/main/PostItem';
+import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import useModal from "~/hooks/useModal";
 import { createPost, getPosts } from "~/services/api";
@@ -120,10 +121,7 @@ const Posts: React.FC<IProps> = (props) => {
         <div className="w-full">
             {props.isOwnProfile && (
                 <div className="flex items-center justify-start mb-4">
-                    <div
-                        className="w-10 h-10 !bg-cover !bg-no-repeat rounded-full mr-2"
-                        style={{ background: `#f8f8f8 url(${props.auth.profilePicture || 'https://i.pravatar.cc/60?' + new Date().getTime()}` }}
-                    />
+                    <Avatar url={props.auth.profilePicture} className="mr-2" />
                     <div className="flex-grow">
                         <input
                             type="text"

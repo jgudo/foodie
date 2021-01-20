@@ -60,10 +60,12 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                 // shouldCloseOnOverlayClick={!isDeleting}
                 overlayClassName="modal-overlay"
             >
-                <CloseOutlined
-                    className="p-2 absolute right-2 top-2 outline-none text-gray-500"
+                <div
+                    className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}
-                />
+                >
+                    <CloseOutlined className="p-2  outline-none text-gray-500" />
+                </div>
                 {/* {error && <span className="p-4 bg-red-100 text-red-500 w-full">{error}</span>} */}
                 <div className="w-40rem p-4 px-8">
                     <h1>Create Post</h1>
