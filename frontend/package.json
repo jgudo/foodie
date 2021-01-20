@@ -26,6 +26,7 @@
     "lodash.debounce": "^4.0.8",
     "postcss": "^7",
     "react": "^17.0.1",
+    "react-content-loader": "^6.0.1",
     "react-dom": "^17.0.1",
     "react-easy-crop": "^3.3.1",
     "react-image-lightbox": "^5.1.1",

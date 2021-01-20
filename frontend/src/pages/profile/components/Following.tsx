@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import UserCard from '~/components/main/UserCard';
-import Loader from "~/components/shared/Loader";
+import { UserLoader } from "~/components/shared/Loaders";
 import { getFollowing } from "~/services/api";
 import { IProfile } from "~/types/types";
 
@@ -55,9 +55,12 @@ const Following: React.FC<IProps> = ({ username }) => {
 
     return (
         <div className="w-full">
-            {(isLoading && !error) && (
-                <div className="flex min-h-10rem items-center justify-center">
-                    <Loader />
+            {isLoading && (
+                <div className="min-h-10rem px-4">
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
                 </div>
             )}
             {!isLoading && followings.length === 0 && (

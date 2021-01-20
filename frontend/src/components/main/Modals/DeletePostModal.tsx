@@ -55,7 +55,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
         >
             <div className="relative">
                 <div
-                    className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={onCloseModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />

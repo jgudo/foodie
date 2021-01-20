@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import UserCard from "~/components/main/UserCard";
-import Loader from "~/components/shared/Loader";
+import { UserLoader } from "~/components/shared/Loaders";
 import { getFollowers } from "~/services/api";
-import { IProfile } from "~/types/types";
+import { IError, IProfile } from "~/types/types";
 
 interface IProps {
     username: string;
@@ -18,7 +18,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     let isMountedRef = useRef<boolean | null>(null);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
 
     useEffect(() => {
         fetchFollowers();
@@ -40,15 +40,11 @@ const Followers: React.FC<IProps> = ({ username }) => {
                 setFollowers([...followers, ...fetchedFollowers]);
                 setIsLoading(false);
 
-                if (fetchFollowers.length === 0) {
-                    setError(`${username} has no followers.`);
-                } else {
-                    setError('');
-                }
+                setError(null);
             }
         } catch (e) {
             setIsLoading(false);
-            setError(e.error.message)
+            setError(e)
             console.log(e);
         }
     };
@@ -56,15 +52,19 @@ const Followers: React.FC<IProps> = ({ username }) => {
     return (
         <div className="w-full">
             {isLoading && (
-                <div className="flex min-h-10rem items-center justify-center">
-                    <Loader />
+                <div className="min-h-10rem px-4">
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
+                    <UserLoader includeButton={true} />
                 </div>
             )}
-            {!isLoading && followers.length === 0 ? (
+            {!isLoading && followers.length === 0 && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
-                    <h6 className="text-gray-400 italic">{error}</h6>
+                    <h6 className="text-gray-400 italic">{error?.error?.message || 'Something went wrong.'}</h6>
                 </div>
-            ) : followers.map(follower => (
+            )}
+            {(!isLoading && !error) && followers.map(follower => (
                 <div className="bg-white rounded-md mb-4 shadow-md" key={follower.user._id}>
                     <UserCard
                         profile={follower.user}

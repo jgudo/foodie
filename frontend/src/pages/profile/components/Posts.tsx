@@ -5,6 +5,7 @@ import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from '~/components/main/PostItem';
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
+import { PostLoader } from "~/components/shared/Loaders";
 import useModal from "~/hooks/useModal";
 import { createPost, getPosts } from "~/services/api";
 import { IPost, IUser } from "~/types/types";
@@ -139,9 +140,10 @@ const Posts: React.FC<IProps> = (props) => {
                 closeModal={closeModal}
                 dispatchCreatePost={dispatchCreatePost}
             />
-            {(isLoading && posts.length === 0) && (
-                <div className="flex min-h-10rem items-center justify-center">
-                    <Loader />
+            {(isLoading) && (
+                <div className="mt-4 px-2 overflow-hidden space-y-6 pb-10">
+                    <PostLoader />
+                    <PostLoader />
                 </div>
             )}
             {!isLoading && posts.length === 0 && error && (

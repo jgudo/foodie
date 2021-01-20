@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, RouteComponentProps, Switch } from "react-router-dom";
 import Boundary from "~/components/shared/Boundary";
+import { ProfileLoader } from "~/components/shared/Loaders";
 import * as ROUTE from "~/constants/routes";
 import { getUserStart } from "~/redux/action/profileActions";
 import { IRootReducer } from "~/types/types";
@@ -44,6 +45,9 @@ const Profile: React.FC<IProps> = (props) => {
         <Boundary>
             {(state.error && !state.isLoadingGetUser) && (
                 <PageNotFound />
+            )}
+            {(state.isLoadingGetUser) && (
+                <div className="pt-14"><ProfileLoader /></div>
             )}
             {(!state.error && !state.isLoadingGetUser) && (
                 <div className="pt-14">

@@ -8,6 +8,7 @@ import PostItem from "~/components/main/PostItem";
 import SuggestedPeople from "~/components/main/SuggestedPeople";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
+import { PostLoader } from "~/components/shared/Loaders";
 import useModal from "~/hooks/useModal";
 import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
 import socket from "~/socket/socket";
@@ -121,8 +122,9 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                 )}
                 {/* ---- LOADING INDICATOR ----- */}
                 {(state.isLoadingFeed) && (
-                    <div className="flex w-full min-h-10rem items-center justify-center">
-                        <Loader />
+                    <div className="mt-4 px-2 overflow-hidden space-y-6 pb-10">
+                        <PostLoader />
+                        <PostLoader />
                     </div>
                 )}
                 {/* ---- NEWS FEED ---- */}
@@ -154,7 +156,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
             <div className="w-1/4 sticky top-20 ml-4">
                 <SuggestedPeople />
             </div>
-        </div>
+        </div >
     );
 };
 

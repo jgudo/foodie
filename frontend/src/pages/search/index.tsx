@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { Redirect, RouteComponentProps, useLocation } from "react-router-dom";
 import Loader from "~/components/shared/Loader";
+import { UserLoader } from "~/components/shared/Loaders";
 import { search } from "~/services/api";
 import { IPost, IProfile } from "~/types/types";
 import Posts from "./Posts";
@@ -158,8 +159,12 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                     ) : (
                             <div ref={infiniteUserRef as React.RefObject<HTMLDivElement>}>
                                 {(isLoadingUser && users.length === 0) && (
-                                    <div className="p-4 flex items-center justify-center">
-                                        <Loader />
+                                    <div className="min-h-10rem">
+                                        <UserLoader backgroundColor="#dadada" />
+                                        <UserLoader backgroundColor="#dadada" />
+                                        <UserLoader backgroundColor="#dadada" />
+                                        <UserLoader backgroundColor="#dadada" />
+                                        <UserLoader backgroundColor="#dadada" />
                                     </div>
                                 )}
                                 {(!isLoadingUser && users.length === 0 && error) && (

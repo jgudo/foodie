@@ -57,7 +57,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
         >
             <div className="relative transition-all">
                 <div
-                    className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
@@ -72,8 +72,8 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                         <Loader />
                     </div>
                 ) : (
-                        <div className="p-4 px-8 w-30rem">
-                            <h3>Likes</h3>
+                        <div className="p-4 px-4 w-30rem">
+                            <h3 className="pl-4">Likes</h3>
                             <div className="mt-8 divide-y divide-gray-100">
                                 {likes.map(user => (
                                     <div key={user.id}>

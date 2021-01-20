@@ -15,6 +15,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
         case GET_FEED_START:
             try {
                 yield put(isGettingFeed(true));
+                yield put(setNewsFeedErrorMessage(null));
 
                 const posts = yield call(getNewsFeed, payload);
 

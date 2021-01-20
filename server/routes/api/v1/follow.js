@@ -192,6 +192,11 @@ router.get(
 
             const { following } = doc[0] || {};
             const finalResult = following ? following : [];
+
+            if (finalResult.length === 0) {
+                return res.status(404).send(makeErrorJson({ message: `${username} isn't following anyone.` }))
+            }
+
             res.status(200).send(makeResponseJson(finalResult));
         } catch (e) {
 
@@ -252,6 +257,11 @@ router.get(
 
             const { followers } = doc[0] || {};
             const finalResult = followers ? followers : [];
+
+            if (finalResult.length === 0) {
+                return res.status(404).send(makeErrorJson({ message: `${username} has no followers.` }))
+            }
+
             res.status(200).send(makeResponseJson(finalResult))
         } catch (e) {
             console.log('CANT GET FOLLOWERS', e);

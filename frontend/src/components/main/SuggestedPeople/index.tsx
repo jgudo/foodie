@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "~/components/shared/Avatar";
-import Loader from "~/components/shared/Loader";
+import { UserLoader } from "~/components/shared/Loaders";
 import { getSuggestedPeople } from "~/services/api";
 import { IProfile } from "~/types/types";
 import FollowButton from "../FollowButton";
@@ -33,8 +33,11 @@ const SuggestedPeople: React.FC = () => {
                 <Link to={`/people/suggested`} className="text-xs underline">See all</Link>
             </div>
             {isLoading && (
-                <div className="flex min-h-10rem items-center justify-center">
-                    <Loader />
+                <div className="min-h-10rem px-4">
+                    <UserLoader />
+                    <UserLoader />
+                    <UserLoader />
+                    <UserLoader />
                 </div>
             )}
             {(!isLoading && error) && (
