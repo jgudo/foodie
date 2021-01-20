@@ -161,7 +161,7 @@ export const deletePost = async (postID: string) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -175,7 +175,7 @@ export const updatePost = async (postID: string, updates: Partial<IPost>) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -207,7 +207,7 @@ export const deleteComment = async (commentID: string): Promise<any> => {
 
         return Promise.resolve();
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -350,7 +350,7 @@ export const readNotification = async (id: string): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 

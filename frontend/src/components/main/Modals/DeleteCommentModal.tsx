@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { deleteComment } from '~/services/api';
+import { IError } from '~/types/types';
 
 interface IProps {
     isOpen: boolean;
@@ -17,7 +18,7 @@ Modal.setAppElement('#root');
 
 const DeleteCommentModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
 
     const handleDeleteComment = async () => {
         try {
@@ -33,28 +34,32 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
             setIsDeleting(false);
         } catch (e) {
             setIsDeleting(false);
-            setError('Unable process request. Please try again.');
+            setError(e);
         }
     };
 
     return (
-        <div>
-            <Modal
-                isOpen={props.isOpen}
-                onAfterOpen={props.onAfterOpen}
-                onRequestClose={props.closeModal}
-                contentLabel="Delete Comment"
-                className="modal"
-                shouldCloseOnOverlayClick={!isDeleting}
-                overlayClassName="modal-overlay"
-            >
+        <Modal
+            isOpen={props.isOpen}
+            onAfterOpen={props.onAfterOpen}
+            onRequestClose={props.closeModal}
+            contentLabel="Delete Comment"
+            className="modal"
+            shouldCloseOnOverlayClick={!isDeleting}
+            overlayClassName="modal-overlay"
+        >
+            <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
-                {error && <span className="p-4 bg-red-100 text-red-500 w-full">{error}</span>}
+                {error && (
+                    <span className="p-4 bg-red-100 text-red-500 w-full">
+                        {error?.error?.message || 'Unable process request. Please try again.'}
+                    </span>
+                )}
                 <div className="p-4 px-8">
                     <h1>Delete Comment</h1>
                     <p className="text-gray-600">Are you sure you want to delete this comment?</p>
@@ -75,9 +80,9 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                         </button>
                     </div>
                 </div>
+            </div>
 
-            </Modal>
-        </div>
+        </Modal>
     );
 };
 

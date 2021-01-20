@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { updatePost } from '~/services/api';
-import { IPost } from '~/types/types';
+import { IError, IPost } from '~/types/types';
 
 interface IProps {
     isOpen: boolean;
@@ -19,7 +19,7 @@ Modal.setAppElement('#root');
 const EditPostModal: React.FC<IProps> = (props) => {
     const [description, setDescription] = useState(props.post.description || '');
     const [isUpdating, setIsUpdating] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -39,28 +39,32 @@ const EditPostModal: React.FC<IProps> = (props) => {
             });
         } catch (e) {
             setIsUpdating(false);
-            setError('Unable to update post. Please try again later.');
+            setError(e);
         }
     };
 
     return (
-        <div>
-            <Modal
-                isOpen={props.isOpen}
-                onAfterOpen={props.onAfterOpen}
-                onRequestClose={props.closeModal}
-                contentLabel="Example Modal"
-                className="modal"
-                shouldCloseOnOverlayClick={false}
-                overlayClassName="modal-overlay"
-            >
+        <Modal
+            isOpen={props.isOpen}
+            onAfterOpen={props.onAfterOpen}
+            onRequestClose={props.closeModal}
+            contentLabel="Example Modal"
+            className="modal"
+            shouldCloseOnOverlayClick={false}
+            overlayClassName="modal-overlay"
+        >
+            <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
-                {error && <span className="p-4 bg-red-100 text-red-500 block w-full">{error}</span>}
+                {error && (
+                    <span className="p-4 bg-red-100 text-red-500 block">
+                        {error?.error?.message || 'Unable process request. Please try again.'}
+                    </span>
+                )}
                 <div className="p-4 px-8 w-40rem">
                     <h1>Edit Post</h1>
                     <br />
@@ -89,9 +93,8 @@ const EditPostModal: React.FC<IProps> = (props) => {
                         </button>
                     </div>
                 </div>
-
-            </Modal>
-        </div>
+            </div>
+        </Modal>
     );
 };
 

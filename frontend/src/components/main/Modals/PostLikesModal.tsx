@@ -46,16 +46,16 @@ const PostLikesModal: React.FC<IProps> = (props) => {
     };
 
     return (
-        <div className="transition-all">
-            <Modal
-                isOpen={props.isOpen}
-                onAfterOpen={props.onAfterOpen}
-                onRequestClose={props.closeModal}
-                contentLabel="Example Modal"
-                className="modal"
-                shouldCloseOnOverlayClick={false}
-                overlayClassName="modal-overlay"
-            >
+        <Modal
+            isOpen={props.isOpen}
+            onAfterOpen={props.onAfterOpen}
+            onRequestClose={props.closeModal}
+            contentLabel="Example Modal"
+            className="modal"
+            shouldCloseOnOverlayClick={false}
+            overlayClassName="modal-overlay"
+        >
+            <div className="relative transition-all">
                 <div
                     className="absolute right-2 top-2 p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}
@@ -63,7 +63,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
                 {(error && likes.length === 0) && (
-                    <span className="p-4 bg-red-100 text-red-500 block w-full">
+                    <span className="p-4 bg-red-100 text-red-500 block">
                         {error.error.message}
                     </span>
                 )}
@@ -88,9 +88,9 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                             )}
                         </div>
                     )}
+            </div>
 
-            </Modal>
-        </div>
+        </Modal>
     );
 };
 
