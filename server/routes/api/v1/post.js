@@ -10,6 +10,7 @@ const Notification = require('../../../schemas/NotificationSchema');
 const Comment = require('../../../schemas/CommentSchema');
 const Bookmark = require('../../../schemas/BookmarkSchema');
 const { multer, uploadImageToStorage, deleteImageFromStorage } = require('../../../storage/filestorage');
+const { LIKES_LIMIT, POST_LIMIT } = require('../../../constants/constants');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -85,15 +86,14 @@ router.get(
     async (req, res, next) => {
         try {
             const { username } = req.params;
-            const { privacy, sortBy, sortOrder, offset: off } = req.query;
+            const { privacy, sortBy, sortOrder } = req.query;
 
-            let offset = 0;
-            if (typeof off !== undefined && !isNaN(off)) offset = parseInt(off);
+            const offset = parseInt(req.query.offset) || 0;
 
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
 
-            const limit = 5;
+            const limit = POST_LIMIT;
             const skip = offset * limit;
 
             const query = {
@@ -257,7 +257,8 @@ router.delete(
             if (!post) return res.sendStatus(404);
 
             if (req.user._id.toString() === post._author_id.toString()) {
-                await deleteImageFromStorage(...post.photos);
+                if (post.photos && post.photos.length !== 0) await deleteImageFromStorage(...post.photos);
+
                 await Post.findByIdAndDelete(post_id);
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
                 await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) });
@@ -320,7 +321,7 @@ router.get(
         try {
             const { post_id } = req.params;
             const offset = parseInt(req.query.offset) || 0;
-            const limit = 10;
+            const limit = LIKES_LIMIT;
             const skip = offset * limit;
 
             const exist = await Post.findById(Types.ObjectId(post_id));

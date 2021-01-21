@@ -1,3 +1,4 @@
+const { NOTIFICATIONS_LIMIT } = require('../../../constants/constants');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const { isAuthenticated } = require('../../../middlewares/middlewares');
 const Notification = require('../../../schemas/NotificationSchema');
@@ -11,7 +12,7 @@ router.get(
         try {
             let offset = parseInt(req.query.offset) || 0;
 
-            const limit = 10;
+            const limit = NOTIFICATIONS_LIMIT;
             const skip = offset * limit;
 
             const notifications = await Notification

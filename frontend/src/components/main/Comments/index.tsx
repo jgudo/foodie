@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import Avatar from '~/components/shared/Avatar';
 import Boundary from '~/components/shared/Boundary';
 import Loader from '~/components/shared/Loader';
@@ -120,7 +121,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
     return (
         <Boundary>
             <div className="bg-white rounded-b-md">
-                {(!error && comments.items.length !== 0) && (
+                {(!error && comments.items.length >= 10) && (
                     <span
                         className="text-indigo-700 text-sm font-bold cursor-pointer inline-block p-2"
                         onClick={() => fetchComment({
@@ -136,43 +137,51 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                 {(comments.commentsCount !== 0) && (
                     <div className="py-4 px-2 space-y-2 divide-y divide-gray-200">
                         {/* ----- COMMENT LIST ---------- */}
-                        {comments.items.map((comment: IComment) => (
-                            <div
-                                className="flex py-2"
-                                key={comment.id}
-                            >
-                                <Link to={`/user/${comment.author.username}`} className="mr-2">
-                                    <Avatar url={comment.author.profilePicture} />
-                                </Link>
-                                <div className="inline-flex items-start flex-col flex-grow">
-                                    <Link to={`/user/${comment.author.username}`}>
-                                        <h5>{comment.author.username}</h5>
-                                    </Link>
-                                    <p className="text-gray-800 min-w-full break-all">{comment.body}</p>
-                                    <div className="mt-2">
-                                        <span className="text-xs text-gray-400">
-                                            {dayjs(comment.createdAt).fromNow()}
-                                        </span>
-                                        {comment.isEdited && (
-                                            <span className="text-xs text-gray-400 ml-2">
-                                                Edited
-                                            </span>
+                        <TransitionGroup component={null}>
+                            {comments.items.map((comment: IComment) => (
+                                <CSSTransition
+                                    timeout={500}
+                                    classNames="fade"
+                                    key={comment.id}
+                                >
+                                    <div
+                                        className="flex py-2"
+                                        key={comment.id}
+                                    >
+                                        <Link to={`/user/${comment.author.username}`} className="mr-2">
+                                            <Avatar url={comment.author.profilePicture} />
+                                        </Link>
+                                        <div className="inline-flex items-start flex-col flex-grow">
+                                            <Link to={`/user/${comment.author.username}`}>
+                                                <h5>{comment.author.username}</h5>
+                                            </Link>
+                                            <p className="text-gray-800 min-w-full break-all">{comment.body}</p>
+                                            <div className="mt-2">
+                                                <span className="text-xs text-gray-400">
+                                                    {dayjs(comment.createdAt).fromNow()}
+                                                </span>
+                                                {comment.isEdited && (
+                                                    <span className="text-xs text-gray-400 ml-2">
+                                                        Edited
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {(user.id === comment.author.id || authorID === user.id) && (
+                                            <CommentOptions
+                                                isOwnComment={user.id === comment.author.id}
+                                                setCommentBody={setCommentBody}
+                                                comment={comment}
+                                                openDeleteModal={deleteModal.openModal}
+                                                setTargetID={setTargetID}
+                                                setIsUpdating={setIsUpdating}
+                                                commentInputRef={commentInputRef}
+                                            />
                                         )}
                                     </div>
-                                </div>
-                                {(user.id === comment.author.id || authorID === user.id) && (
-                                    <CommentOptions
-                                        isOwnComment={user.id === comment.author.id}
-                                        setCommentBody={setCommentBody}
-                                        comment={comment}
-                                        openDeleteModal={deleteModal.openModal}
-                                        setTargetID={setTargetID}
-                                        setIsUpdating={setIsUpdating}
-                                        commentInputRef={commentInputRef}
-                                    />
-                                )}
-                            </div>
-                        ))}
+                                </CSSTransition>
+                            ))}
+                        </TransitionGroup>
                     </div>
                 )}
                 {/* ---- IS UPDATING HINT ---- */}

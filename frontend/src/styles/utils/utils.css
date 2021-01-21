@@ -54,3 +54,38 @@
 .Toastify {
   z-index: 9999;
 }
+
+.animate-fade {
+  animation: animate-fade .5s ease;
+}
+
+@keyframes animate-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-enter {
+  max-height: 0;
+  opacity: 0;
+}
+
+.fade-enter-active {
+  max-height: 500px;
+  opacity: 1;
+  transition: all .5s;
+}
+
+.fade-exit {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.fade-exit-active {
+  max-height: 0;
+  opacity: 0;
+  transition: all .5s;
+}

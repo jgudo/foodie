@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LOGIN } from '~/constants/routes';
+import bg from '~/images/friends_meal_2.webp';
 import { registerStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
@@ -53,13 +54,28 @@ const Register: React.FC = () => {
     return (
         <div className="min-h-screen flex bg-white">
             <div
-                className="w-7/12 h-screen !bg-cover !bg-no-repeat !bg-center"
+                className="relative w-7/12 h-screen p-8 flex justify-start items-end !bg-cover !bg-no-repeat !bg-center"
                 style={{
-                    background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
+                    background: `#f7f7f7 url(${bg})`
                 }}
-
-            />
-            <div className="w-5/12 flex items-center justify-start relative">
+            >
+                {/* --- LOGO --- */}
+                <h2 className="text-white absolute left-8 top-8">Foodie</h2>
+                {/* -- INFO --- */}
+                <h3 className="animate-fade text-white w-9/12 mb-14">
+                    Create your account now and discover new ideas and connect with people.
+                </h3>
+                {/* --- CREDITS LINK --- */}
+                <a
+                    className="animate-fade absolute bottom-8 left-8 text-1xs text-white underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://infinityrimapts.com/5-reasons-host-dinner-party/friends-enjoying-a-meal/"
+                >
+                    Photo: Credits to the photo owner
+                </a>
+            </div>
+            <div className="animate-fade w-5/12 flex items-center justify-start relative">
                 {error && (
                     <div className="p-4 w-full text-center bg-red-100 border-red-400 absolute top-0 left-0">
                         <p className="text-red-500">{error.error.message}</p>

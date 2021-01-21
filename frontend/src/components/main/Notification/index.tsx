@@ -132,7 +132,7 @@ const Notification: React.FC = () => {
 
     const infiniteRef = useInfiniteScroll({
         loading: isLoading,
-        hasNextPage: !error && notifications.items.length !== 0,
+        hasNextPage: !error && notifications.items.length >= 10,
         onLoadMore: fetchNotifications,
         scrollContainer: 'parent',
         threshold: 200

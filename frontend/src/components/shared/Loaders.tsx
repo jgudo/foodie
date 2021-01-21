@@ -36,13 +36,14 @@ export const UserLoader: React.FC<IUserLoader> = (props) => (
         // viewBox="0 0 400 80"
         backgroundColor={props.backgroundColor || "#e2e2e2"}
         foregroundColor={props.foregroundColor || "#ecebeb"}
-        {...props}
     >
         <circle cx="30" cy="30" r="20" />
         <rect x="60" y="25" rx="5" ry="5" width="40%" height="10" />
         {props.includeButton && <rect x="80%" y="10" rx="20" ry="20" width="100" height="40" />}
     </ContentLoader>
-)
+);
+
+UserLoader.defaultProps = { includeButton: false };
 
 export const ProfileLoader: React.FC<any> = (props) => (
     <div>

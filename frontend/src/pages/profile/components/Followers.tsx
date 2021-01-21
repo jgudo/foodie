@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import useInfiniteScroll from "react-infinite-scroll-hook";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from "~/components/main/UserCard";
+import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
 import { getFollowers } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
@@ -39,6 +42,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
             if (isMountedRef.current) {
                 setFollowers([...followers, ...fetchedFollowers]);
                 setIsLoading(false);
+                setOffset(offset + 1);
 
                 setError(null);
             }
@@ -49,8 +53,16 @@ const Followers: React.FC<IProps> = ({ username }) => {
         }
     };
 
+    const infiniteRef = useInfiniteScroll({
+        loading: isLoading,
+        hasNextPage: !error && followers.length >= 10,
+        onLoadMore: fetchFollowers,
+        scrollContainer: 'window',
+        threshold: 200
+    });
+
     return (
-        <div className="w-full">
+        <div className="w-full" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
             {isLoading && (
                 <div className="min-h-10rem px-4">
                     <UserLoader includeButton={true} />
@@ -64,14 +76,31 @@ const Followers: React.FC<IProps> = ({ username }) => {
                     <h6 className="text-gray-400 italic">{error?.error?.message || 'Something went wrong.'}</h6>
                 </div>
             )}
-            {(!isLoading && !error) && followers.map(follower => (
-                <div className="bg-white rounded-md mb-4 shadow-md" key={follower.user._id}>
-                    <UserCard
-                        profile={follower.user}
-                        isFollowing={follower.isFollowing}
-                    />
+            {followers.length !== 0 && (
+                <div>
+                    <TransitionGroup component={null}>
+                        {followers.map(follower => (
+                            <CSSTransition
+                                timeout={500}
+                                classNames="fade"
+                                key={follower.user._id}
+                            >
+                                <div className="bg-white rounded-md mb-4 shadow-md" key={follower.user._id}>
+                                    <UserCard
+                                        profile={follower.user}
+                                        isFollowing={follower.isFollowing}
+                                    />
+                                </div>
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
+                    {(followers.length !== 0 && !error && isLoading) && (
+                        <div className="flex justify-center py-6">
+                            <Loader />
+                        </div>
+                    )}
                 </div>
-            ))}
+            )}
         </div>
     );
 };

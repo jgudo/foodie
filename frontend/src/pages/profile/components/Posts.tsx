@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { toast } from "react-toastify";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from '~/components/main/PostItem';
 import Avatar from "~/components/shared/Avatar";
@@ -102,6 +103,7 @@ const Posts: React.FC<IProps> = (props) => {
 
             setPosts([post, ...posts]);
             setIsCreatingPost(false);
+            toast.dismiss();
             toast.dark('Post created successfully.');
         } catch (e) {
             setIsCreatingPost(false);
@@ -112,7 +114,7 @@ const Posts: React.FC<IProps> = (props) => {
 
     const infiniteRef = useInfiniteScroll({
         loading: isLoading,
-        hasNextPage: !error && posts.length !== 0,
+        hasNextPage: !error && posts.length >= 10,
         onLoadMore: fetchPosts,
         scrollContainer: 'window',
         threshold: 200
@@ -153,15 +155,23 @@ const Posts: React.FC<IProps> = (props) => {
             )}
             {(posts.length !== 0 && error !== null) && (
                 <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
-                    {posts.map(post => (
-                        <PostItem
-                            key={post.id}
-                            likeCallback={likeCallback}
-                            post={post}
-                            updateSuccessCallback={updateSuccessCallback}
-                            deleteSuccessCallback={deleteSuccessCallback}
-                        />
-                    ))}
+                    <TransitionGroup component={null}>
+                        {posts.map(post => (
+                            <CSSTransition
+                                timeout={500}
+                                classNames="fade"
+                                key={post.id}
+                            >
+                                <PostItem
+                                    key={post.id}
+                                    likeCallback={likeCallback}
+                                    post={post}
+                                    updateSuccessCallback={updateSuccessCallback}
+                                    deleteSuccessCallback={deleteSuccessCallback}
+                                />
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
                     {(posts.length !== 0 && !error && isLoading) && (
                         <div className="flex justify-center py-6">
                             <Loader />

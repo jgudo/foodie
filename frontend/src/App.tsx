@@ -52,7 +52,7 @@ function App() {
     <Preloader />
   ) : (
       <Router history={history}>
-        <main className="min-h-screen">
+        <main className="relative min-h-screen">
           <ToastContainer
             position="bottom-left"
             autoClose={5000}

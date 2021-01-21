@@ -2,7 +2,9 @@ const { makeErrorJson, makeResponseJson } = require('../../../helpers/utils');
 const { validateObjectID, isAuthenticated } = require('../../../middlewares/middlewares');
 const User = require('../../../schemas/UserSchema');
 const Message = require('../../../schemas/MessageSchema');
+const Chat = require('../../../schemas/ChatSchema');
 const { Types } = require('mongoose');
+const { MESSAGES_LIMIT } = require('../../../constants/constants');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -29,6 +31,25 @@ router.post(
                 seen: false,
                 createdAt: Date.now(),
             });
+
+            await Chat
+                .findOneAndUpdate(
+                    {
+                        participants: {
+                            $all: [
+                                { $elemMatch: { $eq: req.user._id } },
+                                { $elemMatch: { $eq: Types.ObjectId(user_id) } }
+                            ]
+                        }
+                    },
+                    {
+                        $set: {
+                            lastmessage: message._id,
+                            participants: [req.user._id, Types.ObjectId(user_id)]
+                        }
+                    },
+                    { upsert: true }
+                );
 
             await message.save();
             await message.populate('from to', 'username profilePicture fullname').execPopulate();
@@ -58,143 +79,55 @@ router.get(
         try {
             let offset = parseInt(req.query.offset) || 0;
 
-            const limit = 1;
+            const limit = MESSAGES_LIMIT;
             const skip = offset * limit;
 
-            const agg = await Message.aggregate([
+            const agg = await Chat.aggregate([
                 {
                     $match: {
-                        $or: [
-                            { from: req.user._id },
-                            { to: req.user._id }
-                        ]
+                        participants: { $in: [req.user._id] }
                     }
                 },
-                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
                 {
-                    $skip: skip
+                    $lookup: {
+                        from: 'messages',
+                        localField: 'lastmessage',
+                        foreignField: '_id',
+                        as: 'message'
+                    }
                 },
                 {
-                    $limit: limit
-                },
-                {
-                    $facet: {
-                        // GROUP BY SENT MESSAGES
-                        sent: [
-                            { $match: { from: req.user._id } },
-                            { $sort: { createdAt: -1 } },
-                            {
-                                $group: {
-                                    _id: '$to',
-                                    id: { $first: '$_id' },
-                                    seen: { $first: '$seen' },
-                                    from: { $first: '$from' },
-                                    text: { $first: '$text' },
-                                    createdAt: { $first: '$createdAt' }
-                                }
-                            },
-                            // ADD FIELD UNSEENCOUNT TO 0 SINCE IT'S SENT BY YOURSELF AND NO NEED TO ADD SEEN COUNT
-                            {
-                                $addFields: {
-                                    unseenCount: 0,
-                                    isOwnMessage: true
-                                }
-                            },
-                            {
-                                $project: {
-                                    _id: 0,
-                                    id: 1,
-                                    to: '$_id',
-                                    from: 1,
-                                    seen: 1,
-                                    text: 1,
-                                    isOwnMessage: 1,
-                                    unseenCount: 1,
-                                    createdAt: 1
-                                }
-                            }
-                            // { $limit: 1 }
-                        ],
-                        received: [
-                            { $match: { to: req.user._id } },
-                            { $sort: { createdAt: -1 } },
-                            {
-                                $group: {
-                                    _id: '$from',
-                                    id: { $first: '$_id' },
-                                    to: { $first: '$to' },
-                                    text: { $first: '$text' },
-                                    seenCount: {
-                                        $push: {
-                                            $cond: [
-                                                { $eq: ['$seen', false] },
-                                                '$_id',
-                                                '$$REMOVE'
-                                            ]
-                                        }
-                                    },
-                                    seen: { $first: '$seen' },
-                                    createdAt: { $first: '$createdAt' }
-                                }
-                            },
-                            {
-                                $addFields: {
-                                    isOwnMessage: false
-                                }
-                            },
-                            {
-                                $project: {
-                                    _id: 0,
-                                    id: 1,
-                                    from: '$_id',
-                                    to: 1,
-                                    isOwnMessage: 1,
-                                    text: 1,
-                                    seen: 1,
-                                    unseenCount: { $size: '$seenCount' },
-                                    createdAt: 1
-                                }
-                            }
-                            // { $limit: 1 }
-                        ]
-                    },
+                    $unwind: '$message'
                 },
                 {
                     $project: {
-                        result: {
-                            $concatArrays: ['$sent', '$received']
-                        },
+                        _id: 0,
+                        message: 1
                     }
-                },
-                {
-                    $unwind: '$result'
                 },
                 {
                     $lookup: {
                         from: 'users',
-                        localField: 'result.from',
+                        localField: 'message.from',
                         foreignField: '_id',
-                        as: 'result.from'
+                        as: 'message.from'
                     }
                 },
-                {
-                    $unwind: '$result.from'
-                },
+                { $unwind: '$message.from' },
                 {
                     $project: {
-                        text: '$result.text',
-                        to: '$result.to',
-                        unseenCount: '$result.unseenCount',
-                        createdAt: '$result.createdAt',
-                        id: '$result.id',
-                        isOwnMessage: '$result.isOwnMessage',
-                        seen: '$result.seen',
+                        to: '$message.to',
+                        text: '$message.text',
+                        id: '$message._id',
+                        seen: '$message.seen',
+                        createdAt: '$message.createdAt',
                         from: {
-                            username: '$result.from.username',
-                            profilePicture: '$result.from.profilePicture',
-                            id: '$result.from._id',
-                            fullname: '$result.from.fullname'
-                        },
+                            username: '$message.from.username',
+                            id: '$message.from._id',
+                            profilePicture: '$message.from.profilePicture'
+                        }
                     }
                 },
                 {
@@ -202,84 +135,38 @@ router.get(
                         from: 'users',
                         localField: 'to',
                         foreignField: '_id',
-                        as: 'recipient'
+                        as: 'message.to'
                     }
                 },
-                {
-                    $unwind: '$recipient'
-                },
+                { $unwind: '$message.to' },
                 {
                     $project: {
-                        from: '$from',
-                        to: {
-                            username: '$recipient.username',
-                            profilePicture: '$recipient.profilePicture',
-                            id: '$recipient._id'
-                        },
+                        id: 1,
+                        from: 1,
                         text: 1,
                         seen: 1,
                         createdAt: 1,
-                        isOwnMessage: 1,
-                        unseenCount: 1,
-                        id: 1
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        totalUnseen: { $sum: '$unseenCount' },
-                        messages: {
-                            $push: {
-                                from: '$from',
-                                to: '$to',
-                                text: '$text',
-                                seen: '$seen',
-                                createdAt: '$createdAt',
-                                isOwnMessage: '$isOwnMessage',
-                                unseenCount: '$unseenCount',
-                                id: '$id'
-                            }
+                        to: {
+                            username: '$message.to.username',
+                            id: '$message.to._id',
+                            profilePicture: '$message.to.profilePicture'
+                        },
+                        isOwnMessage: {
+                            $cond: [
+                                { $eq: ['$from.id', req.user._id] },
+                                true,
+                                false
+                            ]
                         }
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        messages: 1,
-                        totalUnseen: 1
                     }
                 }
             ]);
 
-            const aggMessages = typeof agg[0] === 'undefined' ? [] : agg[0].messages;
-            const aggTotalUnseen = typeof agg[0] === 'undefined' ? 0 : agg[0].totalUnseen;
-
-            const getKey = (msg) => [msg.to.username, msg.from.username]
-                .sort((a, b) => a.localeCompare(b))
-                .join('#');
-            const messagesByKey = {};
-            for (const msg of aggMessages) {
-                const key = getKey(msg);
-                if (!messagesByKey[key]) {
-                    messagesByKey[key] = [];
-                }
-                messagesByKey[key].push(msg);
-            }
-
-            const grouped = Object.values(messagesByKey);
-            const filtered = grouped.map((msg) => {
-                const selected = msg.reduce((acc, msg) => {
-                    return new Date(acc.createdAt) > new Date(msg.createdAt) ? acc : msg;
-                });
-
-                return selected;
-            });
-
-            if (filtered.length === 0) {
+            if (agg.length === 0 || typeof agg[0] === 'undefined') {
                 return res.status(404).send(makeErrorJson({ message: 'You have no messages.' }));
             }
 
-            res.status(200).send(makeResponseJson({ messages: filtered, totalUnseen: aggTotalUnseen }));
+            res.status(200).send(makeResponseJson(agg));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
             res.status(500).send(makeErrorJson());
@@ -365,7 +252,7 @@ router.get(
         try {
             const { target_id } = req.params;
             const offset = parseInt(req.query.offset) || 0;
-            const limit = 10;
+            const limit = MESSAGES_LIMIT;
             const skip = offset * limit;
 
             const messages = await Message

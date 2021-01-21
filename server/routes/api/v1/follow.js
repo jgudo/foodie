@@ -6,6 +6,7 @@ const User = require('../../../schemas/UserSchema');
 const Notification = require('../../../schemas/NotificationSchema');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
 const Post = require('../../../schemas/PostSchema');
+const { USERS_LIMIT } = require('../../../constants/constants');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -147,7 +148,11 @@ router.get(
     async (req, res) => {
         try {
             const { username } = req.params;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = USERS_LIMIT;
+            const skip = offset * limit;
 
+            // TODO ---------- TEST LIMIT AND SKIP
             const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
@@ -158,6 +163,8 @@ router.get(
                         _user_id: Types.ObjectId(user._id)
                     }
                 },
+                { $skip: skip },
+                { $limit: limit },
                 { $unwind: '$following' },
                 {
                     $lookup: {
@@ -168,6 +175,8 @@ router.get(
                     }
                 },
                 { $unwind: '$userFollowing' },
+                { $skip: skip },
+                { $limit: limit },
                 {
                     $addFields: {
                         isFollowing: {
@@ -209,6 +218,9 @@ router.get(
     async (req, res) => {
         try {
             const { username } = req.params;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = USERS_LIMIT;
+            const skip = offset * limit;
 
             const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
             let following = [];
@@ -234,6 +246,8 @@ router.get(
                     }
                 },
                 { $unwind: '$userFollowers' },
+                { $skip: skip },
+                { $limit: limit },
                 {
                     $addFields: {
                         isFollowing: {
@@ -252,7 +266,7 @@ router.get(
                         _user_id: 1,
                         followers: 1
                     }
-                }
+                },
             ]);
 
             const { followers } = doc[0] || {};
@@ -277,7 +291,7 @@ router.get(
             const offset = parseInt(req.query.offset) || 0;
             const skipParam = parseInt(req.query.skip) || 0;
 
-            const limit = parseInt(req.query.limit) || 10;
+            const limit = parseInt(req.query.limit) || USERS_LIMIT;
             const skip = skipParam || offset * limit;
 
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });

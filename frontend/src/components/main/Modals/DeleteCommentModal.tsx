@@ -1,4 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
@@ -61,9 +61,11 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <div className="p-4 px-8">
-                    <h1>Delete Comment</h1>
-                    <p className="text-gray-600">Are you sure you want to delete this comment?</p>
-                    <br />
+                    <h2>
+                        <ExclamationCircleOutlined className="inline-flex items-center justify-center text-red-500 mr-2 pt-2" />
+                        Delete Comment
+                    </h2>
+                    <p className="text-gray-600 my-4">Are you sure you want to delete this comment?</p>
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full"

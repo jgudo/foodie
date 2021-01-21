@@ -1,4 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
@@ -66,7 +66,10 @@ const EditPostModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <div className="p-4 px-8 w-40rem">
-                    <h1>Edit Post</h1>
+                    <h2>
+                        <EditOutlined className="inline-flex items-center justify-center mr-2 pt-2" />
+                        Edit Post
+                    </h2>
                     <br />
                     <label htmlFor="update-post">Description</label>
                     <textarea

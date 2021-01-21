@@ -52,7 +52,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
             onRequestClose={props.closeModal}
             contentLabel="Example Modal"
             className="modal"
-            shouldCloseOnOverlayClick={false}
+            shouldCloseOnOverlayClick={true}
             overlayClassName="modal-overlay"
         >
             <div className="relative transition-all">
@@ -67,27 +67,35 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                         {error.error.message}
                     </span>
                 )}
-                {isLoading ? (
+                <h3 className="py-4 px-8">Likes</h3>
+                {isLoading && (
                     <div className="flex min-h-10rem min-w-15rem items-center justify-center py-8">
                         <Loader />
                     </div>
-                ) : (
-                        <div className="p-4 px-4 w-30rem">
-                            <h3 className="pl-4">Likes</h3>
-                            <div className="mt-8 divide-y divide-gray-100">
-                                {likes.map(user => (
-                                    <div key={user.id}>
-                                        <UserCard profile={user} isFollowing={user.isFollowing} />
-                                    </div>
-                                ))}
-                            </div>
-                            {error && (
-                                <div className="flex items-center justify-center py-8">
-                                    <span className="text-gray-400 text-sm">No more likes.</span>
+                )}
+                {likes.length !== 0 && (
+                    <div className="p-4 px-4 w-30rem max-h-70vh overflow-y-scroll">
+                        <div className="divide-y divide-gray-100">
+                            {likes.map(user => (
+                                <div key={user.id}>
+                                    <UserCard profile={user} isFollowing={user.isFollowing} />
                                 </div>
-                            )}
+                            ))}
                         </div>
-                    )}
+                        {(!isLoading && likes.length >= 10) && (
+                            <div className="flex items-center justify-center pt-2 border-t border-gray-100">
+                                <span className="text-indigo-700 text-sm font-medium cursor-pointer">
+                                    Load more
+                                </span>
+                            </div>
+                        )}
+                        {error && (
+                            <div className="flex items-center justify-center py-8">
+                                <span className="text-gray-400 text-sm">No more likes.</span>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
         </Modal>

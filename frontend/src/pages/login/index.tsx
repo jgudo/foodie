@@ -2,6 +2,7 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { REGISTER } from '~/constants/routes';
+import bg from '~/images/friends_meal.jpg';
 import { loginStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
@@ -48,13 +49,28 @@ const Login: React.FC = () => {
     return (
         <div className="min-h-screen flex bg-white">
             <div
-                className="w-7/12 h-screen !bg-cover !bg-no-repeat !bg-center"
+                className="relative w-7/12 h-screen p-8 flex justify-start items-end !bg-cover !bg-no-repeat !bg-center"
                 style={{
-                    background: `#f7f7f7 url(https://source.unsplash.com/500x400/?food?${new Date().getTime()})`
+                    background: `#f7f7f7 url(${bg})`
                 }}
-
-            />
-            <div className="w-5/12 flex items-center justify-start relative">
+            >
+                {/* --- LOGO --- */}
+                <h2 className="text-white absolute left-8 top-8">Foodie</h2>
+                {/* -- INFO --- */}
+                <h3 className="animate-fade text-white w-9/12 mb-14">
+                    Looking for a new idea for your next menu? You're in the right place.
+                </h3>
+                {/* --- CREDITS LINK --- */}
+                <a
+                    className="animate-fade absolute bottom-8 left-8 text-1xs text-white underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://infinityrimapts.com/5-reasons-host-dinner-party/friends-enjoying-a-meal/"
+                >
+                    Photo: Credits to the photo owner
+                </a>
+            </div>
+            <div className="animate-fade w-5/12 flex items-center justify-start relative">
                 {error && (
                     <div className="py-2 w-full text-center bg-red-100 border-red-300 absolute top-0 left-0">
                         <p className="text-red-500">{error.error.message}</p>
@@ -117,7 +133,7 @@ const Login: React.FC = () => {
                                         <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                     </svg>
                                 </span>
-                                    Login
+                                {isLoading ? 'Logging In...' : 'Login'}
                             </button>
                         </div>
                     </form>

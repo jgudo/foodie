@@ -5,6 +5,7 @@ const Comment = require('../../../schemas/CommentSchema');
 const Notification = require('../../../schemas/NotificationSchema');
 const { validateBody, schemas } = require('../../../validations/validations');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
+const { COMMENTS_LIMIT } = require('../../../constants/constants');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -75,7 +76,7 @@ router.get(
             const { post_id } = req.params;
             const skipParams = parseInt(req.query.skip);
             const offset = parseInt(req.query.offset) || 0;
-            const limit = parseInt(req.query.limit) || 10;
+            const limit = parseInt(req.query.limit) || COMMENTS_LIMIT;
             const skip = skipParams || offset * limit;
 
             const post = await Post.findById(Types.ObjectId(post_id));

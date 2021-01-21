@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from "~/components/main/PostItem";
 import SuggestedPeople from "~/components/main/SuggestedPeople";
@@ -130,15 +131,23 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                 {/* ---- NEWS FEED ---- */}
                 {(state.newsFeed.items.length !== 0) && (
                     <>
-                        {state.newsFeed.items.map((post: IPost) => (
-                            <PostItem
-                                key={post.id}
-                                post={post}
-                                likeCallback={likeCallback}
-                                updateSuccessCallback={updateSuccessCallback}
-                                deleteSuccessCallback={deleteSuccessCallback}
-                            />
-                        ))}
+                        <TransitionGroup component={null}>
+                            {state.newsFeed.items.map((post: IPost) => (
+                                <CSSTransition
+                                    timeout={500}
+                                    classNames="fade"
+                                    key={post.id}
+                                >
+                                    <PostItem
+                                        key={post.id}
+                                        post={post}
+                                        likeCallback={likeCallback}
+                                        updateSuccessCallback={updateSuccessCallback}
+                                        deleteSuccessCallback={deleteSuccessCallback}
+                                    />
+                                </CSSTransition>
+                            ))}
+                        </TransitionGroup>
                         {state.isLoadingFeed && (
                             <div className="flex justify-center py-6">
                                 <Loader />

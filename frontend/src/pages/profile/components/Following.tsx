@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import useInfiniteScroll from "react-infinite-scroll-hook";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from '~/components/main/UserCard';
+import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
 import { getFollowing } from "~/services/api";
-import { IProfile } from "~/types/types";
+import { IError, IProfile } from "~/types/types";
 
 interface IProps {
     username: string;
@@ -17,7 +20,7 @@ const Following: React.FC<IProps> = ({ username }) => {
     const [followings, setFollowing] = useState<IFollowingState[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
@@ -39,22 +42,26 @@ const Following: React.FC<IProps> = ({ username }) => {
             if (isMountedRef.current) {
                 setFollowing([...followings, ...fetchedFollowing]);
                 setIsLoading(false);
-
-                if (fetchedFollowing.length === 0) {
-                    setError(`${username} is not following anyone.`);
-                } else {
-                    setError('');
-                }
+                setOffset(offset + 1);
+                setError(null);
             }
         } catch (e) {
             console.log(e);
             setIsLoading(false);
-            setError(e.error.message);
+            setError(e);
         }
     };
 
+    const infiniteRef = useInfiniteScroll({
+        loading: isLoading,
+        hasNextPage: !error && followings.length >= 10,
+        onLoadMore: fetchFollowing,
+        scrollContainer: 'window',
+        threshold: 200
+    });
+
     return (
-        <div className="w-full">
+        <div className="w-full" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
             {isLoading && (
                 <div className="min-h-10rem px-4">
                     <UserLoader includeButton={true} />
@@ -65,17 +72,36 @@ const Following: React.FC<IProps> = ({ username }) => {
             )}
             {!isLoading && followings.length === 0 && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
-                    <h6 className="text-gray-400 italic">{error}</h6>
+                    <h6 className="text-gray-400 italic">
+                        {error?.error?.message || `${username} isn't following anyone.`}
+                    </h6>
                 </div>
             )}
-            {(!isLoading && !error) && followings.map(following => (
-                <div className="bg-white rounded-md mb-4 shadow-md" key={following.user._id}>
-                    <UserCard
-                        profile={following.user}
-                        isFollowing={following.isFollowing}
-                    />
+            {followings.length !== 0 && (
+                <div>
+                    <TransitionGroup component={null}>
+                        {followings.map(following => (
+                            <CSSTransition
+                                timeout={500}
+                                classNames="fade"
+                                key={following.user._id}
+                            >
+                                <div className="bg-white rounded-md mb-4 shadow-md" key={following.user._id}>
+                                    <UserCard
+                                        profile={following.user}
+                                        isFollowing={following.isFollowing}
+                                    />
+                                </div>
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
+                    {(!error && isLoading) && (
+                        <div className="flex justify-center py-6">
+                            <Loader />
+                        </div>
+                    )}
                 </div>
-            ))}
+            )}
         </div>
     );
 };

@@ -9,10 +9,6 @@ import socket from "~/socket/socket";
 import { IError, IMessage, IRootReducer, IUser } from "~/types/types";
 import MessagesList from "./MessagesList";
 
-interface IMessageState {
-    items: IMessage[],
-    totalUnseen: number;
-}
 
 const Messages: React.FC = () => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
@@ -20,10 +16,8 @@ const Messages: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState<IError | null>(null);
-    const [messages, setMessages] = useState<IMessageState>({
-        items: [],
-        totalUnseen: 0
-    });
+    const [messages, setMessages] = useState<IMessage[]>([]);
+    const [count, setCount] = useState(0);
     const dispatch = useDispatch();
     const isMessagesOpenRef = useRef(isMessagesOpen);
 
@@ -38,7 +32,7 @@ const Messages: React.FC = () => {
         }
 
         socket.on('newMessage', (newMessage: IMessage) => {
-            const updated = messages.items
+            const updated = messages
                 .filter((msg) => {
                     const arr = [msg.from.username, msg.to.username];
 
@@ -49,17 +43,15 @@ const Messages: React.FC = () => {
                 });
             const sorted = updated.sort((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1);
 
-            setMessages({
-                items: sorted,
-                totalUnseen: newMessage.from.id === id ? 0 : messages.totalUnseen + 1
-            });
+            setMessages(sorted);
+            setCount(newMessage.isOwnMessage ? 0 : count + 1);
         });
 
         document.addEventListener('click', handleClickOutside);
 
         getUnreadMessages()
-            .then(({ count }) => {
-                setMessages({ ...messages, totalUnseen: count });
+            .then(({ total }) => {
+                setCount(total);
             });
 
         return () => {
@@ -82,12 +74,9 @@ const Messages: React.FC = () => {
         try {
             setLoading(true);
             setError(null);
-            const { messages: items, totalUnseen } = await getMessages({ offset: initOffset });
+            const result = await getMessages({ offset: initOffset });
 
-            setMessages({
-                items: [...messages.items, ...items],
-                totalUnseen
-            });
+            setMessages([...messages, ...result]);
             setOffset(offset + 1);
             setLoading(false);
         } catch (e) {
@@ -102,14 +91,13 @@ const Messages: React.FC = () => {
 
             console.log(sender);
             await readMessage(sender.id);
-            const updated = messages.items.map(msg => ({
+            const updated = messages.map(msg => ({
                 ...msg,
-                unseenCount: 0,
                 seen: true
             }));
 
             setMessagesOpen(false);
-            setMessages({ items: updated, totalUnseen: 0 });
+            setMessages(updated);
         } catch (e) {
             console.log(e);
         }
@@ -117,17 +105,17 @@ const Messages: React.FC = () => {
 
     const toggleMessages = () => {
         setMessagesOpen(!isMessagesOpen);
-        setMessages({ ...messages, totalUnseen: 0 });
+        setCount(0);
 
         // Since setting state is asynchronous, we should flip the value of isMessagesOpen
-        if (!isMessagesOpen && messages.items.length === 0) {
+        if (!isMessagesOpen && messages.length === 0) {
             fetchMessages();
         }
     }
 
     return (
         <div className="relative">
-            <Badge count={messages.totalUnseen}>
+            <Badge count={count}>
                 <MessageOutlined
                     className="messages-toggle text-xl focus:outline-none"
                     onClick={toggleMessages}
@@ -139,31 +127,31 @@ const Messages: React.FC = () => {
                     <div className="px-4 py-3 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
                         <h6 className="text-white">Messages</h6>
                     </div>
-                    {(isLoading && !error && messages.items.length === 0) && (
+                    {(isLoading && !error && messages.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
                         </div>
                     )}
-                    {(messages.items.length === 0 && error) && (
+                    {(messages.length === 0 && error) && (
                         <div className="flex justify-center py-6">
                             <p className="text-gray-400 italic">{error?.error?.message || 'You have no messages.'}</p>
                         </div>
                     )}
-                    {(messages.items.length !== 0) && (
+                    {(messages.length !== 0) && (
                         <MessagesList
-                            messages={messages.items}
+                            messages={messages}
                             userID={id}
                             handleReadMessage={handleReadMessage}
                         />
                     )}
-                    {(!isLoading && !error && messages.items.length !== 0) && (
+                    {(!isLoading && !error && messages.length >= 10) && (
                         <div className="see-more-button flex items-center justify-center py-4" onClick={() => fetchMessages(offset)}>
                             <span className="text-indigo-700 text-sm font-medium">
                                 See more...
                         </span>
                         </div>
                     )}
-                    {(isLoading && !error && messages.items.length !== 0) && (
+                    {(isLoading && !error && messages.length !== 0) && (
                         <div className="flex items-center justify-center py-4">
                             <Loader />
                         </div>

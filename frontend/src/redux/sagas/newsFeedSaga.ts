@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { call, put } from "redux-saga/effects";
 import { CREATE_POST_START, GET_FEED_START } from "~/constants/actionType";
 import { createPost, getNewsFeed } from "~/services/api";
@@ -36,6 +37,8 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
 
                 yield put(createPostSuccess(post));
                 yield put(isCreatingPost(false));
+                toast.dismiss();
+                toast.dark('Post succesfully created.');
             } catch (e) {
                 yield put(isCreatingPost(false));
                 console.log(e);

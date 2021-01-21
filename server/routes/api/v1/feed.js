@@ -1,3 +1,4 @@
+const { FEED_LIMIT } = require('../../../constants/constants');
 const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const { isAuthenticated } = require('../../../middlewares/middlewares');
 const NewsFeed = require('../../../schemas/NewsFeedSchema');
@@ -11,7 +12,7 @@ router.get(
 
         try {
             const offset = parseInt(req.query.offset) || 0;
-            const limit = 10;
+            const limit = FEED_LIMIT;
             const skip = offset * limit;
 
             const feeds = await NewsFeed

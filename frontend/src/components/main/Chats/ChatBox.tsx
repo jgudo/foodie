@@ -2,6 +2,7 @@ import { CloseOutlined, LineOutlined, SendOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { displayTime } from "~/helpers/utils";
@@ -163,36 +164,44 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                             )}
                     </>
                 )}
-                {(target.chats.length !== 0) && target.chats.map(msg => {
-                    return (
-                        <div className="flex flex-col">
-                            <div
-                                className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
-                                key={`${msg.id}_${msg.from.id}`}
+                {(target.chats.length !== 0) && (
+                    <TransitionGroup component={null}>
+                        {target.chats.map(msg => (
+                            <CSSTransition
+                                timeout={500}
+                                classNames="fade"
+                                key={msg.id}
                             >
-                                <div className="flex">
-                                    {/* -- AVATAR --- */}
-                                    <Avatar
-                                        url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
-                                        size="xs"
-                                        className={`self-end !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
-                                    />
-                                    {/*  -- MESSAGE-- */}
-                                    <span
-                                        className={`py-2 px-3  text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
-                                        {msg.text}
-                                    </span>
-                                    <span ref={dummyEl}></span>
+                                <div className="flex flex-col">
+                                    <div
+                                        className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                                        key={`${msg.id}_${msg.from.id}`}
+                                    >
+                                        <div className="flex">
+                                            {/* -- AVATAR --- */}
+                                            <Avatar
+                                                url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
+                                                size="xs"
+                                                className={`self-end !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
+                                            />
+                                            {/*  -- MESSAGE-- */}
+                                            <span
+                                                className={`py-2 px-3  text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
+                                                {msg.text}
+                                            </span>
+                                            <span ref={dummyEl}></span>
+                                        </div>
+                                    </div>
+                                    <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
+                                        <span className="text-gray-400 text-1xs">
+                                            {displayTime(msg.createdAt)}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
-                                <span className="text-gray-400 text-1xs">
-                                    {displayTime(msg.createdAt)}
-                                </span>
-                            </div>
-                        </div>
-                    )
-                })}
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
+                )}
             </div>
             <div className="flex pt-3 border-t border-gray-200">
                 <input
