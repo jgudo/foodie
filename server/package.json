@@ -5,6 +5,9 @@
   "scripts": {
     "start": "nodemon --exec cross-env NODE_ENV=dev ./bin/www"
   },
+  "engines": {
+    "node": "12.18.1"
+  },
   "dependencies": {
     "bcrypt": "^5.0.0",
     "connect-mongo": "^3.2.0",

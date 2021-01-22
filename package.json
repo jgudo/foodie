@@ -7,6 +7,9 @@
     "type": "git",
     "url": ""
   },
+  "engines": {
+    "node": "12.18.1"
+  },
   "scripts": {
     "start-client": "cd frontend && npm start",
     "start-server": "cd server && npm start",
