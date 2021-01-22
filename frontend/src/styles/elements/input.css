@@ -8,6 +8,6 @@
 }
 
 .input-search {
-    @extend input;
+    @extend input[type=text];
     @apply py-0;
 }

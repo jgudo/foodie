@@ -8,7 +8,6 @@ export const displayTime = (createdAt: string | Date) => {
     const created = dayjs(createdAt);
     const oneDay = 24 * 60 * 60 * 1000;
     const twelveHours = 12 * 60 * 60 * 1000;
-    const oneHour = 60 * 60 * 1000;
 
     if (now.diff(created) < twelveHours) {
         return dayjs(createdAt).fromNow();

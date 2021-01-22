@@ -99,7 +99,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
 
     const infiniteUserRef = useInfiniteScroll({
         loading: isLoadingUser,
-        hasNextPage: !error && users.length !== 0,
+        hasNextPage: !error && users.length >= 10,
         onLoadMore: dispatchSearchUsers,
         scrollContainer: 'window',
         threshold: 100
@@ -107,7 +107,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
 
     const infinitePostRef = useInfiniteScroll({
         loading: isLoadingPost,
-        hasNextPage: !error && posts.length !== 0,
+        hasNextPage: !error && posts.length >= 10,
         onLoadMore: dispatchSearchPosts,
         scrollContainer: 'window',
         threshold: 100
