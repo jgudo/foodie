@@ -9,7 +9,7 @@ import Loader from "~/components/shared/Loader";
 import { PostLoader } from "~/components/shared/Loaders";
 import useModal from "~/hooks/useModal";
 import { createPost, getPosts } from "~/services/api";
-import { IPost, IUser } from "~/types/types";
+import { IError, IPost, IUser } from "~/types/types";
 
 interface IProps {
     username: string;
@@ -22,7 +22,7 @@ const Posts: React.FC<IProps> = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isCreatingPost, setIsCreatingPost] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const { isOpen, openModal, closeModal } = useModal();
 
     let isMountedRef = useRef<boolean | null>(null);
@@ -85,12 +85,7 @@ const Posts: React.FC<IProps> = (props) => {
             }
         } catch (e) {
             if (isMountedRef.current) {
-                if (posts.length === 0) {
-                    setError(`${props.username} hasn't posted anything yet.`);
-                } else {
-                    setError(e.error.message || 'Something went wrong while trying to fetch posts.');
-                }
-
+                setError(e);
                 setIsLoading(false);
             }
         }
@@ -150,10 +145,12 @@ const Posts: React.FC<IProps> = (props) => {
             )}
             {!isLoading && posts.length === 0 && error && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
-                    <h6 className="text-gray-400 italic">{error}</h6>
+                    <h6 className="text-gray-400 italic">
+                        {error?.error?.message || 'Something went wrong :('}
+                    </h6>
                 </div>
             )}
-            {(posts.length !== 0 && error !== null) && (
+            {(posts.length !== 0) && (
                 <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                     <TransitionGroup component={null}>
                         {posts.map(post => (
@@ -179,7 +176,9 @@ const Posts: React.FC<IProps> = (props) => {
                     )}
                     {(posts.length !== 0 && error) && (
                         <div className="flex justify-center py-6">
-                            <p className="text-gray-400 italic">{error}</p>
+                            <p className="text-gray-400 italic">
+                                {(error as IError)?.error?.message || 'No more posts.'}
+                            </p>
                         </div>
                     )}
                 </div>

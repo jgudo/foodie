@@ -44,6 +44,7 @@ router.post(
             await post.populate('author', 'profilePicture username fullname').execPopulate();
 
             const myFollowers = await Follow.findOne({ _user_id: req.user._id });
+            const followers = !myFollowers ? [] : myFollowers.followers;
             let newsFeeds = [];
 
             // add post to follower's newsfeed
@@ -69,7 +70,7 @@ router.post(
 
             // Notify followers that new post has been made 
             const io = req.app.get('io');
-            myFollowers.followers.forEach((user) => {
+            followers.forEach((user) => {
                 io.to(user._id.toString()).emit('newFeed', post);
             });
 
@@ -120,7 +121,9 @@ router.get(
                 .skip(skip)
                 .limit(limit);
 
-            if (!posts || posts.length <= 0) {
+            if (posts.length <= 0 && offset === 0) {
+                return res.status(404).send(makeErrorJson({ status_code: 404, message: `${username} hasn't posted anything yet.` }));
+            } else if (posts.length <= 0 && offset >= 1) {
                 return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more posts.' }));
             }
 
