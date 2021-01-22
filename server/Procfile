@@ -1,1 +1,1 @@
-web: node NODE_ENV=dev ./bin/www
+web: node ./bin/www
