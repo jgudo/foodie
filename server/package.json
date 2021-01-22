@@ -9,6 +9,7 @@
     "node": "12.18.1"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.7.2",
     "bcrypt": "^5.0.0",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "~1.4.4",
