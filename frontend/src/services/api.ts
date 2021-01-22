@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { IFetchParams, IPost, IProfile, IRegister } from '~/types/types';
 
-const foodieUrl = process.env.FOODIE_URL || 'http://localhost:9000';
-const foodieApiVersion = process.env.FOODIE_API_VERSION || 'v1';
+const foodieUrl = process.env.REACT_APP_FOODIE_URL || 'http://localhost:9000';
+const foodieApiVersion = process.env.REACT_APP_FOODIE_API_VERSION || 'v1';
 axios.defaults.baseURL = `${foodieUrl}/api/${foodieApiVersion}`;
 axios.defaults.withCredentials = true;
 
