@@ -51,7 +51,7 @@ Before running the project, make sure to have the following done:
 
 Create ```.env-dev``` or ```.end-prod``` env variables and set the following:
 ```
-MONGODB_URI=mongodb://localhost:27017
+MONGODB_URI=<mongodb uri | default local = mongodb://localhost:27017 >
 DB_NAME=<your database name>
 PORT=<port eg: 9000>
 SESSION_SECRET=<any secret key>
