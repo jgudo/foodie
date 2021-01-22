@@ -16,7 +16,7 @@ export const login = async (email: string, password: string) => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 };
 
@@ -29,7 +29,7 @@ export const checkAuthSession = async () => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
