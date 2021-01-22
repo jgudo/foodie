@@ -55,7 +55,7 @@ router.post(
                     }
 
                     const userData = sessionizeUser(user);
-                    return res.status(200).send(makeResponseJson({ auth: userData, user: req.user.toUserJSON() }));
+                    return res.status(200).json(makeResponseJson({ auth: userData, user: req.user.toUserJSON() }));
                 });
             }
         })(req, res, next);
