@@ -144,7 +144,9 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                 <span className="text-gray-400 text-sm">Send a message to {target.username}</span>
                             </>
                         ) : (
-                                <span className="text-gray-400 mb-4">{error.error.message}</span>
+                                <span className="text-gray-400 mb-4">
+                                    {error?.error?.message || 'Unable to process your request.'}
+                                </span>
                             )}
                     </div>
                 )}

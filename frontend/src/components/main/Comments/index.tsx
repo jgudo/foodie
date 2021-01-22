@@ -33,6 +33,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
     const [offset, setOffset] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isCommenting, setIsCommenting] = useState(false);
     const [error, setError] = useState('');
     const [targetID, setTargetID] = useState('');
     const user = useSelector((state: IRootReducer) => state.auth);
@@ -68,6 +69,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
     const handleSubmitComment = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && commentBody) {
             try {
+                setIsCommenting(true);
                 const comment = isUpdating ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
 
                 console.log(isUpdating);
@@ -80,7 +82,9 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                 setCommentBody('');
                 setTargetID('');
                 setIsUpdating(false);
+                setIsCommenting(false);
             } catch (e) {
+                setIsCommenting(false);
                 setError(e.error.message);
             }
         } else if (e.key === 'Escape') {
@@ -201,9 +205,10 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                     <Avatar url={user.profilePicture} className="mr-2" />
                     <div className="flex-grow">
                         <input
+                            className={`${isCommenting && 'opacity-50'}`}
                             type="text"
                             placeholder="Write a comment..."
-                            readOnly={isLoading}
+                            readOnly={isLoading || isCommenting}
                             ref={commentInputRef}
                             onChange={handleCommentBodyChange}
                             onKeyDown={handleSubmitComment}

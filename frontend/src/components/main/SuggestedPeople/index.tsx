@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import Avatar from "~/components/shared/Avatar";
 import { UserLoader } from "~/components/shared/Loaders";
 import { getSuggestedPeople } from "~/services/api";
-import { IProfile } from "~/types/types";
+import { IError, IProfile } from "~/types/types";
 import FollowButton from "../FollowButton";
 
 const SuggestedPeople: React.FC = () => {
     const [people, setPeople] = useState<IProfile[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
 
     useEffect(() => {
         (async function () {
@@ -21,12 +21,12 @@ const SuggestedPeople: React.FC = () => {
                 setIsLoading(false);
             } catch (e) {
                 setIsLoading(false);
-                setError(e.error.message);
+                setError(e);
             }
         })();
     }, []);
 
-    return error ? null : (
+    return (
         <div className="w-full py-4 bg-white rounded-md shadow-lg overflow-hidden">
             <div className="px-4 flex justify-between mb-4">
                 <h4>Suggested People</h4>
@@ -42,10 +42,12 @@ const SuggestedPeople: React.FC = () => {
             )}
             {(!isLoading && error) && (
                 <div className="flex min-h-10rem items-center justify-center">
-                    <span className="text-gray-400 italic">{error}</span>
+                    <span className="text-gray-400 italic">
+                        {(error as IError).error.message || 'Something went wrong :('}
+                    </span>
                 </div>
             )}
-            {people.map((user) => (
+            {!error && people.map((user) => (
                 <div className="mb-2" key={user._id}>
                     <div className="flex items-center justify-between px-4 py-2">
                         <Link to={`/user/${user.username}`}>

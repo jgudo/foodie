@@ -55,7 +55,7 @@ router.get(
                     .limit(limit)
                     .skip(skip);
                 const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-                following = myFollowing.following;
+                following = !myFollowing ? [] : myFollowing.following;
 
                 const usersMerged = users.map((user) => {
                     return {
