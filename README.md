@@ -1,6 +1,10 @@
 # Foodie
 A social media for food lovers and for people looking for new ideas for their next menu. A facebook/instagram-like inspired social media.
 
+[![Heroku](https://heroku-badge.herokuapp.com/?app=foodie-social)] ![Vercel](https://vercelbadge.vercel.app/api/jgudo/foodie)
+
+
+
 ## Table of contents
 * [Features](#features)
 * [Technologies](#technologies)
