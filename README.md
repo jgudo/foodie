@@ -60,6 +60,7 @@ $ npm run start-client // frontend
 $ npm run start-server // backend
 
 // Or you can change to individual directory then run 
+$ cd frontend // or cd server
 $ npm start
 ```
 
