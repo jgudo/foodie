@@ -47,7 +47,7 @@ export const register = async ({ email, password, username }: IRegister) => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -60,7 +60,7 @@ export const logout = async () => {
 
         return Promise.resolve();
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -76,7 +76,7 @@ export const getNewsFeed = async ({ offset = 0 }: IFetchParams) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -89,7 +89,7 @@ export const getSinglePost = async (postID: string) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -103,7 +103,7 @@ export const createPost = async (post: FormData) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -118,7 +118,7 @@ export const getUser = async (username: string) => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -132,7 +132,7 @@ export const updateUser = async (username: string, updates: Partial<IProfile>) =
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -148,7 +148,7 @@ export const getPosts = async (username: string, { offset = 0 }: IFetchParams): 
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -194,7 +194,7 @@ export const getComments = async (postID: string, { offset = 0, limit, skip, sor
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -223,7 +223,7 @@ export const commentOnPost = async (postID: string, body: string): Promise<any> 
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -239,7 +239,7 @@ export const updateComment = async (postID: string, body: string): Promise<any> 
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -255,7 +255,7 @@ export const getNotifications = async (params: IFetchParams): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -268,7 +268,7 @@ export const followUser = async (id: string): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -281,7 +281,7 @@ export const unfollowUser = async (id: string): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -294,7 +294,7 @@ export const getFollowers = async (username: string, { offset = 0 }: IFetchParam
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -310,7 +310,7 @@ export const getFollowing = async (username: string, { offset = 0 }: IFetchParam
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -323,7 +323,7 @@ export const likePost = async (id: string): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -337,7 +337,7 @@ export const getPostLikes = async (postID: string, params: IFetchParams): Promis
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -389,7 +389,7 @@ export const getBookmarks = async (): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -402,7 +402,7 @@ export const bookmarkPost = async (postID: string): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -416,7 +416,7 @@ export const uploadPhoto = async (data: FormData, field: string): Promise<string
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -430,7 +430,7 @@ export const getSuggestedPeople = async (params: IFetchParams): Promise<IProfile
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -444,7 +444,7 @@ export const search = async (params: IFetchParams): Promise<any> => {
 
         return Promise.resolve(req.data.data)
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -458,7 +458,7 @@ export const getMessages = async (params?: IFetchParams): Promise<any> => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -471,7 +471,7 @@ export const readMessage = async (senderID: string): Promise<any> => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -484,7 +484,7 @@ export const getUnreadMessages = async (): Promise<any> => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -500,7 +500,7 @@ export const sendMessage = async (text: string, to: string): Promise<any> => {
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }
 
@@ -517,6 +517,6 @@ export const getUserMessages = async (targetID: string, params?: IFetchParams): 
 
         return Promise.resolve(req.data.data);
     } catch (e) {
-        return Promise.reject(e.response.data);
+        return Promise.reject(e?.response?.data || {});
     }
 }

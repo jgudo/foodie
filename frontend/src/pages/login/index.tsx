@@ -73,7 +73,7 @@ const Login: React.FC = () => {
             <div className="animate-fade w-5/12 flex items-center justify-start relative">
                 {error && (
                     <div className="py-2 w-full text-center bg-red-100 border-red-300 absolute top-0 left-0">
-                        <p className="text-red-500">{error.error.message}</p>
+                        <p className="text-red-500">{error?.error?.message || 'Something went wrong :('}</p>
                     </div>
                 )}
                 <div className="w-full px-14">
