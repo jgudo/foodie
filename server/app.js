@@ -30,7 +30,7 @@ app.disable('x-powered-by');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_URL,
   credentials: true,
   preflightContinue: true
 }));
@@ -81,6 +81,10 @@ app.use('/api', [
   commentRouter,
   followRouter,
 ]);
+
+app.use('/', (req, res) => {
+  res.status(200).send({ message: 'Welcome' });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
