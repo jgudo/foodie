@@ -140,12 +140,11 @@ const Notification: React.FC = () => {
 
     return (
         <div className="relative">
-            <Badge count={unreadCount}>
-                <BellOutlined
-                    className="notification-toggle text-xl focus:outline-none"
-                    onClick={toggleNotification}
-                />
-            </Badge>
+            <div onClick={toggleNotification}>
+                <Badge count={unreadCount}>
+                    <BellOutlined className="notification-toggle text-xl focus:outline-none" />
+                </Badge>
+            </div>
             {isNotificationOpen && (
                 <div className="notification-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
                     {/*  ----- HEADER ----- */}

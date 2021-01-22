@@ -88,6 +88,7 @@ const Messages: React.FC = () => {
     const handleReadMessage = async (sender: IUser) => {
         try {
             dispatch(initiateChat(sender));
+            setMessagesOpen(false);
 
             console.log(sender);
             await readMessage(sender.id);
@@ -96,7 +97,6 @@ const Messages: React.FC = () => {
                 seen: true
             }));
 
-            setMessagesOpen(false);
             setMessages(updated);
         } catch (e) {
             console.log(e);
@@ -115,12 +115,11 @@ const Messages: React.FC = () => {
 
     return (
         <div className="relative">
-            <Badge count={count}>
-                <MessageOutlined
-                    className="messages-toggle text-xl focus:outline-none"
-                    onClick={toggleMessages}
-                />
-            </Badge>
+            <div onClick={toggleMessages}>
+                <Badge count={count}>
+                    <MessageOutlined className="messages-toggle text-xl focus:outline-none" />
+                </Badge>
+            </div>
             {isMessagesOpen && (
                 <div className="messages-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
                     {/*  ----- HEADER ----- */}

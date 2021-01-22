@@ -246,7 +246,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                             </div>
                         ) : (
                                 <button
-                                    className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-0 flex items-center justify-center"
+                                    className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-2 flex items-center justify-center"
                                     onClick={() => history.push(`/user/${profile.username}/edit`)}
                                 >
                                     <EditOutlined className="text-xl mr-4" />

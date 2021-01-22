@@ -25,8 +25,10 @@ router.get(
             const count = await Notification.find({ target: req.user._id });
             const result = { notifications, unreadCount: unreadCount.length, count: count.length };
 
-            if (notifications.length === 0) {
-                return res.status(404).send(makeErrorJson({ message: 'No more notifications' }));
+            if (notifications.length === 0 && offset === 0) {
+                return res.status(404).send(makeErrorJson({ message: 'You have no notifications.' }));
+            } else if (notifications.length === 0 && offset >= 1) {
+                return res.status(404).send(makeErrorJson({ message: 'No more notifications.' }));
             }
 
             res.status(200).send(makeResponseJson(result));
