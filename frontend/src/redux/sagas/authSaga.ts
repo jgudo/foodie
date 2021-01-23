@@ -26,10 +26,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
             try {
                 yield put(isAuthenticating(true));
                 const { auth } = yield call(login, payload.email, payload.password);
-                socket.on('connect', () => {
-                    socket.emit('userConnect', auth.id);
-                    console.log('Client connected to socket.');
-                });
+                socket.emit('userConnect', auth.id);
                 yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
@@ -60,7 +57,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(false));
                 yield put(clearNewsFeed());
                 yield put(clearChat());
-                socket.emit('userDisconnect', auth.id)
+                socket.emit('userDisconnect', auth.id);
             } catch (e) {
                 yield handleError(e);
             }
@@ -71,10 +68,8 @@ function* authSaga({ type, payload }: IAuthSaga) {
 
                 const user = yield call(register, payload);
 
-                socket.on('connect', () => {
-                    socket.emit('userConnect', user.id);
-                    console.log('Client connected to socket.');
-                });
+                yield call(socket.emit, 'userConnect', user.id)
+                socket.emit('userConnect', user.id);
                 yield put(registerSuccess(user));
                 yield put(isAuthenticating(false));
             }

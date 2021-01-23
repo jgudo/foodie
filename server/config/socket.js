@@ -11,14 +11,13 @@ module.exports = function (app, server) {
     app.set('io', io);
 
     io.on("connection", socket => {
-        console.log('Client connected.');
-
         socket.on("userConnect", (id) => {
             User
                 .findById(id)
                 .then((user) => {
                     if (user) {
                         socket.join(user._id.toString());
+                        console.log('Client connected.');
                     }
                 })
                 .catch((e) => {
@@ -26,7 +25,10 @@ module.exports = function (app, server) {
                 });
         });
 
-        socket.on("userDisconnect", socket.leave);
+        socket.on("userDisconnect", (userID) => {
+            socket.leave(userID);
+            console.log('Client Disconnected.');
+        });
 
         socket.on("onFollowUser", (data) => {
             console.log(data);

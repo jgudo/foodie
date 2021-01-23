@@ -39,6 +39,11 @@ function App() {
           console.log('Client connected to socket.');
         });
 
+        // Try to reconnect again
+        socket.on('error', function () {
+          socket.emit('userConnect', auth.id);
+        });
+
         setCheckingSession(false);
       } catch (e) {
         console.log('ERROR', e);
