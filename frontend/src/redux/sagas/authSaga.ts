@@ -1,6 +1,7 @@
 import { call, put } from "redux-saga/effects";
 import { CHECK_SESSION, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/constants/actionType";
 import { checkAuthSession, login, logout, register } from "~/services/api";
+import socket from "~/socket/socket";
 import { IError } from "~/types/types";
 import { loginSuccess, logoutSuccess, registerSuccess } from "../action/authActions";
 import { clearChat } from "../action/chatActions";
@@ -25,7 +26,10 @@ function* authSaga({ type, payload }: IAuthSaga) {
             try {
                 yield put(isAuthenticating(true));
                 const { auth } = yield call(login, payload.email, payload.password);
-
+                socket.on('connect', () => {
+                    socket.emit('userConnect', auth.id);
+                    console.log('Client connected to socket.');
+                });
                 yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
@@ -64,6 +68,11 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(true));
 
                 const user = yield call(register, payload);
+
+                socket.on('connect', () => {
+                    socket.emit('userConnect', user.id);
+                    console.log('Client connected to socket.');
+                });
                 yield put(registerSuccess(user));
                 yield put(isAuthenticating(false));
             }
