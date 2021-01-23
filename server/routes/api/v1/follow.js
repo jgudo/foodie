@@ -153,9 +153,12 @@ router.get(
             const skip = offset * limit;
 
             // TODO ---------- TEST LIMIT AND SKIP
-            const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const follow = await Follow.findOne({ _user_id: req.user._id });
+            const myFollowing = follow ? follow.following : [];
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
+
+            console.log(myFollowing)
 
             const doc = await Follow.aggregate([
                 {
@@ -178,16 +181,26 @@ router.get(
                 { $skip: skip },
                 { $limit: limit },
                 {
+                    $project: {
+                        user: {
+                            id: '$userFollowing._id',
+                            username: '$userFollowing.username',
+                            email: '$userFollowing.email',
+                            fullname: '$userFollowing.fullname'
+                        }
+                    }
+                },
+                {
                     $addFields: {
                         isFollowing: {
-                            $in: ['$userFollowing._id', selfFollowing.following]
+                            $in: ['$user.id', myFollowing]
                         }
                     }
                 },
                 {
                     $group: {
                         _id: '$_id',
-                        following: { $push: { user: '$userFollowing', isFollowing: '$isFollowing' } }
+                        following: { $push: { user: '$user', isFollowing: '$isFollowing' } }
                     }
                 },
                 {
@@ -222,10 +235,8 @@ router.get(
             const limit = USERS_LIMIT;
             const skip = offset * limit;
 
-            const selfFollowing = await Follow.findOne({ _user_id: req.user._id });
-            let following = [];
-
-            if (selfFollowing) following = selfFollowing.following;
+            const follow = await Follow.findOne({ _user_id: req.user._id });
+            const selfFollowing = follow ? follow.following : [];
 
             const user = await User.findOne({ username });
             if (!user) return res.sendStatus(404);
@@ -249,16 +260,26 @@ router.get(
                 { $skip: skip },
                 { $limit: limit },
                 {
+                    $project: {
+                        user: {
+                            id: '$userFollowers._id',
+                            username: '$userFollowers.username',
+                            email: '$userFollowers.email',
+                            fullname: '$userFollowers.fullname'
+                        }
+                    }
+                },
+                {
                     $addFields: {
                         isFollowing: {
-                            $in: ['$userFollowers._id', following]
+                            $in: ['$user.id', selfFollowing]
                         }
                     }
                 },
                 {
                     $group: {
                         _id: '$_id',
-                        followers: { $push: { user: '$userFollowers', isFollowing: '$isFollowing' } }
+                        followers: { $push: { user: '$user', isFollowing: '$isFollowing' } }
                     }
                 },
                 {
