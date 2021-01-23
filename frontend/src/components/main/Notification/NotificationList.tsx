@@ -43,6 +43,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                             <div className="flex flex-wrap items-center">
                                                 <Avatar
                                                     url={notif.initiator.profilePicture}
+                                                    size="lg"
                                                     className="mr-2"
                                                 />
                                                 <span className="text-indigo-700">{notif.initiator.username}</span>
