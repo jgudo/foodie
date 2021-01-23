@@ -62,8 +62,8 @@ module.exports = {
                 })
         }),
         editProfileSchema: Joi.object().keys({
-            firstname: Joi.string(),
-            lastname: Joi.string(),
+            firstname: Joi.string().empty(''),
+            lastname: Joi.string().empty(''),
             bio: Joi.string().empty(''),
             gender: Joi.string().empty(''),
             birthday: Joi.date().empty('')

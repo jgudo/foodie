@@ -82,8 +82,8 @@ router.patch(
             if (username !== req.user.username) return res.sendStatus(401);
 
 
-            if (firstname) update.firstname = firstname;
-            if (lastname) update.lastname = lastname;
+            if (typeof firstname !== 'undefined') update.firstname = firstname;
+            if (typeof lastname !== 'undefined') update.lastname = lastname;
             if (bio) update.info.bio = bio;
             if (birthday) update.info.birthday = birthday;
             if (gender) update.info.gender = gender;

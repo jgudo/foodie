@@ -47,8 +47,10 @@ const Followers: React.FC<IProps> = ({ username }) => {
                 setError(null);
             }
         } catch (e) {
-            setIsLoading(false);
-            setError(e)
+            if (isMountedRef.current) {
+                setIsLoading(false);
+                setError(e)
+            }
             console.log(e);
         }
     };

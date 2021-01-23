@@ -47,8 +47,10 @@ const Following: React.FC<IProps> = ({ username }) => {
             }
         } catch (e) {
             console.log(e);
-            setIsLoading(false);
-            setError(e);
+            if (isMountedRef.current) {
+                setIsLoading(false);
+                setError(e);
+            }
         }
     };
 

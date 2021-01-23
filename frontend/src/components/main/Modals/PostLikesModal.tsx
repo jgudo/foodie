@@ -68,7 +68,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <h3 className="py-4 px-8">Likes</h3>
-                {isLoading && (
+                {(isLoading && likes.length === 0) && (
                     <div className="flex min-h-10rem min-w-15rem items-center justify-center py-8">
                         <Loader />
                     </div>

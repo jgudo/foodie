@@ -60,7 +60,9 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
             }
         } catch (e) {
             console.log(e);
-            setIsLoading(false);
+            if (isMountedRef.current) {
+                setIsLoading(false);
+            }
         }
 
     };

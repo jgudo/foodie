@@ -58,9 +58,12 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                 toast.dark('Profile updated successfully.')
             }
         } catch (e) {
-            setIsUpdating(false);
+            if (isMountedRef.current) {
+                setIsUpdating(false);
+            }
+
             toast.dismiss();
-            toast.error(e.error.message || 'Unable to comment.')
+            toast.error(e.error.message || 'Unable to process your request.');
         }
     };
 

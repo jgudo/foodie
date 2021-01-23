@@ -7,3 +7,4 @@ frontend/.env
 server/.env-dev
 server/.env-prod
 server/.env
+yarn-error.log

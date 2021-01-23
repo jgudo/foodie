@@ -96,12 +96,18 @@ const Posts: React.FC<IProps> = (props) => {
             setIsCreatingPost(true);
             const post = await createPost(form);
 
-            setPosts([post, ...posts]);
-            setIsCreatingPost(false);
+            if (isMountedRef.current) {
+                setPosts([post, ...posts]);
+                setIsCreatingPost(false);
+            }
+
             toast.dismiss();
             toast.dark('Post created successfully.');
         } catch (e) {
-            setIsCreatingPost(false);
+            if (isMountedRef.current) {
+                setIsCreatingPost(false);
+            }
+
             toast.dismiss();
             toast.error('Somehing went wrong. Please try again later.');
         }

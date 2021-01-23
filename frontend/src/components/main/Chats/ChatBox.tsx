@@ -150,7 +150,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                             )}
                     </div>
                 )}
-                {(!error && target.chats.length !== 0) && (
+                {(!error && target.chats.length >= 10) && (
                     <>
                         {!isLoading ? (
                             <div
