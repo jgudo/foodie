@@ -1,4 +1,4 @@
-import { call, put } from "redux-saga/effects";
+import { call, put, select } from "redux-saga/effects";
 import { CHECK_SESSION, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/constants/actionType";
 import { checkAuthSession, login, logout, register } from "~/services/api";
 import socket from "~/socket/socket";
@@ -52,6 +52,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
             break;
         case LOGOUT_START:
             try {
+                const { auth } = yield select();
                 yield put(isAuthenticating(true));
                 yield call(logout);
 
@@ -59,6 +60,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(false));
                 yield put(clearNewsFeed());
                 yield put(clearChat());
+                socket.emit('userDisconnect', auth.id)
             } catch (e) {
                 yield handleError(e);
             }
