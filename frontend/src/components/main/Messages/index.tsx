@@ -50,8 +50,8 @@ const Messages: React.FC = () => {
         document.addEventListener('click', handleClickOutside);
 
         getUnreadMessages()
-            .then(({ total }) => {
-                setCount(total);
+            .then((result) => {
+                setCount(result.count);
             });
 
         return () => {
