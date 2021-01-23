@@ -1,7 +1,7 @@
 import { CommentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
@@ -30,12 +30,13 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
     const deleteModal = useModal();
     const updateModal = useModal();
     const likesModal = useModal();
+    const commentInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleToggleComment = () => {
-        if (!isCommentVisible) {
-            setCommentVisible(true);
-        }
+        if (!isCommentVisible) setCommentVisible(true);
+        if (commentInputRef.current) commentInputRef.current.focus();
     }
+
     const displayLikeMetric = (likesCount: number, isLiked: boolean) => {
         const like = likesCount > 1 ? 'like' : 'likes';
         const likeMinusSelf = (likesCount - 1) > 1 ? 'like' : 'likes';
@@ -112,7 +113,12 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                     <CommentOutlined />&nbsp;Comment
                     </span>
             </div>
-            {isCommentVisible && <Comments postID={post.id} authorID={post.author.id} />}
+            <Comments
+                postID={post.id}
+                authorID={post.author.id}
+                isCommentVisible={isCommentVisible}
+                commentInputRef={commentInputRef}
+            />
             <DeletePostModal
                 isOpen={deleteModal.isOpen}
                 openModal={deleteModal.openModal}

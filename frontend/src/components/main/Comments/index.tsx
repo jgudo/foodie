@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -18,6 +18,8 @@ dayjs.extend(relativeTime);
 interface IProps {
     postID: string;
     authorID: string;
+    isCommentVisible: boolean;
+    commentInputRef: React.RefObject<HTMLInputElement>;
 }
 
 interface ICommentsState {
@@ -25,7 +27,7 @@ interface ICommentsState {
     commentsCount: number;
 }
 
-const Comments: React.FC<IProps> = ({ postID, authorID }) => {
+const Comments: React.FC<IProps> = ({ postID, authorID, isCommentVisible, commentInputRef }) => {
     const [comments, setComments] = useState<ICommentsState>({
         items: [],
         commentsCount: 0
@@ -38,13 +40,17 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
     const [targetID, setTargetID] = useState('');
     const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
-    const commentInputRef = useRef<HTMLInputElement | null>(null);
     const deleteModal = useModal();
 
     useEffect(() => {
         fetchComment({ offset: 0, limit: 1, sort: 'desc' });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (commentInputRef.current) commentInputRef.current.focus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCommentVisible]);
 
     const fetchComment = async (params: IFetchParams) => {
         try {
@@ -138,56 +144,54 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                         {isLoading ? <div className="ml-8 py-2"><Loader size="sm" /></div> : 'Load more comments'}
                     </span>
                 )}
-                {(comments.commentsCount !== 0) && (
-                    <div className="py-4 px-2 space-y-2 divide-y divide-gray-200">
-                        {/* ----- COMMENT LIST ---------- */}
-                        <TransitionGroup component={null}>
-                            {comments.items.map((comment: IComment) => (
-                                <CSSTransition
-                                    timeout={500}
-                                    classNames="fade"
+                <div className="py-4 px-2 space-y-2 divide-y divide-gray-200">
+                    {/* ----- COMMENT LIST ---------- */}
+                    <TransitionGroup component={null}>
+                        {comments.items.map((comment: IComment) => (
+                            <CSSTransition
+                                timeout={500}
+                                classNames="fade"
+                                key={comment.id}
+                            >
+                                <div
+                                    className="flex py-2"
                                     key={comment.id}
                                 >
-                                    <div
-                                        className="flex py-2"
-                                        key={comment.id}
-                                    >
-                                        <Link to={`/user/${comment.author.username}`} className="mr-2">
-                                            <Avatar url={comment.author.profilePicture} />
+                                    <Link to={`/user/${comment.author.username}`} className="mr-2">
+                                        <Avatar url={comment.author.profilePicture} />
+                                    </Link>
+                                    <div className="inline-flex items-start flex-col flex-grow">
+                                        <Link to={`/user/${comment.author.username}`}>
+                                            <h5>{comment.author.username}</h5>
                                         </Link>
-                                        <div className="inline-flex items-start flex-col flex-grow">
-                                            <Link to={`/user/${comment.author.username}`}>
-                                                <h5>{comment.author.username}</h5>
-                                            </Link>
-                                            <p className="text-gray-800 min-w-full break-all">{comment.body}</p>
-                                            <div className="mt-2">
-                                                <span className="text-xs text-gray-400">
-                                                    {dayjs(comment.createdAt).fromNow()}
+                                        <p className="text-gray-800 min-w-full break-all">{comment.body}</p>
+                                        <div className="mt-2">
+                                            <span className="text-xs text-gray-400">
+                                                {dayjs(comment.createdAt).fromNow()}
+                                            </span>
+                                            {comment.isEdited && (
+                                                <span className="text-xs text-gray-400 ml-2">
+                                                    Edited
                                                 </span>
-                                                {comment.isEdited && (
-                                                    <span className="text-xs text-gray-400 ml-2">
-                                                        Edited
-                                                    </span>
-                                                )}
-                                            </div>
+                                            )}
                                         </div>
-                                        {(user.id === comment.author.id || authorID === user.id) && (
-                                            <CommentOptions
-                                                isOwnComment={user.id === comment.author.id}
-                                                setCommentBody={setCommentBody}
-                                                comment={comment}
-                                                openDeleteModal={deleteModal.openModal}
-                                                setTargetID={setTargetID}
-                                                setIsUpdating={setIsUpdating}
-                                                commentInputRef={commentInputRef}
-                                            />
-                                        )}
                                     </div>
-                                </CSSTransition>
-                            ))}
-                        </TransitionGroup>
-                    </div>
-                )}
+                                    {(user.id === comment.author.id || authorID === user.id) && (
+                                        <CommentOptions
+                                            isOwnComment={user.id === comment.author.id}
+                                            setCommentBody={setCommentBody}
+                                            comment={comment}
+                                            openDeleteModal={deleteModal.openModal}
+                                            setTargetID={setTargetID}
+                                            setIsUpdating={setIsUpdating}
+                                            commentInputRef={commentInputRef}
+                                        />
+                                    )}
+                                </div>
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
+                </div>
                 {/* ---- IS UPDATING HINT ---- */}
                 {isUpdating && (
                     <div className="flex items-center justify-between mt-4">
@@ -201,21 +205,23 @@ const Comments: React.FC<IProps> = ({ postID, authorID }) => {
                     </div>
                 )}
                 {/*  ---- INPUT COMMENT ----- */}
-                <div className={`flex items-center py-4 px-2 ${isUpdating && 'bg-yellow-100'}`}>
-                    <Avatar url={user.profilePicture} className="mr-2" />
-                    <div className="flex-grow">
-                        <input
-                            className={`${isCommenting && 'opacity-50'}`}
-                            type="text"
-                            placeholder="Write a comment..."
-                            readOnly={isLoading || isCommenting}
-                            ref={commentInputRef}
-                            onChange={handleCommentBodyChange}
-                            onKeyDown={handleSubmitComment}
-                            value={commentBody}
-                        />
+                {isCommentVisible && (
+                    <div className={`flex items-center py-4 px-2 ${isUpdating && 'bg-yellow-100'}`}>
+                        <Avatar url={user.profilePicture} className="mr-2" />
+                        <div className="flex-grow">
+                            <input
+                                className={`${isCommenting && 'opacity-50'}`}
+                                type="text"
+                                placeholder="Write a comment..."
+                                readOnly={isLoading || isCommenting}
+                                ref={commentInputRef}
+                                onChange={handleCommentBodyChange}
+                                onKeyDown={handleSubmitComment}
+                                value={commentBody}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
             <DeleteCommentModal
                 isOpen={deleteModal.isOpen}
