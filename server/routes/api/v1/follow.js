@@ -185,6 +185,7 @@ router.get(
                         user: {
                             id: '$userFollowing._id',
                             username: '$userFollowing.username',
+                            profilePicture: '$userFollowing.profilePicture',
                             email: '$userFollowing.email',
                             fullname: '$userFollowing.fullname'
                         }
@@ -264,6 +265,7 @@ router.get(
                         user: {
                             id: '$userFollowers._id',
                             username: '$userFollowers.username',
+                            profilePicture: '$userFollowers.profilePicture',
                             email: '$userFollowers.email',
                             fullname: '$userFollowers.fullname'
                         }
