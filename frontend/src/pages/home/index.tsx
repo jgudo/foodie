@@ -10,6 +10,7 @@ import SuggestedPeople from "~/components/main/SuggestedPeople";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { PostLoader } from "~/components/shared/Loaders";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 import useModal from "~/hooks/useModal";
 import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
 import socket from "~/socket/socket";
@@ -32,6 +33,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
     const { isOpen, openModal, closeModal } = useModal();
     const from = props.location.state?.from || null;
 
+    useDocumentTitle('Foodie | Social Network');
     useEffect(() => {
         if (state.newsFeed.items.length === 0 || from === '/') {
             dispatch(clearNewsFeed());

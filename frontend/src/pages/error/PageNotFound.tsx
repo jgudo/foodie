@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 
 const PageNotFound: React.FC = () => {
+    useDocumentTitle('Page Not Found');
+
     return (
         <div className="p-20 pt-40">
             <h1>Uh oh, you seemed lost.</h1>

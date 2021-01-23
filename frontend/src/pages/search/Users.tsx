@@ -1,4 +1,5 @@
 import UserCard from "~/components/main/UserCard";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 import { IProfile } from "~/types/types";
 
 interface IProps {
@@ -6,6 +7,8 @@ interface IProps {
 }
 
 const Users: React.FC<IProps> = ({ users }) => {
+    useDocumentTitle(`Search Users | Foodie`);
+
     return (
         <div>
             {users.map((user) => (

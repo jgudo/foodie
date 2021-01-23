@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { IRootReducer } from "~/types/types";
 
 const Info = () => {
@@ -9,6 +10,7 @@ const Info = () => {
         isOwnProfile: state.auth.username === state.profile.username
     }));
     const history = useHistory();
+    useDocumentTitle(`Info - ${profile.username} | Foodie`);
 
     return (
         <div className="p-4 bg-white rounded-md min-h-10rem shadow-lg">

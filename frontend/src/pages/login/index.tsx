@@ -2,6 +2,7 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { REGISTER } from '~/constants/routes';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal.jpg';
 import logo from '~/images/logo-white.svg';
 import { loginStart } from '~/redux/action/authActions';
@@ -11,9 +12,9 @@ import { IRootReducer } from '~/types/types';
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
     const dispatch = useDispatch();
 
+    useDocumentTitle('Login to Foodie');
     useEffect(() => {
         return () => {
             dispatch(setAuthErrorMessage(null));

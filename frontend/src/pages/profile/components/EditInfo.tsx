@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Redirect, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { updateProfileInfo } from '~/redux/action/profileActions';
 import { updateUser } from '~/services/api';
 import { IProfile } from "~/types/types";
@@ -25,6 +26,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const dispatch = useDispatch();
     let isMountedRef = useRef<boolean | null>(null);
 
+    useDocumentTitle(`Edit Info - ${profile.username} | Foodie`);
     useEffect(() => {
         if (isMountedRef) isMountedRef.current = true;
 

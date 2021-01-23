@@ -2,6 +2,7 @@ import { CommentOutlined, LikeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useHistory } from 'react-router-dom';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { IPost } from "~/types/types";
 
 dayjs.extend(relativeTime);
@@ -24,6 +25,7 @@ const boldString = (str: string, substr: string) => {
 
 const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
     const history = useHistory();
+    useDocumentTitle(`Search Posts | Foodie`);
 
     const onClickPost = (id: string) => {
         history.push(`/post/${id}`);

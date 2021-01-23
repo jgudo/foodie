@@ -7,6 +7,7 @@ import PostItem from '~/components/main/PostItem';
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { PostLoader } from "~/components/shared/Loaders";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 import useModal from "~/hooks/useModal";
 import { createPost, getPosts } from "~/services/api";
 import { IError, IPost, IUser } from "~/types/types";
@@ -27,6 +28,7 @@ const Posts: React.FC<IProps> = (props) => {
 
     let isMountedRef = useRef<boolean | null>(null);
 
+    useDocumentTitle(`Posts - ${props.username} | Foodie`);
     useEffect(() => {
         fetchPosts();
 

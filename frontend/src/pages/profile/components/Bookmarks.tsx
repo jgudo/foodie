@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import BookmarkButton from "~/components/main/BookmarkButton";
 import Loader from '~/components/shared/Loader';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { getBookmarks } from "~/services/api";
 import { IBookmark } from "~/types/types";
 
@@ -29,6 +30,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
     const [error, setError] = useState('');
     let isMountedRef = useRef<boolean | null>(null);
 
+    useDocumentTitle(`Bookmarks - ${username} | Foodie`);
     useEffect(() => {
         fetchBookmarks();
 

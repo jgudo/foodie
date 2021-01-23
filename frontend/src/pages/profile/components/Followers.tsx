@@ -4,6 +4,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from "~/components/main/UserCard";
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 import { getFollowers } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
 
@@ -23,6 +24,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
     let isMountedRef = useRef<boolean | null>(null);
     const [error, setError] = useState<IError | null>(null);
 
+    useDocumentTitle(`Followers - ${username} | Foodie`);
     useEffect(() => {
         fetchFollowers();
 

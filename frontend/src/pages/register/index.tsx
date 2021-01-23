@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LOGIN } from '~/constants/routes';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal_2.webp';
 import logo from '~/images/logo-white.svg';
 import { registerStart } from '~/redux/action/authActions';
@@ -12,9 +13,9 @@ const Register: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
-
     const dispatch = useDispatch();
 
+    useDocumentTitle('Register to Foodie');
     useEffect(() => {
         return () => {
             dispatch(setAuthErrorMessage(null));

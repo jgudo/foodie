@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import PostItem from '~/components/main/PostItem';
 import Loader from '~/components/shared/Loader';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { getSinglePost } from '~/services/api';
 import { IPost } from '~/types/types';
 
 const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, match }) => {
-    const [post, setPost] = useState<any>(null);
+    const [post, setPost] = useState<IPost | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const { post_id } = match.params;
 
+    useDocumentTitle(`${post?.description} - Foodie` || 'View Post');
     useEffect(() => {
         fetchPost();
         // eslint-disable-next-line react-hooks/exhaustive-deps
