@@ -30,8 +30,6 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
         if (isMountedRef) isMountedRef.current = true;
 
         socket.on('newMessage', (message: IMessage) => {
-            console.log('CHATBOX: ', message);
-
             dispatch(newMessageArrived(target.username, message));
 
             if (dummyEl.current) {
@@ -83,26 +81,34 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     }
 
     const dispatchSendMessage = async () => {
-        try {
-            setSending(true);
+        if (text) {
+            try {
+                setSending(true);
 
-            await sendMessage(text, target.id);
+                await sendMessage(text, target.id);
 
-            if (isMountedRef.current) {
-                setSending(false);
-                setText('');
-                setError(null);
-            }
-        } catch (e) {
-            if (isMountedRef.current) {
-                setSending(false);
-                setError(e);
+                if (isMountedRef.current) {
+                    setSending(false);
+                    setText('');
+                    setError(null);
+                }
+            } catch (e) {
+                if (isMountedRef.current) {
+                    setSending(false);
+                    setError(e);
+                }
             }
         }
     }
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
+    }
+
+    const handleTextKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && text) {
+            dispatchSendMessage();
+        }
     }
 
     return (
@@ -210,8 +216,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     className="flex-grow !rounded-r-none !py-0"
                     type="text"
                     onChange={handleTextChange}
+                    onKeyDown={handleTextKeyDown}
                     readOnly={isSending}
                     placeholder="Send a message..."
+                    value={text}
                 />
                 <button
                     className="!rounded-l-none flex items-center justify-center"

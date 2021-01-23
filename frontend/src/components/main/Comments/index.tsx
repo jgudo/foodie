@@ -56,7 +56,6 @@ const Comments: React.FC<IProps> = ({ postID, authorID, isCommentVisible, commen
         try {
             setIsLoading(true);
             const { comments: fetchedComments, commentsCount } = await getComments(postID, params);
-            console.log(comments);
             setOffset(offset + 1);
             setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
             setIsLoading(false);
@@ -78,7 +77,6 @@ const Comments: React.FC<IProps> = ({ postID, authorID, isCommentVisible, commen
                 setIsCommenting(true);
                 const comment = isUpdating ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
 
-                console.log(isUpdating);
                 if (isUpdating) {
                     handleUpdateCommentState(comment);
                 } else {
