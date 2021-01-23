@@ -61,12 +61,12 @@ module.exports = function (passport) {
     passport.use(
         'local-login',
         new LocalStrategy({
-            usernameField: 'email',
+            usernameField: 'username',
             passwordField: 'password',
             passReqToCallback: true
-        }, async (req, email, password, done) => {
+        }, async (req, username, password, done) => {
             try {
-                const user = await User.findOne({ email });
+                const user = await User.findOne({ username });
 
                 if (user) {
                     user.passwordMatch(password, function (err, match) {

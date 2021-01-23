@@ -9,7 +9,7 @@ import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const dispatch = useDispatch();
@@ -26,10 +26,10 @@ const Login: React.FC = () => {
         isLoading: state.loading.isLoadingAuth
     }));
 
-    const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
 
-        setEmail(val);
+        setUsername(val);
     };
 
     const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,8 +41,8 @@ const Login: React.FC = () => {
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (email && password) {
-            dispatch(loginStart(email, password));
+        if (username && password) {
+            dispatch(loginStart(username, password));
         }
     };
 
@@ -87,18 +87,19 @@ const Login: React.FC = () => {
                         <input type="hidden" name="remember" value="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div className="mb-2">
-                                <label htmlFor="email-address" className="sr-only">Email address</label>
+                                <label htmlFor="username" className="sr-only">Username</label>
                                 <input
-                                    id="email-address"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    value={email}
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    autoComplete="username"
+                                    value={username}
                                     required
+                                    maxLength={50}
                                     className={error ? 'input--error' : ''}
-                                    placeholder="Email address"
+                                    placeholder="Username"
                                     readOnly={isLoading}
-                                    onChange={onEmailChange}
+                                    onChange={onUsernameChange}
                                 />
                             </div>
                             <div>

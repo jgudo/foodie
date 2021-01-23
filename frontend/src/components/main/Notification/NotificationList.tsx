@@ -40,24 +40,27 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                                         onClick={() => handleNotificationClick(notif.link, notif.id)}
                                     >
                                         <div className="relative">
-                                            <div className="flex flex-wrap items-center">
+                                            <div className="flex items-center">
                                                 <Avatar
                                                     url={notif.initiator.profilePicture}
                                                     size="lg"
                                                     className="mr-2"
                                                 />
-                                                <span className="text-indigo-700">{notif.initiator.username}</span>
-                                        &nbsp;
-                                        <span className="text-gray-700">
-                                                    {
-                                                        notif.type === 'like' ? 'likes your post.'
-                                                            : notif.type === 'comment' ? 'commented on your post.'
-                                                                : notif.type === 'follow' ? 'started following you.'
-                                                                    : ''
-                                                    }
-                                                </span>
+                                                <div>
+                                                    <span className="text-indigo-700">{notif.initiator.username}</span>
+                                                    &nbsp;
+                                                <span className="text-gray-700">
+                                                        {
+                                                            notif.type === 'like' ? 'likes your post.'
+                                                                : notif.type === 'comment' ? 'commented on your post.'
+                                                                    : notif.type === 'follow' ? 'started following you.'
+                                                                        : ''
+                                                        }
+                                                    </span>
+                                                    <br />
+                                                    <span className="text-gray-500 text-1xs block">{displayTime(notif.createdAt)}</span>
+                                                </div>
                                             </div>
-                                            <span className="text-gray-500 text-1xs ml-12 transform -translate-y-1 block">{displayTime(notif.createdAt)}</span>
                                             {notif.type === 'like' ? (
                                                 <LikeOutlined className="text-2xl text-indigo-700 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
                                             ) : notif.type === 'comment' ? (

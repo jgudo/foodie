@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        minlength: 8,
         required: true
     },
     username: {
@@ -72,7 +73,27 @@ const UserSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     }
-}, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
+}, {
+    timestamps: true,
+    toJSON: {
+        virtuals: true,
+        transform: function (doc, ret, opt) {
+            delete ret.password;
+            delete ret.facebook;
+            return ret;
+        }
+    },
+    toObject: {
+        getters: true,
+        virtuals: true,
+        transform: function (doc, ret, opt) {
+            delete ret.password;
+            delete ret.facebook;
+            return ret;
+        }
+    }
+});
+
 
 UserSchema.virtual('fullname').get(function () {
     const { firstname, lastname } = this;

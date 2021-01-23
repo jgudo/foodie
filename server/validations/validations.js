@@ -38,7 +38,7 @@ const username = Joi
 module.exports = {
     schemas: {
         loginSchema: Joi.object().keys({
-            email,
+            username,
             password
         }).options({ abortEarly: false }),
         registerSchema: Joi.object().keys({

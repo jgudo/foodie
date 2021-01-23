@@ -6,12 +6,12 @@ const foodieApiVersion = process.env.REACT_APP_FOODIE_API_VERSION || 'v1';
 axios.defaults.baseURL = `${foodieUrl}/api/${foodieApiVersion}`;
 axios.defaults.withCredentials = true;
 
-export const login = async (email: string, password: string) => {
+export const login = async (username: string, password: string) => {
     try {
         const req = await axios({
             method: 'POST',
             url: '/authenticate',
-            data: { email, password }
+            data: { username, password }
         });
 
         return Promise.resolve(req.data.data);
