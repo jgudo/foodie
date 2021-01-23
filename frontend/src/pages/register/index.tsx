@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LOGIN } from '~/constants/routes';
 import bg from '~/images/friends_meal_2.webp';
+import logo from '~/images/logo-white.svg';
 import { registerStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
@@ -60,7 +61,7 @@ const Register: React.FC = () => {
                 }}
             >
                 {/* --- LOGO --- */}
-                <h2 className="text-white absolute left-8 top-8">Foodie</h2>
+                <img src={logo} alt="Foodie Logo" className="w-24 absolute left-8 top-8" />
                 {/* -- INFO --- */}
                 <h3 className="animate-fade text-white w-9/12 mb-14">
                     Create your account now and discover new ideas and connect with people.

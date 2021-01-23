@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { LOGIN, REGISTER } from '~/constants/routes';
+import logo from '~/images/logo.svg';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
@@ -33,7 +34,7 @@ const NavBar: React.FC<{ isAuth: boolean }> = ({ isAuth }) => {
                         state: { from: pathname }
                     }}
                 >
-                    <h2 className="text-2xl">Foodie</h2>
+                    <img src={logo} alt="" className="w-24" />
                 </NavLink>
                 {/* -------- SEARCH BAR ------- */}
                 {isAuth && (

@@ -173,7 +173,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                                     </div>
                                 )}
                                 {(users.length !== 0) && <Users users={users} />}
-                                {(isLoadingUser && users.length >= 0 && !error) && (
+                                {(isLoadingUser && users.length >= 10 && !error) && (
                                     <div className="px-4 py-14 flex items-center justify-center">
                                         <Loader />
                                     </div>
