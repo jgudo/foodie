@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema({
         unique: [true, 'Username already taken.'],
         required: [true, 'Username is required.'],
         lowercase: true,
+        minlength: 4,
         validate: {
             validator: (username) => {
                 const regex = /[a-zA-Z]+_?\d./g;
