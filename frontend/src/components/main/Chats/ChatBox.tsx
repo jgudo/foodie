@@ -217,13 +217,13 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     type="text"
                     onChange={handleTextChange}
                     onKeyDown={handleTextKeyDown}
-                    readOnly={isSending}
+                    readOnly={isSending || isLoading}
                     placeholder="Send a message..."
                     value={text}
                 />
                 <button
                     className="!rounded-l-none flex items-center justify-center"
-                    disabled={isSending}
+                    disabled={isSending || isLoading}
                     onClick={dispatchSendMessage}
                 >
                     <SendOutlined className="flex items-center justify-center text-xl" />
