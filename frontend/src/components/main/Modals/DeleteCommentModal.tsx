@@ -60,7 +60,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                         {error?.error?.message || 'Unable process request. Please try again.'}
                     </span>
                 )}
-                <div className="p-4 px-8">
+                <div className="p-4 laptop:px-8">
                     <h2>
                         <ExclamationCircleOutlined className="inline-flex items-center justify-center text-red-500 mr-2 pt-2" />
                         Delete Comment

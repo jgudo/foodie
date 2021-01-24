@@ -1,8 +1,5 @@
-import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { CloseOutlined } from '@ant-design/icons';
 import Modal from 'react-modal';
-import { toast } from 'react-toastify';
-import { deletePost } from '~/services/api';
 import { IError } from '~/types/types';
 
 interface IProps {
@@ -10,35 +7,16 @@ interface IProps {
     onAfterOpen?: () => void;
     closeModal: () => void;
     openModal: () => void;
-    postID: string;
-    deleteSuccessCallback: (postID: string) => void;
+    dispatchLogout: () => void;
+    isLoggingOut: boolean;
+    error: IError;
 }
 
 Modal.setAppElement('#root');
 
-const DeletePostModal: React.FC<IProps> = (props) => {
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState<IError | null>(null);
-
-    const handleDeletePost = async () => {
-        try {
-            setIsDeleting(true);
-            await deletePost(props.postID);
-
-            setIsDeleting(false);
-            props.closeModal();
-            props.deleteSuccessCallback(props.postID);
-            toast.dark('Post successfully deleted.', {
-                progressStyle: { backgroundColor: '#4caf50' }
-            });
-        } catch (e) {
-            setIsDeleting(false);
-            setError(e);
-        }
-    };
-
+const LogoutModal: React.FC<IProps> = (props) => {
     const onCloseModal = () => {
-        if (!isDeleting) {
+        if (!props.isLoggingOut) {
             props.closeModal();
         }
     }
@@ -50,7 +28,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
             onRequestClose={props.closeModal}
             contentLabel="Example Modal"
             className="modal"
-            shouldCloseOnOverlayClick={!isDeleting}
+            shouldCloseOnOverlayClick={!props.isLoggingOut}
             overlayClassName="modal-overlay"
         >
             <div className="relative">
@@ -60,31 +38,28 @@ const DeletePostModal: React.FC<IProps> = (props) => {
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
-                {error && (
+                {props.error && (
                     <span className="p-4 bg-red-100 text-red-500 block">
-                        {error?.error?.message || 'Unable to process your request.'}
+                        {props.error?.error?.message || 'Unable to process your request.'}
                     </span>
                 )}
                 <div className="p-4 laptop:px-8">
-                    <h2>
-                        <ExclamationCircleOutlined className="inline-flex items-center justify-center text-red-500 mr-2 pt-2" />
-                        Delete Post
-                    </h2>
-                    <p className="text-gray-600 my-4">Are you sure you want to delete this post?</p>
+                    <h2>Confirm Logout</h2>
+                    <p className="text-gray-600 my-4">Are you sure you want to logout?</p>
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full"
                             onClick={props.closeModal}
-                            disabled={isDeleting}
+                            disabled={props.isLoggingOut}
                         >
                             Cancel
                         </button>
                         <button
                             className="button--danger"
-                            disabled={isDeleting}
-                            onClick={handleDeletePost}
+                            disabled={props.isLoggingOut}
+                            onClick={props.dispatchLogout}
                         >
-                            Delete
+                            {props.isLoggingOut ? 'Logging Out' : 'Logout'}
                         </button>
                     </div>
                 </div>
@@ -94,4 +69,4 @@ const DeletePostModal: React.FC<IProps> = (props) => {
     );
 };
 
-export default DeletePostModal;
+export default LogoutModal;

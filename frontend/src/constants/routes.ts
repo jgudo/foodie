@@ -9,3 +9,4 @@ export const PROFILE_FOLLOWERS = '/user/:username/followers';
 export const PROFILE_FOLLOWING = '/user/:username/following';
 export const PROFILE_BOOKMARKS = '/user/:username/bookmarks';
 export const SEARCH = '/search';
+export const CHAT = '/chat/:username';

@@ -28,10 +28,12 @@ module.exports = {
       maxHeight: {
         '80vh': '80vh',
         '70vh': '70vh',
+        '85%': '85%',
       },
       minHeight: {
         '10rem': '10rem',
-        '18rem': '18rem'
+        '18rem': '18rem',
+        '24rem': '24rem'
       },
       width: {
         '20rem': '20rem',
@@ -60,11 +62,11 @@ module.exports = {
   variants: {
     cursor: ['hover', 'focus'],
     backgroundColor: ['hover', 'focus', 'important'],
-    backgroundSize: ['important'],
-    backgroundRepeat: ['important'],
-    backgroundPosition: ['important'],
-    margin: ['first'],
-    padding: ['important'],
+    backgroundSize: ['important', 'responsive'],
+    backgroundRepeat: ['important', 'responsive'],
+    backgroundPosition: ['important', 'responsive'],
+    margin: ['first', 'responsive'],
+    padding: ['important', 'responsive'],
     borderRadius: ['important'],
     textColor: ['important', 'hover'],
     borderColor: ['important', 'focus', 'hover'],

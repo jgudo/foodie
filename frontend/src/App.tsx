@@ -8,6 +8,7 @@ import * as ROUTE from "~/constants/routes";
 import Chats from './components/main/Chats';
 import NavBar from "./components/shared/NavBar";
 import Preloader from "./components/shared/Preloader";
+import Chat from './pages/chat';
 import PageNotFound from "./pages/error/PageNotFound";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -26,6 +27,7 @@ export const history = createBrowserHistory();
 function App() {
   const [isCheckingSession, setCheckingSession] = useState(true);
   const dispatch = useDispatch();
+  const isNotMobile = window.screen.width >= 800;
 
   useEffect(() => {
     (async () => {
@@ -74,9 +76,10 @@ function App() {
             <ProtectedRoute path={ROUTE.HOME} exact component={Home} />
             <ProtectedRoute path={ROUTE.POST} component={Post} />
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
+            <ProtectedRoute path={ROUTE.CHAT} component={Chat} />
             <Route component={PageNotFound} />
           </Switch>
-          <Chats />
+          {isNotMobile && <Chats />}
         </main>
       </Router>
     );

@@ -20,6 +20,7 @@ interface IProps {
     authorID: string;
     isCommentVisible: boolean;
     commentInputRef: React.RefObject<HTMLInputElement>;
+    setInputCommentVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface ICommentsState {
@@ -27,7 +28,14 @@ interface ICommentsState {
     commentsCount: number;
 }
 
-const Comments: React.FC<IProps> = ({ postID, authorID, isCommentVisible, commentInputRef }) => {
+const Comments: React.FC<IProps> = (props) => {
+    const {
+        postID,
+        authorID,
+        isCommentVisible,
+        commentInputRef,
+        setInputCommentVisible
+    } = props;
     const [comments, setComments] = useState<ICommentsState>({
         items: [],
         commentsCount: 0
@@ -183,6 +191,7 @@ const Comments: React.FC<IProps> = ({ postID, authorID, isCommentVisible, commen
                                             setTargetID={setTargetID}
                                             setIsUpdating={setIsUpdating}
                                             commentInputRef={commentInputRef}
+                                            setInputCommentVisible={setInputCommentVisible}
                                         />
                                     )}
                                 </div>

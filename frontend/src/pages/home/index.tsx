@@ -83,10 +83,10 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
     return (
         <div className="contain pt-20 flex items-start">
             {/*  --- SIDE MENU --- */}
-            <div className="w-1/4 rounded-md bg-white sticky top-20 mr-4 shadow-lg divide-y-2">
+            <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2">
                 <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
             </div>
-            <div className="w-2/4 relative" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+            <div className="w-full laptop:w-2/4 relative" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                 {/* --- CREATE POST INPUT ---- */}
                 <div className="flex items-center justify-start">
                     <Avatar url={state.auth.profilePicture} className="mr-2" />
@@ -164,7 +164,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                 )}
             </div>
             {/* --- SUGGESTED PEOPLE --- */}
-            <div className="w-1/4 sticky top-20 ml-4">
+            <div className="hidden laptop:block laptop:w-1/4 laptop:sticky laptop:top-20 ml-4">
                 <SuggestedPeople />
             </div>
         </div >

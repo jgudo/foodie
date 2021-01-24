@@ -1,6 +1,7 @@
 import { CloseOutlined, FormOutlined } from '@ant-design/icons';
 import Modal from 'react-modal';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import SearchInput from '~/components/shared/SearchInput';
 import { initiateChat } from '~/redux/action/chatActions';
 import { IUser } from '~/types/types';
@@ -17,11 +18,16 @@ Modal.setAppElement('#root');
 
 const ComposeMessageModal: React.FC<IProps> = (props) => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const clickSearchResultCallback = (user: IUser) => {
         if (props.userID === user.id) return;
         dispatch(initiateChat(user));
         props.closeModal();
+
+        if (window.screen.width < 800) {
+            history.push(`/chat/${user.username}`);
+        }
     }
 
     return (

@@ -67,8 +67,8 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
-                <div className="w-40rem p-4 px-8">
-                    <h1>Create Post</h1>
+                <div className="w-full laptop:w-40rem p-4 laptop:px-8">
+                    <h2>Create Post</h2>
                     <br />
                     <div className="flex flex-col">
                         <textarea

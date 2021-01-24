@@ -55,11 +55,11 @@ const Profile: React.FC<IProps> = (props) => {
                         auth={state.auth}
                         profile={state.profile}
                     />
-                    <div className="contain relative flex min-h-10rem items-start transform -translate-y-20">
-                        <div className="w-1/4 mr-4 sticky top-44">
+                    <div className="contain relative flex min-h-10rem mt-4 laptop:mt-0 items-start transform laptop:-translate-y-24">
+                        <div className="hidden laptop:block laptop:w-1/4 laptop:mr-4 laptop:sticky laptop:top-44">
                             <Sidebar bio={state.profile.info.bio} />
                         </div>
-                        <div className="w-2/4">
+                        <div className="w-full laptop:w-2/4">
                             <Switch>
                                 <Route exact path={ROUTE.PROFILE}>
                                     <Posts

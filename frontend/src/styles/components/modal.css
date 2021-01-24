@@ -8,6 +8,8 @@
     outline: none;
     overflow: hidden;
     @apply rounded-lg shadow-xl;
+    @apply w-11/12;
+    @apply laptop:w-auto;
 }
 
 .modal-overlay {

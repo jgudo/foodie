@@ -116,7 +116,10 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     return !searchQuery ? <Redirect to={'/'} /> : (
         <div className="min-h-screen pt-20">
             <div className="contain">
-                <h2>You searched for: <span className="text-indigo-700">{searchQuery}</span></h2>
+                <h2 className="text-lg laptop:text-2xl">
+                    You searched for:
+                    <span className="text-indigo-700">{searchQuery}</span>
+                </h2>
                 <span className="text-gray-400">Search Result</span>
                 <ul className="space-x-4 mt-4">
                     <li
@@ -134,7 +137,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 </ul>
             </div>
             <div className="contain bg-gray-200 py-8 min-h-10rem">
-                <div className="w-3/4">
+                <div className="w-full laptop:w-3/4">
                     {searchType === 'posts' ? (
                         <div ref={infinitePostRef as React.RefObject<HTMLDivElement>}>
                             {(isLoadingPost && posts.length === 0) && (

@@ -118,6 +118,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 authorID={post.author.id}
                 isCommentVisible={isCommentVisible}
                 commentInputRef={commentInputRef}
+                setInputCommentVisible={setCommentVisible}
             />
             <DeletePostModal
                 isOpen={deleteModal.isOpen}

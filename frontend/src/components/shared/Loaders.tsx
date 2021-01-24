@@ -38,8 +38,8 @@ export const UserLoader: React.FC<IUserLoader> = (props) => (
         foregroundColor={props.foregroundColor || "#ecebeb"}
     >
         <circle cx="30" cy="30" r="20" />
-        <rect x="60" y="25" rx="5" ry="5" width="40%" height="10" />
-        {props.includeButton && <rect x="80%" y="10" rx="20" ry="20" width="100" height="40" />}
+        <rect x="60" y="25" rx="5" ry="5" width="30%" height="10" />
+        {props.includeButton && <rect x="70%" y="10" rx="20" ry="20" width="100" height="40" />}
     </ContentLoader>
 );
 
@@ -48,11 +48,11 @@ UserLoader.defaultProps = { includeButton: false };
 export const ProfileLoader: React.FC<any> = (props) => (
     <div>
         {/*  ----- COVER PHOTO ------- */}
-        <div className="w-full h-80 bg-gray-200 relative overflow-hidden" />
-        <div className="contain w-full relative flex transform -translate-y-28">
+        <div className="w-full h-60 laptop:mb-0 laptop:h-80 bg-gray-200 relative overflow-hidden" />
+        <div className="contain w-full relative flex transform laptop:-translate-y-28">
             {/* --- PROFILE PICTURE */}
-            <div className="relative w-1/3 h-60 mr-2 flex justify-center">
-                <div className="w-60 h-60 rounded-full border-4 border-white overflow-hidden">
+            <div className="absolute left-0 right-0 mx-auto transform -translate-y-32 laptop:transform-none laptop:relative laptop:w-1/3 h-60 mr-2 flex justify-center">
+                <div className="w-40 h-40 laptop:w-60 laptop:h-60 rounded-full border-4 border-white overflow-hidden">
                     <ContentLoader
                         speed={2}
                         width="100%"
@@ -65,36 +65,38 @@ export const ProfileLoader: React.FC<any> = (props) => (
                     </ContentLoader>
                 </div>
             </div>
-            <div className="flex w-full  flex-col self-end">
-                <div className="w-full flex justify-between mr-14 ml-2 mb-2">
-                    {/* ---- NAME AND USERNAME */}
-                    <div>
-                        <ContentLoader
-                            speed={2}
-                            width="100%"
-                            height="100%"
-                            backgroundColor="#e2e2e2"
-                            foregroundColor="#ecebeb"
-                        >
-                            <rect x="0" y="70" rx="5" ry="5" width="220" height="25" />
-                            <rect x="0" y="110" rx="5" ry="5" width="100" height="15" />
-                        </ContentLoader>
-                    </div>
-                    {/* ---- FOLLOW/UNFOLLOW/MESSAGE BUTTON */}
-                    <div>
-                        <ContentLoader
-                            speed={2}
-                            width="100%"
-                            height="100%"
-                            backgroundColor="#e2e2e2"
-                            foregroundColor="#ecebeb"
-                        >
-                            <rect x="25" y="70" rx="25" ry="25" width="100" height="50" />
-                            <rect x="140" y="70" rx="25" ry="25" width="100" height="50" />
-                        </ContentLoader>
+            {window.screen.width >= 800 && (
+                <div className="flex w-full  flex-col self-end transform -translate-y-4 laptop:transform-none">
+                    <div className="w-full  flex flex-col laptop:flex-row justify-center laptop:justify-between mr-14 ml-2 mb-2">
+                        {/* ---- NAME AND USERNAME */}
+                        <div>
+                            <ContentLoader
+                                speed={2}
+                                width="100%"
+                                height="100%"
+                                backgroundColor="#e2e2e2"
+                                foregroundColor="#ecebeb"
+                            >
+                                <rect x="0" y="70" rx="5" ry="5" width="220" height="25" />
+                                <rect x="0" y="110" rx="5" ry="5" width="100" height="15" />
+                            </ContentLoader>
+                        </div>
+                        {/* ---- FOLLOW/UNFOLLOW/MESSAGE BUTTON */}
+                        <div>
+                            <ContentLoader
+                                speed={2}
+                                width="100%"
+                                height="100%"
+                                backgroundColor="#e2e2e2"
+                                foregroundColor="#ecebeb"
+                            >
+                                <rect x="25" y="70" rx="25" ry="25" width="100" height="50" />
+                                <rect x="140" y="70" rx="25" ry="25" width="100" height="50" />
+                            </ContentLoader>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     </div>
 );

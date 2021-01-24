@@ -11,6 +11,7 @@ interface IProps {
     floatingResult?: boolean;
     clickItemCallback?: (user: IUser) => void;
     showNoResultMessage?: boolean;
+    inputClassName?: string;
 }
 
 const SearchInput: React.FC<IProps> = (props) => {
@@ -88,8 +89,8 @@ const SearchInput: React.FC<IProps> = (props) => {
     }
 
     return (
-        <div className="input-wrapper relative flex flex-col items-center w-20rem">
-            <SearchOutlined className="flex items-center justify-center text-gray-200 absolute left-3 top-3 z-10" />
+        <div className={`input-wrapper relative flex flex-col items-center ${props.inputClassName}`}>
+            <SearchOutlined className="flex items-center justify-center text-gray-400 absolute left-3 top-3 z-50" />
             <input
                 className="!border-gray-100 !pl-10 !py-2"
                 placeholder="Search..."
@@ -99,7 +100,7 @@ const SearchInput: React.FC<IProps> = (props) => {
                 onKeyDown={onSearchSubmit}
             />
             {(searchInput && isVisibleSuggestion) && (
-                <div className={` bg-white shadow-lg rounded-md w-full flex justify-center flex-col overflow-hidden ${props.floatingResult ? 'absolute top-10' : 'relative top-0'}`}>
+                <div className={` bg-white shadow-lg rounded-md w-full flex justify-center flex-col overflow-hidden ${props.floatingResult ? 'absolute top-12' : 'relative top-0'}`}>
                     {(!props.showNoResultMessage && !error) && (
                         <h6 className="p-4 text-xs border-b border-gray-100">Search Suggestion</h6>
                     )}
@@ -133,7 +134,8 @@ const SearchInput: React.FC<IProps> = (props) => {
 
 SearchInput.defaultProps = {
     floatingResult: true,
-    showNoResultMessage: false
+    showNoResultMessage: false,
+    inputClassName: 'w-20rem'
 }
 
 export default SearchInput;

@@ -26,7 +26,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
                     <p className="text-gray-400 italic">No new notifications</p>
                 </div>
             ) : (
-                    <div className="max-h-70vh overflow-y-scroll divide-y divide-gray-100">
+                    <div className="h-full laptop:max-h-70vh overflow-y-scroll divide-y divide-gray-100">
                         <TransitionGroup component={null}>
                             {notifications.map((notif) => (
                                 <CSSTransition

@@ -112,15 +112,15 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     }
 
     return (
-        <div className="w-20rem bg-white shadow-md p-3 rounded-t-md relative bottom-0 right-24">
+        <div className={`bg-white p-3 relative w-full h-full laptop:w-20rem laptop:shadow-md laptop:rounded-t-md laptop:bottom-0 laptop:right-24`}>
             <div className="flex justify-between pb-3 border-b border-gray-200">
                 <Link to={`/user/${target.username}`}>
-                    <div className="flex">
+                    <div className="flex items-center">
                         <Avatar url={target.profilePicture} className="mr-2" />
                         <h5>{target.username}</h5>
                     </div>
                 </Link>
-                <div className="flex items-center">
+                <div className="hidden laptop:flex laptop:items-center">
                     <div
                         className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                         onClick={onMinimize}
@@ -136,7 +136,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-18rem max-h-80 bg-gray-100 overflow-y-scroll">
+            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 overflow-y-scroll pb-8">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center h-full py-2">
                         <Loader />
@@ -211,7 +211,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     </TransitionGroup>
                 )}
             </div>
-            <div className="flex pt-3 border-t border-gray-200">
+            <div className="absolute bottom-0 left-0 bg-white w-full flex px-2 py-3 border-t border-gray-200">
                 <input
                     className="flex-grow !rounded-r-none !py-0"
                     type="text"
