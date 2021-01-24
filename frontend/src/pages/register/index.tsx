@@ -80,7 +80,7 @@ const Register: React.FC = () => {
             <div className="animate-fade w-5/12 flex items-center justify-start relative">
                 {error && (
                     <div className="p-4 w-full text-center bg-red-100 border-red-400 absolute top-0 left-0">
-                        <p className="text-red-500">{error?.error?.message || 'Something went wrong :('}</p>
+                        <p className="text-red-500 text-sm">{error?.error?.message || 'Something went wrong :('}</p>
                     </div>
                 )}
                 <div className="w-full px-14">
