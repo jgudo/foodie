@@ -14,7 +14,6 @@ function handleValidationError(err, res) {
     const fields = Object.values(err.errors).map(el => el.path);
     const code = 400;
 
-    console.log(JSON.stringify(errors, null, 4))
     const formattedErrors = errors.join('')
     if (errors.length > 1) {
         res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, message: formattedErrors }));

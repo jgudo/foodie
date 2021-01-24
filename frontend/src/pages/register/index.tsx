@@ -103,7 +103,7 @@ const Register: React.FC = () => {
                                     autoComplete="email"
                                     required
                                     readOnly={isLoading}
-                                    placeholder="Username"
+                                    placeholder="Username eg: john23 | john_23"
                                 />
                             </div>
                             <div>
@@ -117,7 +117,7 @@ const Register: React.FC = () => {
                                     autoComplete="email"
                                     required
                                     readOnly={isLoading}
-                                    placeholder="Email address"
+                                    placeholder="Email eg: john@example.com"
                                 />
                             </div>
                             <div>

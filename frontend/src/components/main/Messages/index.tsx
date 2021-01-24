@@ -1,12 +1,14 @@
-import { MessageOutlined } from '@ant-design/icons';
+import { FormOutlined, MessageOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Badge from '~/components/shared/Badge';
 import Loader from '~/components/shared/Loader';
+import useModal from '~/hooks/useModal';
 import { initiateChat } from '~/redux/action/chatActions';
 import { getMessages, getUnreadMessages, readMessage } from '~/services/api';
 import socket from "~/socket/socket";
 import { IError, IMessage, IRootReducer, IUser } from "~/types/types";
+import ComposeMessageModal from '../Modals/ComposeMessageModal';
 import MessagesList from "./MessagesList";
 
 
@@ -19,6 +21,7 @@ const Messages: React.FC = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [count, setCount] = useState(0);
     const dispatch = useDispatch();
+    const composeModal = useModal();
     const isMessagesOpenRef = useRef(isMessagesOpen);
 
 
@@ -113,6 +116,11 @@ const Messages: React.FC = () => {
         }
     }
 
+    const onClickCompose = () => {
+        composeModal.openModal();
+        setMessagesOpen(false);
+    }
+
     return (
         <div className="relative">
             <div onClick={toggleMessages}>
@@ -125,6 +133,13 @@ const Messages: React.FC = () => {
                     {/*  ----- HEADER ----- */}
                     <div className="px-4 py-3 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
                         <h6 className="text-white">Messages</h6>
+                        <span
+                            className="text-sm flex p-2 text-white rounded-md hover:bg-indigo-500"
+                            onClick={onClickCompose}
+                        >
+                            <FormOutlined className="flex items-center justify-center mr-2" />
+                            Compose
+                        </span>
                     </div>
                     {(isLoading && !error && messages.length === 0) && (
                         <div className="flex items-center justify-center py-8">
@@ -157,6 +172,12 @@ const Messages: React.FC = () => {
                     )}
                 </div>
             )}
+            <ComposeMessageModal
+                isOpen={composeModal.isOpen}
+                openModal={composeModal.openModal}
+                closeModal={composeModal.closeModal}
+                userID={id}
+            />
         </div>
     );
 };
