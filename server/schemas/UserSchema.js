@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
                 const regex = /[a-zA-Z]+_?\d./g;
                 return regex.test(username);
             },
-            message: '{VALUE} is invalid. Must preceed with letters followed by _ or numbers eg: john_23'
+            message: 'Username Must preceed with letters followed by _ or numbers eg: john23 | john_23'
         }
     },
     firstname: String,
