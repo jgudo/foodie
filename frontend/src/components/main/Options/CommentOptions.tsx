@@ -8,6 +8,7 @@ interface IProps {
     setIsUpdating: Dispatch<SetStateAction<boolean>>;
     setCommentBody: Dispatch<SetStateAction<string>>;
     setTargetID: Dispatch<SetStateAction<string>>;
+    setInputCommentVisible: Dispatch<SetStateAction<boolean>>;
     commentInputRef: RefObject<HTMLInputElement>;
     comment: IComment;
 }
@@ -51,6 +52,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
     const onClickEdit = () => {
         if (props.commentInputRef.current) props.commentInputRef.current.focus();
         setIsOpen(false);
+        props.setInputCommentVisible(true);
         props.setCommentBody(props.comment.body);
         props.setIsUpdating(true);
         props.setTargetID(props.comment.id);

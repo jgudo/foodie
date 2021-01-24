@@ -65,7 +65,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
                         {error?.error?.message || 'Unable process request. Please try again.'}
                     </span>
                 )}
-                <div className="p-4 px-8 w-40rem">
+                <div className="p-4 laptop:px-8 w-full laptop:w-40rem">
                     <h2>
                         <EditOutlined className="inline-flex items-center justify-center mr-2 pt-2" />
                         Edit Post

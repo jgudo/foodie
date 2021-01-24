@@ -40,12 +40,12 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
         <div className="space-y-4">
             {posts.map((post) => (
                 <div
-                    className="h-24 flex justify-start bg-white rounded-md shadow-lg overflow-hidden cursor-pointer border border-transparent hover:border-indigo-700"
+                    className="h-28 laptop:h-24 flex justify-start bg-white rounded-md shadow-lg overflow-hidden cursor-pointer border border-transparent hover:border-indigo-700"
                     key={post.id}
                     onClick={(e) => onClickPost(post.id)}
                 >
                     <div
-                        className="w-32 h-full !bg-cover !bg-no-repeat !bg-center"
+                        className="w-24 laptop:w-32 h-full !bg-cover !bg-no-repeat !bg-center"
                         style={{
                             background: `#f7f7f7 url(${post.photos[0]})`
                         }}
@@ -56,29 +56,33 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                             dangerouslySetInnerHTML={{ __html: boldString(post.description, searchQuery) }}
                         >
                         </h4>
-                        <div className="flex space-x-8 self-end">
-                            <h6 className="text-xs text-gray-400">
-                                Posted by
-                                &nbsp;
-                            <span
-                                    className="underline text-indigo-700 cursor-pointer hover:text-indigo-400"
-                                    onClick={(e) => onClickAuthor(e, post.author.username)}
-                                >
-                                    {post.author.username}
-                                </span>
-                            &nbsp;
-                            {dayjs(post.createdAt).fromNow()}
-                            </h6>
-                            <h6 className="text-sm text-gray-600 flex items-center">
-                                {post.likesCount}
-                                &nbsp;
-                                <LikeOutlined className="flex items-center justify-center" />
-                            </h6>
-                            <h6 className="text-sm text-gray-600 flex items-center">
-                                {post.commentsCount}
-                                &nbsp;
-                                <CommentOutlined className="flex items-center justify-center" />
-                            </h6>
+                        <div className="flex flex-col laptop:flex-row space-y-2 self-end">
+                            <div className="flex">
+                                <h6 className="text-xs text-gray-400 laptop:mr-4">
+                                    Posted by
+                                    &nbsp;
+                                    <span
+                                        className="underline text-indigo-700 cursor-pointer hover:text-indigo-400"
+                                        onClick={(e) => onClickAuthor(e, post.author.username)}
+                                    >
+                                        {post.author.username}
+                                    </span>
+                                    &nbsp;
+                                    {dayjs(post.createdAt).fromNow()}
+                                </h6>
+                            </div>
+                            <div className="flex space-x-2">
+                                <h6 className="text-sm text-gray-600 flex items-center">
+                                    {post.likesCount}
+                                    &nbsp;
+                                    <LikeOutlined className="flex items-center justify-center" />
+                                </h6>
+                                <h6 className="text-sm text-gray-600 flex items-center">
+                                    {post.commentsCount}
+                                    &nbsp;
+                                    <CommentOutlined className="flex items-center justify-center" />
+                                </h6>
+                            </div>
                         </div>
                     </div>
                 </div>

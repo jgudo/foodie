@@ -99,7 +99,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     }
 
     return (!isOwnProfile && profile.username) ? <Redirect to={`/${profile.username}`} /> : (
-        <div className="p-4 bg-white rounded-md min-h-10rem shadow-lg">
+        <div className="p-4 pb-8 bg-white rounded-md min-h-10rem shadow-lg">
             <h3 className="text-gray-500">Edit Info</h3>
             <form className="mt-8 space-y-4 divide-y divide-gray-100" onSubmit={handleSubmit}>
                 {/* ---- FIRST NAME ------- */}
@@ -127,7 +127,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                     />
                 </div>
                 {/* ---- GENDER && BIRTHDAY ------- */}
-                <div className="grid grid-cols-2">
+                <div className="grid laptop:grid-cols-2">
                     <div className="flex flex-col py-2">
                         <label htmlFor="gender" className="ml-4 text-gray-400 mb-2">Gender</label>
                         <select

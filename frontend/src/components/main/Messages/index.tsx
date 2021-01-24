@@ -1,6 +1,7 @@
 import { FormOutlined, MessageOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
 import Badge from '~/components/shared/Badge';
 import Loader from '~/components/shared/Loader';
 import useModal from '~/hooks/useModal';
@@ -22,6 +23,7 @@ const Messages: React.FC = () => {
     const [count, setCount] = useState(0);
     const dispatch = useDispatch();
     const composeModal = useModal();
+    const history = useHistory();
     const isMessagesOpenRef = useRef(isMessagesOpen);
 
 
@@ -101,6 +103,10 @@ const Messages: React.FC = () => {
             }));
 
             setMessages(updated);
+
+            if (window.screen.width < 800) {
+                history.push(`/chat/${sender.username}`);
+            }
         } catch (e) {
             console.log(e);
         }
@@ -125,13 +131,13 @@ const Messages: React.FC = () => {
         <div className="relative">
             <div onClick={toggleMessages}>
                 <Badge count={count}>
-                    <MessageOutlined className="messages-toggle text-xl focus:outline-none" />
+                    <MessageOutlined className="messages-toggle flex items-center justify-center text-xl focus:outline-none" />
                 </Badge>
             </div>
             {isMessagesOpen && (
-                <div className="messages-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
+                <div className="messages-wrapper h-screen laptop:h-auto fixed top-14 laptop:top-10 pb-14 laptop:pb-0 right-0 w-full laptop:w-30rem bg-white shadow-lg laptop:rounded-md laptop:absolute">
                     {/*  ----- HEADER ----- */}
-                    <div className="px-4 py-3 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
+                    <div className="px-4 py-2 border-b-gray-200 flex justify-between items-center bg-indigo-700 laptop:rounded-t-md">
                         <h6 className="text-white">Messages</h6>
                         <span
                             className="text-sm flex p-2 text-white rounded-md hover:bg-indigo-500"

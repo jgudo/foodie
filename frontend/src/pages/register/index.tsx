@@ -5,6 +5,7 @@ import { LOGIN } from '~/constants/routes';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal_2.webp';
 import logo from '~/images/logo-white.svg';
+import logo_dark from '~/images/logo.svg';
 import { registerStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
@@ -56,7 +57,7 @@ const Register: React.FC = () => {
     return (
         <div className="min-h-screen flex bg-white">
             <div
-                className="relative w-7/12 h-screen p-8 flex justify-start items-end !bg-cover !bg-no-repeat !bg-center"
+                className="relative hidden laptop:w-7/12 h-screen laptop:p-8 laptop:flex laptop:justify-start laptop:items-end !bg-cover !bg-no-repeat !bg-center"
                 style={{
                     background: `#f7f7f7 url(${bg})`
                 }}
@@ -77,13 +78,18 @@ const Register: React.FC = () => {
                     Photo: Credits to the photo owner
                 </a>
             </div>
-            <div className="animate-fade w-5/12 flex items-center justify-start relative">
+            <div className="relative animate-fade w-full text-center laptop:w-5/12 laptop:text-left flex items-center justify-start">
+                <img
+                    src={logo_dark}
+                    alt="Foodie Logo"
+                    className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
+                />
                 {error && (
                     <div className="p-4 w-full text-center bg-red-100 border-red-400 absolute top-0 left-0">
                         <p className="text-red-500 text-sm">{error?.error?.message || 'Something went wrong :('}</p>
                     </div>
                 )}
-                <div className="w-full px-14">
+                <div className="w-full px-8 laptop:px-14">
                     <div>
                         <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
                             Create your account
@@ -144,6 +150,10 @@ const Register: React.FC = () => {
                     <div className="text-center mt-8">
                         <Link to={LOGIN} className="underline font-medium">Login instead</Link>
                     </div>
+                    {/* --- COPYRIGHT -- */}
+                    <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">
+                        &copy;Copyright {new Date().getFullYear()} Foodie
+                    </span>
                 </div>
             </div>
         </div>

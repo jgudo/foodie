@@ -14,8 +14,9 @@ export const loginSuccess = (auth: IUser) => (<const>{
     payload: auth
 });
 
-export const logoutStart = () => (<const>{
-    type: LOGOUT_START
+export const logoutStart = (callback?: () => void) => (<const>{
+    type: LOGOUT_START,
+    payload: { callback }
 });
 
 export const logoutSuccess = () => (<const>{

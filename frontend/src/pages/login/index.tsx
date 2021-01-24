@@ -5,6 +5,7 @@ import { REGISTER } from '~/constants/routes';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal.jpg';
 import logo from '~/images/logo-white.svg';
+import logo_dark from '~/images/logo.svg';
 import { loginStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
@@ -50,7 +51,7 @@ const Login: React.FC = () => {
     return (
         <div className="min-h-screen flex bg-white">
             <div
-                className="relative w-7/12 h-screen p-8 flex justify-start items-end !bg-cover !bg-no-repeat !bg-center"
+                className="relative laptop:w-7/12 h-screen laptop:p-8 hidden laptop:justify-start laptop:items-end laptop:!bg-cover laptop:!bg-no-repeat laptop:!bg-center laptop:flex"
                 style={{
                     background: `#f7f7f7 url(${bg})`
                 }}
@@ -71,13 +72,18 @@ const Login: React.FC = () => {
                     Photo: Credits to the photo owner
                 </a>
             </div>
-            <div className="animate-fade w-5/12 flex items-center justify-start relative">
+            <div className="animate-fade laptop:w-5/12 w-full flex items-center justify-start relative">
+                <img
+                    src={logo_dark}
+                    alt="Foodie Logo"
+                    className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
+                />
                 {error && (
                     <div className="py-2 w-full text-center bg-red-100 border-red-300 absolute top-0 left-0">
                         <p className="text-red-500">{error?.error?.message || 'Something went wrong :('}</p>
                     </div>
                 )}
-                <div className="w-full px-14">
+                <div className="w-full laptop:px-14 px-8 text-center laptop:text-left">
                     <div>
                         <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
                             Login to Foodie
@@ -97,7 +103,7 @@ const Login: React.FC = () => {
                                     value={username}
                                     required
                                     maxLength={50}
-                                    className={error ? 'input--error' : ''}
+                                    className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Username"
                                     readOnly={isLoading}
                                     onChange={onUsernameChange}
@@ -111,7 +117,7 @@ const Login: React.FC = () => {
                                     type="password"
                                     autoComplete="current-password"
                                     required
-                                    className={error ? 'input--error' : ''}
+                                    className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Password"
                                     onChange={onPasswordChange}
                                     readOnly={isLoading}
@@ -120,12 +126,10 @@ const Login: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm">
-                                <Link className="font-medium text-sm text-gray-400 hover:text-indigo-500 underline" to="/forgot-password">
-                                    Forgot your password?
+                        <div className="text-center laptop:text-left">
+                            <Link className="font-medium text-sm text-gray-400 hover:text-indigo-500 underline" to="/forgot-password">
+                                Forgot your password?
                             </Link>
-                            </div>
                         </div>
 
                         <div>
@@ -142,6 +146,10 @@ const Login: React.FC = () => {
                     <div className="text-center mt-8">
                         <Link to={REGISTER} className="underline font-medium">Create an account</Link>
                     </div>
+                    {/* --- COPYRIGHT -- */}
+                    <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">
+                        &copy;Copyright {new Date().getFullYear()} Foodie
+                    </span>
                 </div>
             </div>
         </div>

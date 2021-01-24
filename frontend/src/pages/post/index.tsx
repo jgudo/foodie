@@ -53,7 +53,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
                 </div>
             )}
             {(!isLoading && !error && post) && (
-                <div className="pt-20 w-2/4 m-auto">
+                <div className="pt-20 w-full px-4 laptop:w-2/4 m-auto">
                     <PostItem
                         post={post}
                         likeCallback={likeCallback}

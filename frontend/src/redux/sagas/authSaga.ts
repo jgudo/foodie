@@ -53,6 +53,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(true));
                 yield call(logout);
 
+                payload.callback();
                 yield put(logoutSuccess());
                 yield put(isAuthenticating(false));
                 yield put(clearNewsFeed());

@@ -27,7 +27,6 @@ const Notification: React.FC = () => {
     });
     const isNotificationOpenRef = useRef(isNotificationOpen);
 
-
     useEffect(() => {
         isNotificationOpenRef.current = isNotificationOpen;
     }, [isNotificationOpen]);
@@ -142,13 +141,13 @@ const Notification: React.FC = () => {
         <div className="relative">
             <div onClick={toggleNotification}>
                 <Badge count={unreadCount}>
-                    <BellOutlined className="notification-toggle text-xl focus:outline-none" />
+                    <BellOutlined className="notification-toggle flex items-center justify-center text-xl focus:outline-none" />
                 </Badge>
             </div>
             {isNotificationOpen && (
-                <div className="notification-wrapper absolute top-10 right-0 w-30rem bg-white shadow-lg rounded-md">
+                <div className="notification-wrapper fixed top-14 pb-14 laptop:pb-0 laptop:top-10 right-0 h-screen laptop:h-auto w-full laptop:w-30rem bg-white shadow-lg rounded-md laptop:absolute">
                     {/*  ----- HEADER ----- */}
-                    <div className="py-2 px-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 rounded-t-md">
+                    <div className="py-2 px-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 laptop:rounded-t-md">
                         <h6 className="text-white">Notifications</h6>
                         <span
                             className="text-sm  p-2 text-white opacity-80 rounded-md hover:bg-indigo-500"

@@ -1,4 +1,5 @@
 .contain {
     width: 100%;
-    @apply px-6%;
+    @apply px-4;
+    @apply laptop:px-6%;
 }
