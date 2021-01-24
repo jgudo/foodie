@@ -11,11 +11,10 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Email is required.'],
         lowercase: true,
         validate: {
-            validator:
-                (email) => {
-                    const regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-                    return regex.test(email);
-                },
+            validator: (email) => {
+                const regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+                return regex.test(email);
+            },
             message: '{VALUE} is invalid.'
         }
     },
@@ -28,7 +27,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: [true, 'Username already taken.'],
         required: [true, 'Username is required.'],
-        lowercase: true
+        lowercase: true,
+        validate: {
+            validator: (username) => {
+                const regex = /[a-zA-Z]+_?\d./g;
+                return regex.test(username);
+            },
+            message: '{VALUE} is invalid. Must preceed with letters followed by _ or numbers eg: john_23'
+        }
     },
     firstname: String,
     lastname: String,
@@ -93,7 +99,6 @@ const UserSchema = new mongoose.Schema({
         }
     }
 });
-
 
 UserSchema.virtual('fullname').get(function () {
     const { firstname, lastname } = this;

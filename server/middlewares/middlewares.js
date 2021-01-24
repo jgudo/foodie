@@ -10,15 +10,16 @@ function handleDuplicateKeyError(err, res) {
 }
 //handle field formatting, empty fields, and mismatched passwords
 function handleValidationError(err, res) {
-    let errors = Object.values(err.errors).map(el => el.message);
-    let fields = Object.values(err.errors).map(el => el.path);
-    let code = 400;
+    const errors = Object.values(err.errors).map(el => el.message);
+    const fields = Object.values(err.errors).map(el => el.path);
+    const code = 400;
 
+    console.log(JSON.stringify(errors, null, 4))
+    const formattedErrors = errors.join('')
     if (errors.length > 1) {
-        const formattedErrors = errors.join('')
-        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, messages: formattedErrors }));
+        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, message: formattedErrors }));
     } else {
-        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, messages: formattedErrors }));
+        res.status(code).send(makeErrorJson({ type: VALIDATION_ERROR, message: formattedErrors }));
     }
 }
 
