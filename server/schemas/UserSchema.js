@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
         minlength: 4,
         validate: {
             validator: (username) => {
-                const regex = /[a-zA-Z]+_?\d./g;
+                const regex = /[a-zA-Z]+_?\d*?/g;
                 return regex.test(username);
             },
             message: 'Username Must preceed with letters followed by _ or numbers eg: john23 | john_23'

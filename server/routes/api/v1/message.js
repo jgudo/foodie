@@ -60,7 +60,7 @@ router.post(
             [user_id, req.user._id.toString()].forEach((user) => {
                 io.to(user).emit('newMessage', {
                     ...message.toObject(),
-                    isOwnMessage: user === message.from.id ? true : false
+                    isOwnMessage: user === message.from._id.toString() ? true : false
                 });
             });
 

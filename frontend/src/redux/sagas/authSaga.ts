@@ -69,7 +69,6 @@ function* authSaga({ type, payload }: IAuthSaga) {
 
                 const user = yield call(register, payload);
 
-                yield call(socket.emit, 'userConnect', user.id)
                 socket.emit('userConnect', user.id);
                 yield put(registerSuccess(user));
                 yield put(isAuthenticating(false));
