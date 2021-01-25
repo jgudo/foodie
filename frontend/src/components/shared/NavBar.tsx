@@ -82,10 +82,10 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                                 {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
                                 <ul className="flex items-center space-x-8 mr-8">
                                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                                        <Messages />
+                                        <Messages isAuth={isAuth} />
                                     </li>
                                     <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
-                                        <Notification />
+                                        <Notification isAuth={isAuth} />
                                     </li>
                                 </ul>
                                 <div className="flex items-center">
@@ -125,12 +125,12 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                         <div
                             className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                         >
-                            <Messages />
+                            <Messages isAuth={isAuth} />
                         </div>
                         <div
                             className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                         >
-                            <Notification />
+                            <Notification isAuth={isAuth} />
                         </div>
                         <div
                             className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"

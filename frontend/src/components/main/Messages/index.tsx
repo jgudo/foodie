@@ -13,7 +13,7 @@ import ComposeMessageModal from '../Modals/ComposeMessageModal';
 import MessagesList from "./MessagesList";
 
 
-const Messages: React.FC = () => {
+const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isMessagesOpen, setMessagesOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
@@ -54,10 +54,12 @@ const Messages: React.FC = () => {
 
         document.addEventListener('click', handleClickOutside);
 
-        getUnreadMessages()
-            .then((result) => {
-                setCount(result.count);
-            });
+        if (isAuth) {
+            getUnreadMessages()
+                .then((result) => {
+                    setCount(result.count);
+                });
+        }
 
         return () => {
             socket.emit('userDisconnect', id);
@@ -95,7 +97,6 @@ const Messages: React.FC = () => {
             dispatch(initiateChat(sender));
             setMessagesOpen(false);
 
-            console.log(sender);
             await readMessage(sender.id);
             const updated = messages.map(msg => ({
                 ...msg,

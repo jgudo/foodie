@@ -136,7 +136,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 overflow-y-scroll pb-8">
+            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 overflow-y-scroll pb-14">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center h-full py-2">
                         <Loader />

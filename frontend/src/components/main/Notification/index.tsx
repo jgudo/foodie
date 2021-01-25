@@ -14,7 +14,11 @@ import socket from "~/socket/socket";
 import { IError, INotification, IRootReducer } from "~/types/types";
 import NotificationList from "./NotificationList";
 
-const Notification: React.FC = () => {
+interface IProps {
+    isAuth: boolean;
+}
+
+const Notification: React.FC<IProps> = ({ isAuth }) => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isNotificationOpen, setNotificationOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
@@ -42,10 +46,12 @@ const Notification: React.FC = () => {
 
         document.addEventListener('click', handleClickOutside);
 
-        getUnreadNotifications()
-            .then(({ count }) => {
-                setUnreadCount(count);
-            });
+        if (isAuth) {
+            getUnreadNotifications()
+                .then(({ count }) => {
+                    setUnreadCount(count);
+                });
+        }
 
         return () => {
             socket.emit('userDisconnect', id);
