@@ -134,9 +134,9 @@ const Comments: React.FC<IProps> = (props) => {
         setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
     }
 
-    return (
+    return comments.items.length === 0 ? null : (
         <Boundary>
-            <div className="bg-white rounded-b-md">
+            <div className="bg-white rounded-b-md border-t border-gray-200">
                 {(!error && comments.items.length !== 10) && (
                     <span
                         className="text-indigo-700 text-sm font-bold cursor-pointer inline-block p-2"

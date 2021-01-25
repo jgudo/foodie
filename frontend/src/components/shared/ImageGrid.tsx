@@ -30,24 +30,24 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
         switch (images.length) {
             case 1:
                 return `
-                    <div class="grid">
+                    <div class="custom-grid">
                         <img src=${images[0]} class="grid-img" data-index="0"/>
                     </div>
                 `
             case 2:
                 return `
-                    <div class="grid grid-rows-2">
+                    <div class="custom-grid custom-grid-rows-2">
                         <img src=${images[0]} class="grid-img" data-index="0"/>
                         <img src=${images[1]} class="grid-img" data-index="1"/>
                     </div>
                 `
             case 3:
                 return `
-                    <div class="grid grid-rows-2">
-                        <div class="grid">
+                    <div class="custom-grid custom-grid-rows-2">
+                        <div class="custom-grid">
                             <img src=${images[0]} class="grid-img" data-index="0"/>
                         </div>
-                        <div class="grid grid-cols-2">
+                        <div class="custom-grid custom-grid-cols-2">
                             <img src=${images[1]} class="grid-img" data-index="1"/>
                             <img src=${images[2]} class="grid-img" data-index="2"/>
                         </div>
@@ -55,12 +55,12 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
                 `
             case 4:
                 return `
-                    <div class="grid grid-rows-2">
-                        <div class="grid grid-cols-2">
+                    <div class="custom-grid custom-grid-rows-2">
+                        <div class="custom-grid custom-grid-cols-2">
                             <img src=${images[0]} class="grid-img" data-index="0"/>
                             <img src=${images[1]} class="grid-img" data-index="1"/>
                         </div>
-                        <div class="grid grid-cols-2">
+                        <div class="custom-grid custom-grid-cols-2">
                             <img src=${images[2]} class="grid-img" data-index="2"/>
                             <img src=${images[3]} class="grid-img" data-index="3"/>
                         </div>
@@ -68,12 +68,12 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
                 `
             case 5:
                 return `
-                    <div class="grid grid-rows-2">
-                        <div class="grid grid-cols-2">
+                    <div class="custom-grid custom-grid-rows-2">
+                        <div class="custom-grid custom-grid-cols-2">
                             <img src=${images[0]} class="grid-img" data-index="0" />
                             <img src=${images[1]} class="grid-img" data-index="1" />
                         </div>
-                        <div class="grid grid-cols-3">
+                        <div class="custom-grid custom-grid-cols-3">
                             <img src=${images[2]} class="grid-img" data-index="2" />
                             <img src=${images[3]} class="grid-img" data-index="3" />
                             <img src=${images[4]} class="grid-img" data-index="4" />
@@ -82,7 +82,7 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
                 `
             default:
                 return `
-                    <div class="grid-items grid-items-2">
+                    <div class="custom-grid-items custom-grid-items-2">
                         <img src=${images[0]} class="grid-img"/>
                     </div>
                 `
@@ -91,7 +91,7 @@ const ImageGrid: React.FC<IProps> = ({ images }) => {
     return (
         <>
             <div
-                className="w-full h-25rem"
+                className="w-full h-25rem overflow-hidden"
                 dangerouslySetInnerHTML={{ __html: renderGrid() }}
                 onClick={onClickImage}
             >
