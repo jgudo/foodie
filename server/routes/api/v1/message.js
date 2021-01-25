@@ -166,7 +166,9 @@ router.get(
                 return res.status(404).send(makeErrorJson({ message: 'You have no messages.' }));
             }
 
-            res.status(200).send(makeResponseJson(agg));
+            const sorted = agg.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            res.status(200).send(makeResponseJson(sorted));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
             res.status(500).send(makeErrorJson());
