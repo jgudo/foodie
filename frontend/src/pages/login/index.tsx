@@ -103,7 +103,7 @@ const Login: React.FC = () => {
                                     value={username}
                                     required
                                     maxLength={50}
-                                    className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
+                                    className={`text-center lowercase ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Username"
                                     readOnly={isLoading}
                                     onChange={onUsernameChange}
