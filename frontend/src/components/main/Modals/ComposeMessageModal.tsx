@@ -47,11 +47,6 @@ const ComposeMessageModal: React.FC<IProps> = (props) => {
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500" />
                 </div>
-                {/* {(error && likes.length === 0) && (
-                    <span className="p-4 bg-red-100 text-red-500 block">
-                        {error.error.message}
-                    </span>
-                )} */}
                 <h3 className="py-4 px-8 flex">
                     <FormOutlined className="flex items-center justify-center mr-2" />
                     Compose Message
@@ -62,36 +57,9 @@ const ComposeMessageModal: React.FC<IProps> = (props) => {
                         floatingResult={false}
                         clickItemCallback={clickSearchResultCallback}
                         showNoResultMessage={true}
+                        preventDefault={true}
                     />
                 </div>
-                {/* {(isLoading && likes.length === 0) && (
-                    <div className="flex min-h-10rem min-w-15rem items-center justify-center py-8">
-                        <Loader />
-                    </div>
-                )}
-                {likes.length !== 0 && (
-                    <div className="p-4 px-4 w-30rem max-h-70vh overflow-y-scroll">
-                        <div className="divide-y divide-gray-100">
-                            {likes.map(user => (
-                                <div key={user.id}>
-                                    <UserCard profile={user} isFollowing={user.isFollowing} />
-                                </div>
-                            ))}
-                        </div>
-                        {(!isLoading && likes.length >= 10) && (
-                            <div className="flex items-center justify-center pt-2 border-t border-gray-100">
-                                <span className="text-indigo-700 text-sm font-medium cursor-pointer">
-                                    Load more
-                                </span>
-                            </div>
-                        )}
-                        {error && (
-                            <div className="flex items-center justify-center py-8">
-                                <span className="text-gray-400 text-sm">No more likes.</span>
-                            </div>
-                        )}
-                    </div>
-                )} */}
             </div>
 
         </Modal>

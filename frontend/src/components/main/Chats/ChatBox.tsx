@@ -1,4 +1,4 @@
-import { CloseOutlined, LineOutlined, SendOutlined } from "@ant-design/icons";
+import { CloseOutlined, CommentOutlined, LineOutlined, SendOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -112,7 +112,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     }
 
     return (
-        <div className={`bg-white p-3 relative w-full h-full laptop:w-20rem laptop:shadow-md laptop:rounded-t-md laptop:bottom-0 laptop:right-24`}>
+        <div className={`bg-white p-3 relative w-full h-full laptop:w-20rem laptop:shadow-lg laptop:rounded-t-xl laptop:bottom-0 laptop:right-24 laptop:border laptop:border-gray-400`}>
             <div className="flex justify-between pb-3 border-b border-gray-200">
                 <Link to={`/user/${target.username}`}>
                     <div className="flex items-center">
@@ -143,10 +143,11 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     </div>
                 )}
                 {(!isLoading && target.chats.length === 0 && error) && (
-                    <div className="flex flex-col items-center h-full justify-center py-2">
+                    <div className="flex flex-col items-center min-h-18rem justify-center py-2">
                         {error.status_code === 404 ? (
                             <>
-                                <span className="text-gray-400 mb-4">No messages.</span>
+                                <CommentOutlined className="text-gray-300 text-6xl" />
+                                <span className="text-gray-400 mb-2">No messages.</span>
                                 <span className="text-gray-400 text-sm">Send a message to {target.username}</span>
                             </>
                         ) : (
@@ -213,7 +214,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
             </div>
             <div className="absolute bottom-0 left-0 bg-white w-full flex px-2 py-3 border-t border-gray-200">
                 <input
-                    className="flex-grow !rounded-r-none !py-0"
+                    className="flex-grow !border-gray-400 !rounded-r-none !py-0"
                     type="text"
                     onChange={handleTextChange}
                     onKeyDown={handleTextKeyDown}

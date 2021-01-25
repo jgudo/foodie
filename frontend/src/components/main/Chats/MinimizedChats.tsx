@@ -12,7 +12,7 @@ const MinimizedChats: React.FC<IProps> = ({ users }) => {
     const dispatch = useDispatch();
 
     return (
-        <div className="p-4 absolute bottom-0 right-2">
+        <div className="p-4 absolute bottom-0 right-0">
             <TransitionGroup component={null}>
                 {users.map(chat => chat.minimized && (
                     <CSSTransition

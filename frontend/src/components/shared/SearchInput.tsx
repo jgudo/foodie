@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import debounce from 'lodash.debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { search } from '~/services/api';
 import { IProfile, IUser } from '~/types/types';
@@ -12,6 +12,7 @@ interface IProps {
     clickItemCallback?: (user: IUser) => void;
     showNoResultMessage?: boolean;
     inputClassName?: string;
+    preventDefault?: boolean;
 }
 
 const SearchInput: React.FC<IProps> = (props) => {
@@ -21,6 +22,11 @@ const SearchInput: React.FC<IProps> = (props) => {
     const [isVisibleSuggestion, setVisibleSuggestion] = useState(false);
     const [error, setError] = useState('');
     const history = useHistory();
+    const isVisibleSuggestionRef = useRef(isVisibleSuggestion);
+
+    useEffect(() => {
+        isVisibleSuggestionRef.current = isVisibleSuggestion;
+    }, [isVisibleSuggestion]);
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside);
@@ -34,7 +40,7 @@ const SearchInput: React.FC<IProps> = (props) => {
     const handleClickOutside = (e: MouseEvent) => {
         const target = (e.target as HTMLDivElement).closest('.input-wrapper');
 
-        if (!target && isVisibleSuggestion) {
+        if (!target && isVisibleSuggestionRef.current) {
             setVisibleSuggestion(false);
         }
     }
@@ -79,7 +85,8 @@ const SearchInput: React.FC<IProps> = (props) => {
     }
 
     const onSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && searchInput) {
+        // props.preventDefault to stop dispatching the event when enter key pressed
+        if (e.key === 'Enter' && searchInput && !props.preventDefault) {
             history.push({
                 pathname: '/search',
                 search: `q=${searchInput.trim()}`
@@ -135,7 +142,8 @@ const SearchInput: React.FC<IProps> = (props) => {
 SearchInput.defaultProps = {
     floatingResult: true,
     showNoResultMessage: false,
-    inputClassName: 'w-20rem'
+    inputClassName: 'w-20rem',
+    preventDefault: false
 }
 
 export default SearchInput;
