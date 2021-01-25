@@ -134,7 +134,7 @@ const Comments: React.FC<IProps> = (props) => {
         setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
     }
 
-    return comments.items.length === 0 ? null : (
+    return !isCommentVisible ? null : (
         <Boundary>
             <div className="bg-white rounded-b-md border-t border-gray-200">
                 {(!error && comments.items.length !== 10) && (
