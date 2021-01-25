@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../schemas/UserSchema');
 
 module.exports = function (passport) {
@@ -89,4 +90,51 @@ module.exports = function (passport) {
             }
         })
     );
+
+    passport.use(
+        'facebook-auth',
+        new FacebookStrategy({
+            clientID: process.env.FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+            callbackURL: `/api/v1/auth/facebook/callback`,
+            // profileFields: ['id', 'picture', 'first_name', 'last_name', 'username', 'displayName', 'gender', 'profileUrl', 'email']
+            profileFields: ['id', 'profileUrl', 'email', 'displayName', 'name', 'gender', 'picture']
+        }, async (accessToken, refreshToken, profile, done) => {
+            try {
+                const fbProfile = profile._json;
+                const user = await User.findOne({ provider_id: fbProfile.id });
+
+                console.log('FOUND USER -----', user)
+                if (user) {
+                    return done(null, user);
+                } else {
+                    const randomString = Math.random().toString(36).substring(2);
+
+                    const newUser = new User({
+                        username: fbProfile.email.split('@')[0],
+                        email: fbProfile.email,
+                        password: randomString,
+                        firstname: fbProfile.first_name,
+                        lastname: fbProfile.last_name,
+                        profilePicture: fbProfile.picture ? fbProfile.picture.data.url : '',
+                        // provider_id: fbProfile.id,
+                        provider_access_token: accessToken,
+                        provider_refresh_token: refreshToken
+                    });
+
+                    newUser.save(function (err) { //Save User if there are no errors else redirect to login route
+                        if (err) {
+                            done(err);  // handle errors!
+                        } else {
+                            console.log('NEW USER -----------', newUser);
+                            done(null, newUser);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+                return done(err);
+            }
+        }
+        ));
 };

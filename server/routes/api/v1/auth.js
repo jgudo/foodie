@@ -61,6 +61,37 @@ router.post(
         })(req, res, next);
     });
 
+router.get(
+    '/v1/auth/facebook',
+    (req, res, next) => {
+        passport.authenticate('facebook-auth', { scope: ['email', 'public_profile'] }, (err, info, user) => {
+            if (err) {
+                res.redirect(`${process.env.CLIENT_URL}/login`);
+                return next(err);
+            }
+
+            if (user) {
+                req.logIn(user, function (err) { // <-- Log user in
+                    if (err) {
+                        return next(err);
+                    }
+
+                    const userData = sessionizeUser(user);
+                    return res.status(200).send(makeResponseJson({ auth: userData, user: req.user.toUserJSON() }));
+                });
+            }
+        })(req, res, next)
+    }
+);
+
+router.get(
+    '/v1/auth/facebook/callback',
+    passport.authenticate('facebook-auth', {
+        failureRedirect: '/login',
+        successRedirect: `${process.env.CLIENT_URL}`,
+    })
+);
+
 //@route DELETE /api/v1/logout
 router.delete('/v1/logout', (req, res) => {
     try {

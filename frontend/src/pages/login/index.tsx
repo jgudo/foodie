@@ -6,7 +6,7 @@ import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal.jpg';
 import logo from '~/images/logo-white.svg';
 import logo_dark from '~/images/logo.svg';
-import { loginStart } from '~/redux/action/authActions';
+import { facebookLoginStart, loginStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
 
@@ -39,6 +39,10 @@ const Login: React.FC = () => {
 
         setPassword(val);
     };
+
+    const handleFacebookLogin = () => {
+        dispatch(facebookLoginStart());
+    }
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -141,6 +145,15 @@ const Login: React.FC = () => {
                                 </span>
                                 {isLoading ? 'Logging In...' : 'Login'}
                             </button>
+                        </div>
+                        <div>
+                            <button
+                                className="!bg-blue-500"
+                                onClick={handleFacebookLogin}
+                            >
+                                Login with Facebook
+                            </button>
+                            <a href="http://localhost:9000/api/v1/auth/facebook">Login facebook</a>
                         </div>
                     </form>
                     <div className="text-center mt-8">

@@ -38,14 +38,19 @@ const UserSchema = new mongoose.Schema({
             message: 'Username Must preceed with letters followed by _ or numbers eg: john23 | john_23'
         }
     },
+    provider: {
+        type: String,
+        default: 'password',
+        enum: ['password', 'facebook', 'google']
+    },
+    provider_id: {
+        type: String,
+        default: null
+    },
+    provider_access_token: String,
+    provider_refresh_token: String,
     firstname: String,
     lastname: String,
-    facebook: {
-        id: String,
-        token: String,
-        name: String,
-        email: String
-    },
     isEmailValidated: {
         type: Boolean,
         default: false
@@ -87,7 +92,8 @@ const UserSchema = new mongoose.Schema({
         virtuals: true,
         transform: function (doc, ret, opt) {
             delete ret.password;
-            delete ret.facebook;
+            delete ret.provider_access_token;
+            delete ret.provider_refresh_token;
             return ret;
         }
     },
@@ -96,7 +102,8 @@ const UserSchema = new mongoose.Schema({
         virtuals: true,
         transform: function (doc, ret, opt) {
             delete ret.password;
-            delete ret.facebook;
+            delete ret.provider_access_token;
+            delete ret.provider_refresh_token;
             return ret;
         }
     }

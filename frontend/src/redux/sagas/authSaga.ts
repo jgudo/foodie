@@ -1,6 +1,6 @@
 import { call, put, select } from "redux-saga/effects";
-import { CHECK_SESSION, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/constants/actionType";
-import { checkAuthSession, login, logout, register } from "~/services/api";
+import { CHECK_SESSION, LOGIN_FACEBOOK_START, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/constants/actionType";
+import { checkAuthSession, login, loginWithFacebook, logout, register } from "~/services/api";
 import socket from "~/socket/socket";
 import { IError } from "~/types/types";
 import { loginSuccess, logoutSuccess, registerSuccess } from "../action/authActions";
@@ -74,6 +74,18 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(false));
             }
             catch (e) {
+                console.log('ERR', e);
+                yield handleError(e);
+            }
+            break;
+        case LOGIN_FACEBOOK_START:
+            try {
+                yield put(isAuthenticating(true));
+
+                const user = yield call(loginWithFacebook);
+
+                console.log(user);
+            } catch (e) {
                 console.log('ERR', e);
                 yield handleError(e);
             }
