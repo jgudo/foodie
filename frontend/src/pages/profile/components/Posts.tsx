@@ -101,6 +101,7 @@ const Posts: React.FC<IProps> = (props) => {
             if (isMountedRef.current) {
                 setPosts([post, ...posts]);
                 setIsCreatingPost(false);
+                setError(null);
             }
 
             toast.dismiss();
@@ -145,9 +146,8 @@ const Posts: React.FC<IProps> = (props) => {
                 closeModal={closeModal}
                 dispatchCreatePost={dispatchCreatePost}
             />
-            {(isLoading) && (
+            {(isLoading || isCreatingPost) && (
                 <div className="mt-4 px-2 overflow-hidden space-y-6 pb-10">
-                    <PostLoader />
                     <PostLoader />
                 </div>
             )}

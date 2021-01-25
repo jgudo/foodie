@@ -322,25 +322,38 @@ router.get(
 
             if (myFollowing) following = myFollowing.following;
 
-            const people = await User
-                .find({
-                    _id: {
-                        $nin: [...following, req.user._id]
+            const people = await User.aggregate([
+                {
+                    $match: {
+                        _id: {
+                            $nin: [...following, req.user._id]
+                        }
                     }
-                })
-                .limit(limit)
-                .skip(skip);
+                },
+                {
+                    $sample: { size: limit }
+                },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $addFields: {
+                        isFollowing: false
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        id: '$_id',
+                        username: '$username',
+                        profilePicture: '$profilePicture',
+                        isFollowing: 1
+                    }
+                }
+            ]);
 
             if (people.length === 0) return res.status(404).send(makeErrorJson({ message: 'No suggested people.' }))
 
-            const result = people.map((user) => {
-                return {
-                    ...user.toUserJSON(),
-                    isFollowing: false
-                }
-            });
-
-            res.status(200).send(makeResponseJson(result));
+            res.status(200).send(makeResponseJson(people));
         } catch (e) {
             console.log('CANT GET SUGGESTED PEOPLE', e);
             res.status(500).send(makeErrorJson());

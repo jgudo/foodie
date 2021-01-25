@@ -130,6 +130,11 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                         <PostLoader />
                     </div>
                 )}
+                {state.isLoadingCreatePost && (
+                    <div className="mt-4 px-2 overflow-hidden pb-10">
+                        <PostLoader />
+                    </div>
+                )}
                 {/* ---- NEWS FEED ---- */}
                 {(state.newsFeed.items.length !== 0) && (
                     <>
