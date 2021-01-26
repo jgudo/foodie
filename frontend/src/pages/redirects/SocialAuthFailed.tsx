@@ -1,0 +1,18 @@
+import { Link } from "react-router-dom";
+
+const SocialAuthFailed = () => {
+    return (
+        <div className="contain pt-14 h-full">
+            <h1 className="mt-8 text-2xl laptop:text-4xl">Failed to authenticate</h1>
+            <br />
+            <h4 className="text-gray-600">Possible cause(s):</h4>
+            <ul className="text-gray-500">
+                <li className="list-disc ml-8">Same email has been already linked to other social login eg: Google</li>
+            </ul>
+
+            <Link className="button inline-flex mt-8" to="/">Back to Login</Link>
+        </div>
+    );
+};
+
+export default SocialAuthFailed;

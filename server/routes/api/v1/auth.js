@@ -59,7 +59,38 @@ router.post(
                 });
             }
         })(req, res, next);
-    });
+    }
+);
+
+//@route DELETE /api/v1/auth/facebook FACEBOOK AUTH
+router.get(
+    '/v1/auth/facebook',
+    passport.authenticate('facebook-auth', { scope: ['email', 'public_profile'] })
+);
+
+//@route DELETE /api/v1/auth/facebook/callback FACEBOOK AUTH CALLBACK
+router.get(
+    '/v1/auth/facebook/callback',
+    passport.authenticate('facebook-auth', {
+        failureRedirect: `${process.env.CLIENT_URL}/auth/facebook/failed`,
+        successRedirect: `${process.env.CLIENT_URL}`
+    })
+);
+
+//@route DELETE /api/v1/auth/github GITHUB AUTH
+router.get(
+    '/v1/auth/github',
+    passport.authenticate('github-auth')
+);
+
+//@route DELETE /api/v1/auth/github/callback GITHUB AUTH
+router.get(
+    '/v1/auth/github/callback',
+    passport.authenticate('github-auth', {
+        failureRedirect: `${process.env.CLIENT_URL}/auth/github/failed`,
+        successRedirect: `${process.env.CLIENT_URL}`
+    })
+);
 
 //@route DELETE /api/v1/logout
 router.delete('/v1/logout', (req, res) => {

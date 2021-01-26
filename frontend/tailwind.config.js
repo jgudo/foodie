@@ -66,6 +66,7 @@ module.exports = {
     backgroundRepeat: ['important', 'responsive'],
     backgroundPosition: ['important', 'responsive'],
     margin: ['first', 'responsive'],
+    display: ['responsive'],
     padding: ['important', 'responsive'],
     borderRadius: ['important', 'responsive'],
     textColor: ['important', 'hover'],

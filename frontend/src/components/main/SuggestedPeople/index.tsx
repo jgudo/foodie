@@ -48,19 +48,21 @@ const SuggestedPeople: React.FC = () => {
                 </div>
             )}
             {!error && people.map((user) => (
-                <div className="mb-2" key={user._id}>
-                    <div className="flex items-center justify-between px-4 py-2">
+                <div className="mb-2" key={user.id || user._id}>
+                    <div className="relative flex items-center justify-between px-4 py-2">
                         <Link to={`/user/${user.username}`}>
                             <div className="flex items-center">
                                 <Avatar url={user.profilePicture} className="mr-2" />
-                                <h6 className="mr-10 text-sm max-w-md overflow-ellipsis overflow-hidden">{user.username}</h6>
+                                <h6 className="mr-10 text-sm overflow-ellipsis overflow-hidden">{user.username}</h6>
                             </div>
                         </Link>
-                        <FollowButton
-                            userID={user.id || user._id}
-                            isFollowing={user.isFollowing}
-                            size="sm"
-                        />
+                        <div className="absolute px-4 bg-white right-0 top-0 bottom-0 my-auto flex items-center">
+                            <FollowButton
+                                userID={user.id || user._id}
+                                isFollowing={user.isFollowing}
+                                size="sm"
+                            />
+                        </div>
                     </div>
                 </div>
             ))}

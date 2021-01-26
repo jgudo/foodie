@@ -14,6 +14,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Post from "./pages/post";
 import Profile from "./pages/profile";
+import SocialAuthFailed from './pages/redirects/SocialAuthFailed';
 import Register from "./pages/register";
 import Search from "./pages/search";
 import { loginSuccess } from "./redux/action/authActions";
@@ -77,6 +78,7 @@ function App() {
             <ProtectedRoute path={ROUTE.POST} component={Post} />
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
             <ProtectedRoute path={ROUTE.CHAT} component={Chat} />
+            <Route path={ROUTE.SOCIAL_AUTH_FAILED} component={SocialAuthFailed} />
             <Route component={PageNotFound} />
           </Switch>
           {isNotMobile && <Chats />}

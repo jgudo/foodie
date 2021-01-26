@@ -51,6 +51,19 @@ export const register = async ({ email, password, username }: IRegister) => {
     }
 }
 
+export const loginWithFacebook = async () => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: '/auth/facebook'
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e?.response?.data || {});
+    }
+}
+
 export const logout = async () => {
     try {
         await axios({

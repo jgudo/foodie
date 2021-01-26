@@ -1,4 +1,13 @@
-import { CHECK_SESSION, LOGIN_START, LOGIN_SUCCESS, LOGOUT_START, LOGOUT_SUCCESS, REGISTER_START, REGISTER_SUCCESS, UPDATE_AUTH_PICTURE } from "~/constants/actionType";
+import {
+    CHECK_SESSION,
+    LOGIN_START,
+    LOGIN_SUCCESS,
+    LOGOUT_START,
+    LOGOUT_SUCCESS,
+    REGISTER_START,
+    REGISTER_SUCCESS,
+    UPDATE_AUTH_PICTURE
+} from "~/constants/actionType";
 import { IRegister, IUser } from "~/types/types";
 
 export const loginStart = (email: string, password: string) => (<const>{

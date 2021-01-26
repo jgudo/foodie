@@ -18,7 +18,7 @@ function* rootSaga() {
         LOGIN_START,
         LOGOUT_START,
         REGISTER_START,
-        CHECK_SESSION
+        CHECK_SESSION,
     ], authSaga);
 
     yield takeLatest([
