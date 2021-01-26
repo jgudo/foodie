@@ -7,7 +7,7 @@ const SocialAuthFailed = () => {
             <br />
             <h4 className="text-gray-600">Possible cause(s):</h4>
             <ul className="text-gray-500">
-                <li className="list-disc ml-8">Same email has been already linked to other social login eg: Google</li>
+                <li className="list-disc ml-8">Same email/username has been already linked to other social login eg: Google</li>
             </ul>
 
             <Link className="button inline-flex mt-8" to="/">Back to Login</Link>

@@ -151,8 +151,6 @@ module.exports = function (passport) {
                 const githubProfile = profile._json;
                 const user = await User.findOne({ provider_id: githubProfile.id });
 
-                console.log(githubProfile)
-                console.log(githubProfile.login)
                 if (user) {
                     return done(null, user);
                 } else {
