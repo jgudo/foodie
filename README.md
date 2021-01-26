@@ -34,6 +34,7 @@ This web app consists of a basic features/functionalities of a socia media
 | React Router| Express JS  |
 | TailwindCSS | Passport JS |
 | PostCSS     | Google Cloud Storage|
+| Axios       |             |
 
 ## Installation
 To install both ends (frontend/server). 
@@ -64,7 +65,13 @@ SESSION_NAME=<any name you want>
 FIREBASE_PROJECT_ID=<firebase project id found on your firebase config settigs>
 FIREBASE_STORAGE_BUCKET_URL=<firebase bucket url found on your firebase config settigs>
 GOOGLE_APPLICATION_CREDENTIALS=<if you haven't set the ENV variable in your machine, you can set the relative path of the json file here>
+FACEBOOK_CLIENT_ID=<you app client id>
+FACEBOOK_CLIENT_SECRET=<you app client secret>
+GITHUB_CLIENT_ID=<you app client id>
+GITHUB_CLIENT_SECRET=<you app client id>
 ```
+
+You can get your Facebook client id/secret here [Facebook for developers](http://developers.facebook.com/) and for GitHub here [Register Github OAuth App](https://github.com/settings/applications/new) and set the necessary env vars above.  
 
 After doing the steps above, you have to run your ```Mongo Server``` and finally you can now run both ends simultaneously by running: 
 ```
@@ -80,6 +87,10 @@ $ npm run start-server // backend
 $ cd frontend // or cd server
 $ npm start
 ```
+
+## Deployment
+You can deploy your react app in [Vercel](http://vercel.app/) or whatever your preferred deployment platform. 
+And for the backend, you can deploy your server in [Heroku](https://heroku.com)
 
 ## Screenshots
 
