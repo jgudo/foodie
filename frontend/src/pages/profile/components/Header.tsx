@@ -38,7 +38,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
         const cp = coverPhotoRef.current;
         const cpo = coverPhotoOverlayRef.current;
 
-        if (cp && cpo && profile.isOwnProfile) {
+        if (cp && cpo && profile.isOwnProfile && window.screen.width > 800) {
             cp.addEventListener('mouseover', overlayOnMouseOver);
             cp.addEventListener('mouseout', overlayOnMouseOut);
         }
@@ -140,7 +140,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             <div className="w-full h-60 mb-8 laptop:mb-0 laptop:h-80 bg-gray-200 relative overflow-hidden" ref={coverPhotoRef}>
                 {/* ---- OVERLAY FOR CHOOSING PHOTO AND SHOWING LOADER ----- */}
                 <div
-                    className="w-full h-full bg-black bg-opacity-50 absolute flex items-center justify-center invisible transition-all"
+                    className="w-full h-full laptop:bg-black bg-opacity-50 absolute flex items-center justify-center laptop:invisible transition-all"
                     ref={coverPhotoOverlayRef}
                 >
                     <input
@@ -168,10 +168,12 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                                         </div>
                                     ) : (
                                             <label
-                                                className="p-4 bg-indigo-700 text-white font-medium rounded-full cursor-pointer hover:bg-indigo-800"
+                                                className="p-3 laptop:p-4 bg-indigo-700 absolute right-4 top-4  laptop:relative text-white font-medium rounded-full cursor-pointer hover:bg-indigo-800"
                                                 htmlFor="cover"
                                             >
-                                                Change Cover Photo
+                                                {window.screen.width > 800 ? 'Change Cover Photo' : (
+                                                    <CameraOutlined className="text-xl flex items-center justify-center text-white" />
+                                                )}
                                             </label>
 
                                         )}
@@ -190,41 +192,43 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             </div>
             <div className="contain w-full relative flex laptop:transform laptop:-translate-y-2/4">
                 {/* --- PROFILE PICTURE */}
-                <div className="absolute left-0 right-0 mx-auto w-40 h-40 transform -translate-y-44 laptop:transform-none laptop:relative laptop:w-1/3 laptop:h-60 laptop:mr-2 flex justify-center">
-                    <div
+                {!coverPhoto.imageFile.file && (
+                    <div className="absolute left-0 right-0 mx-auto w-40 h-40 transform -translate-y-44 laptop:transform-none laptop:relative laptop:w-1/3 laptop:h-60 laptop:mr-2 flex justify-center">
+                        <div
 
-                        className="w-full h-full laptop:w-60 laptop:h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white overflow-hidden"
-                        style={{
-                            background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
-                        }}
-                    >
-                        {isUploadingProfileImage && (
-                            <div className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-                                <Loader mode="light" />
+                            className="w-full h-full laptop:w-60 laptop:h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white overflow-hidden"
+                            style={{
+                                background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
+                            }}
+                        >
+                            {isUploadingProfileImage && (
+                                <div className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+                                    <Loader mode="light" />
+                                </div>
+                            )}
+                        </div>
+                        {/* ---- UPDLOAD PROFILE PICTURE ---- */}
+                        {profile.isOwnProfile && (
+                            <div>
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    onChange={handleProfilePictureFileChange}
+                                    readOnly={isUploadingProfileImage}
+                                    id="picture"
+                                />
+                                <label
+                                    htmlFor="picture"
+                                >
+                                    <div className="flex items-center w-10 h-10 justify-center cursor-pointer p-4 bg-indigo-700 rounded-full absolute -bottom-2 laptop:bottom-0 left-14 hover:bg-indigo-800">
+                                        <CameraOutlined className="text-xl flex items-center justify-center text-white" />
+                                    </div>
+                                </label>
                             </div>
                         )}
                     </div>
-                    {/* ---- UPDLOAD PROFILE PICTURE ---- */}
-                    {profile.isOwnProfile && (
-                        <div>
-                            <input
-                                type="file"
-                                hidden
-                                accept="image/*"
-                                onChange={handleProfilePictureFileChange}
-                                readOnly={isUploadingProfileImage}
-                                id="picture"
-                            />
-                            <label
-                                htmlFor="picture"
-                            >
-                                <div className="flex items-center w-10 h-10 justify-center cursor-pointer p-4 bg-indigo-700 rounded-full absolute -bottom-2 laptop:bottom-0 left-14 hover:bg-indigo-800">
-                                    <CameraOutlined className="text-xl flex items-center justify-center text-white" />
-                                </div>
-                            </label>
-                        </div>
-                    )}
-                </div>
+                )}
                 <div className="flex w-full  flex-col self-end">
                     <div className="w-full flex items-center flex-col laptop:flex-row justify-between mb-2 laptop:ml-2 laptop:mr-14">
                         {/* ---- NAME AND USERNAME */}
