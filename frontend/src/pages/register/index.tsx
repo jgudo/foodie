@@ -1,3 +1,4 @@
+import { FacebookFilled, GithubFilled } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -91,7 +92,7 @@ const Register: React.FC = () => {
                 )}
                 <div className="w-full px-8 laptop:px-14">
                     <div>
-                        <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
+                        <h2 className="mt-6 text-xl laptop:text-2xl font-extrabold text-gray-900">
                             Create your account
                         </h2>
                     </div>
@@ -145,6 +146,23 @@ const Register: React.FC = () => {
                             <button type="submit" className="button--stretch" disabled={isLoading}>
                                 {isLoading ? 'Registering...' : 'Register'}
                             </button>
+                        </div>
+                        <i className="social-login-divider">OR</i>
+                        <div className="flex justify-between space-x-2">
+                            <a
+                                className="button w-full bg-blue-500 hover:bg-blue-600 laptop:w-2/4"
+                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/facebook`}
+                            >
+                                <FacebookFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
+                                Facebook
+                            </a>
+                            <a
+                                className="button w-full border border-gray-300 bg-gray-700 hover:bg-gray-600 laptop:w-2/4"
+                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/github`}
+                            >
+                                <GithubFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
+                                GitHub
+                            </a>
                         </div>
                     </form>
                     <div className="text-center mt-8">

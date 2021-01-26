@@ -86,7 +86,7 @@ const Login: React.FC = () => {
                 )}
                 <div className="w-full laptop:px-14 px-8 text-center laptop:text-left">
                     <div>
-                        <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
+                        <h2 className="mt-6 text-xl laptop:text-2xl font-extrabold text-gray-900">
                             Login to Foodie
                     </h2>
                     </div>
@@ -128,7 +128,7 @@ const Login: React.FC = () => {
                         </div>
 
                         <div className="text-center flex flex-col laptop:items-center laptop:flex-row laptop:justify-between laptop:text-left">
-                            <Link className="font-medium text-sm text-gray-400 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
+                            <Link className="font-medium text-sm text-gray-400 mb-4  laptop:mb-0 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
                                 Forgot your password?
                             </Link>
                             <div className="laptop:w-2/4">
@@ -145,14 +145,14 @@ const Login: React.FC = () => {
                                 className="button w-full bg-blue-500 hover:bg-blue-600 laptop:w-2/4"
                                 href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/facebook`}
                             >
-                                <FacebookFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                                <FacebookFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
                                 Facebook
                             </a>
                             <a
                                 className="button w-full border border-gray-300 bg-gray-700 hover:bg-gray-600 laptop:w-2/4"
                                 href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/github`}
                             >
-                                <GithubFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                                <GithubFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
                                 GitHub
                             </a>
                         </div>
