@@ -93,7 +93,7 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                                     <Link to={`/user/${auth.username}`} className="cursor-pointer">
                                         <div className="flex items-center">
                                             <Avatar url={auth.profilePicture} className="mr-2" />
-                                            <h6 className="mr-10">@{auth.username}</h6>
+                                            <h6 className="text-sm mr-10">@{auth.username}</h6>
                                         </div>
                                     </Link>
                                     {/* ----- LOGOUT BUTTON ------ */}

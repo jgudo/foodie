@@ -35,23 +35,21 @@ const FollowButton: React.FC<IProps> = (props) => {
     };
 
     return (
-        <div>
-            <button
-                className={`${isFollowing && '!hover:bg-gray-200 !bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center ${props.size === 'sm' && '!py-2 !px-3 !text-sm'}`}
-                disabled={isLoading}
-                onClick={dispatchFollow}
-            >
-                {isFollowing ? <CheckOutlined /> : <UserAddOutlined />}
+        <button
+            className={`${isFollowing && '!hover:bg-gray-200 !bg-indigo-100 !border !border-indigo-500 !text-indigo-700'} flex items-center ${props.size === 'sm' && '!py-2 !px-3 !text-sm'}`}
+            disabled={isLoading}
+            onClick={dispatchFollow}
+        >
+            {isFollowing ? <CheckOutlined /> : <UserAddOutlined />}
                 &nbsp;&nbsp;
-                <span className={`${props.size === 'sm' && 'text-sm'}`}>
-                    {isLoading
-                        ? 'Following'
-                        : !isLoading && !isFollowing
-                            ? 'Follow'
-                            : 'Following'}
-                </span>
-            </button>
-        </div>
+            <span className={`${props.size === 'sm' && 'text-sm'}`}>
+                {isLoading
+                    ? 'Following'
+                    : !isLoading && !isFollowing
+                        ? 'Follow'
+                        : 'Following'}
+            </span>
+        </button>
     );
 };
 

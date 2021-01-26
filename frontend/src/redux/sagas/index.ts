@@ -5,7 +5,6 @@ import {
     CREATE_POST_START,
     GET_FEED_START,
     GET_USER_START,
-    LOGIN_FACEBOOK_START,
     LOGIN_START,
     LOGOUT_START,
     REGISTER_START
@@ -20,7 +19,6 @@ function* rootSaga() {
         LOGOUT_START,
         REGISTER_START,
         CHECK_SESSION,
-        LOGIN_FACEBOOK_START
     ], authSaga);
 
     yield takeLatest([

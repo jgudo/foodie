@@ -1,3 +1,4 @@
+import { FacebookFilled, GithubFilled, LockFilled } from '@ant-design/icons';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -6,7 +7,7 @@ import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal.jpg';
 import logo from '~/images/logo-white.svg';
 import logo_dark from '~/images/logo.svg';
-import { facebookLoginStart, loginStart } from '~/redux/action/authActions';
+import { loginStart } from '~/redux/action/authActions';
 import { setAuthErrorMessage } from '~/redux/action/errorActions';
 import { IRootReducer } from '~/types/types';
 
@@ -39,10 +40,6 @@ const Login: React.FC = () => {
 
         setPassword(val);
     };
-
-    const handleFacebookLogin = () => {
-        dispatch(facebookLoginStart());
-    }
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -107,7 +104,7 @@ const Login: React.FC = () => {
                                     value={username}
                                     required
                                     maxLength={50}
-                                    className={`text-center lowercase ${error ? 'input--error' : ''} laptop:text-left`}
+                                    className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Username"
                                     readOnly={isLoading}
                                     onChange={onUsernameChange}
@@ -130,34 +127,38 @@ const Login: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="text-center laptop:text-left">
-                            <Link className="font-medium text-sm text-gray-400 hover:text-indigo-500 underline" to="/forgot-password">
+                        <div className="text-center flex flex-col laptop:items-center laptop:flex-row laptop:justify-between laptop:text-left">
+                            <Link className="font-medium text-sm text-gray-400 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
                                 Forgot your password?
                             </Link>
+                            <div className="laptop:w-2/4">
+                                <button type="submit" className="button--stretch" disabled={isLoading}>
+                                    <LockFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                                    {isLoading ? 'Logging In...' : 'Login'}
+                                </button>
+                            </div>
                         </div>
-
-                        <div>
-                            <button type="submit" className="button--stretch" disabled={isLoading}>
-                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                                    <svg className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                    </svg>
-                                </span>
-                                {isLoading ? 'Logging In...' : 'Login'}
-                            </button>
-                        </div>
-                        <div>
-                            <button
-                                className="!bg-blue-500"
-                                onClick={handleFacebookLogin}
+                        {/* -- TOO HARD TO REPLICATE PSEUDO IN TAILWIND :() */}
+                        <i className="social-login-divider">OR</i>
+                        <div className="flex justify-between space-x-2">
+                            <a
+                                className="button w-full bg-blue-500 hover:bg-blue-600 laptop:w-2/4"
+                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/facebook`}
                             >
-                                Login with Facebook
-                            </button>
-                            <a href="http://localhost:9000/api/v1/auth/facebook">Login facebook</a>
+                                <FacebookFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                                Facebook
+                            </a>
+                            <a
+                                className="button w-full border border-gray-300 bg-gray-700 hover:bg-gray-600 laptop:w-2/4"
+                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/github`}
+                            >
+                                <GithubFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                                GitHub
+                            </a>
                         </div>
                     </form>
                     <div className="text-center mt-8">
-                        <Link to={REGISTER} className="underline font-medium">Create an account</Link>
+                        <Link to={REGISTER} className="underline font-medium">I dont have an account</Link>
                     </div>
                     {/* --- COPYRIGHT -- */}
                     <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">

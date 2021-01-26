@@ -89,3 +89,32 @@
   opacity: 0;
   transition: all .5s;
 }
+
+.social-login-divider {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: center;
+  @apply text-sm;
+  @apply text-gray-400;
+
+  &:after,
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 45%;
+    height: 1px;
+    @apply bg-gray-200; 
+  }
+
+  &:after {
+    right: 0;
+  }
+
+  &:before {
+    left: 0;
+  }
+}

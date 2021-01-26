@@ -1,5 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const User = require('../schemas/UserSchema');
 
 module.exports = function (passport) {
@@ -97,14 +98,12 @@ module.exports = function (passport) {
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
             callbackURL: `/api/v1/auth/facebook/callback`,
-            // profileFields: ['id', 'picture', 'first_name', 'last_name', 'username', 'displayName', 'gender', 'profileUrl', 'email']
             profileFields: ['id', 'profileUrl', 'email', 'displayName', 'name', 'gender', 'picture']
         }, async (accessToken, refreshToken, profile, done) => {
             try {
                 const fbProfile = profile._json;
                 const user = await User.findOne({ provider_id: fbProfile.id });
 
-                console.log('FOUND USER -----', user)
                 if (user) {
                     return done(null, user);
                 } else {
@@ -117,16 +116,17 @@ module.exports = function (passport) {
                         firstname: fbProfile.first_name,
                         lastname: fbProfile.last_name,
                         profilePicture: fbProfile.picture ? fbProfile.picture.data.url : '',
-                        // provider_id: fbProfile.id,
+                        provider_id: fbProfile.id,
+                        provider: 'facebook',
                         provider_access_token: accessToken,
                         provider_refresh_token: refreshToken
                     });
 
-                    newUser.save(function (err) { //Save User if there are no errors else redirect to login route
+                    newUser.save(function (err) {
                         if (err) {
-                            done(err);  // handle errors!
+                            done(null, false, err);  // handle errors!
                         } else {
-                            console.log('NEW USER -----------', newUser);
+                            console.log('SUCCESSFULL CREATED', newUser);
                             done(null, newUser);
                         }
                     });
@@ -136,5 +136,57 @@ module.exports = function (passport) {
                 return done(err);
             }
         }
-        ));
+        )
+    );
+
+    passport.use(
+        'github-auth',
+        new GitHubStrategy({
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: `/api/v1/auth/github/callback`,
+            scope: 'user:email'
+        }, async (accessToken, refreshToken, profile, done) => {
+            try {
+                const githubProfile = profile._json;
+                const user = await User.findOne({ provider_id: githubProfile.id });
+
+                console.log(githubProfile)
+                console.log(githubProfile.login)
+                if (user) {
+                    return done(null, user);
+                } else {
+                    const randomString = Math.random().toString(36).substring(2);
+
+                    const newUser = new User({
+                        username: githubProfile.login,
+                        email: githubProfile.email,
+                        password: randomString,
+                        firstname: githubProfile.name.split(' ')[0],
+                        lastname: githubProfile.name.split(' ')[1],
+                        profilePicture: githubProfile.avatar_url,
+                        provider_id: githubProfile.id,
+                        provider: 'github',
+                        'info.bio': githubProfile.bio,
+                        provider_access_token: accessToken,
+                        provider_refresh_token: refreshToken
+                    });
+
+                    newUser.save(function (err) {
+                        if (err) {
+                            console.log(err)
+                            done(null, false, err);  // handle errors!
+                        } else {
+                            console.log('SUCCESSFULL CREATED', newUser);
+                            done(null, newUser);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+                return done(err);
+            }
+        }
+        )
+    );
 };

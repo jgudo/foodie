@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
         maxlength: 30,
         validate: {
             validator: (username) => {
-                const regex = /^[a-z]+_?\d{1,}?$/g;
+                const regex = /^[a-z]+_?[a-z0-9]{1,}?$/ig;
                 return regex.test(username);
             },
             message: 'Username Must preceed with letters followed by _ or numbers eg: john23 | john_23'
@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
     provider: {
         type: String,
         default: 'password',
-        enum: ['password', 'facebook', 'google']
+        enum: ['password', 'facebook', 'google', 'github']
     },
     provider_id: {
         type: String,

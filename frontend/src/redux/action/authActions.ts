@@ -1,13 +1,6 @@
 import {
     CHECK_SESSION,
-
-
-
-
-
-
-
-    LOGIN_FACEBOOK_START, LOGIN_START,
+    LOGIN_START,
     LOGIN_SUCCESS,
     LOGOUT_START,
     LOGOUT_SUCCESS,
@@ -48,10 +41,6 @@ export const registerStart = ({ email, password, username }: IRegister) => (<con
     }
 });
 
-export const facebookLoginStart = () => (<const>{
-    type: LOGIN_FACEBOOK_START
-});
-
 export const registerSuccess = (userAuth: IUser) => (<const>{
     type: REGISTER_SUCCESS,
     payload: userAuth
@@ -75,5 +64,4 @@ export type TAuthActionType =
     | ReturnType<typeof logoutStart>
     | ReturnType<typeof logoutSuccess>
     | ReturnType<typeof registerStart>
-    | ReturnType<typeof registerSuccess>
-    | ReturnType<typeof facebookLoginStart>;
+    | ReturnType<typeof registerSuccess>;
