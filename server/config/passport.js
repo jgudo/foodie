@@ -98,7 +98,7 @@ module.exports = function (passport) {
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
             callbackURL: `/api/v1/auth/facebook/callback`,
-            profileFields: ['id', 'profileUrl', 'email', 'displayName', 'name', 'gender', 'picture']
+            profileFields: ['id', 'profileUrl', 'email', 'displayName', 'name', 'gender', 'picture.type(large)']
         }, async (accessToken, refreshToken, profile, done) => {
             try {
                 const fbProfile = profile._json;

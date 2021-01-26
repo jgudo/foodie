@@ -58,6 +58,10 @@ const Info = () => {
                             <span className="text-gray-300 italic">Bio not set.</span>
                         )}
                 </div>
+                <div className="grid grid-cols-3 py-4">
+                    <h5>Date Joined</h5>
+                    <span className="text-gray-600 col-span-2">{dayjs(profile.dateJoined).format('MMM.DD, YYYY')}</span>
+                </div>
             </div>
         </div>
     );

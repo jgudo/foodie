@@ -58,6 +58,7 @@ const UserSchema = new mongoose.Schema({
     info: {
         bio: {
             type: String,
+            maxlength: 200,
             default: ''
         },
         birthday: {

@@ -92,7 +92,7 @@ export interface IProfile {
     isEmailValidated: boolean;
     profilePicture?: string;
     coverPhoto?: string;
-    dateJoined: Date | null;
+    dateJoined: Date | string;
     followingCount: number;
     followersCount: number;
     [prop: string]: any;

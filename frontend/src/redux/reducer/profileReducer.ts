@@ -20,7 +20,7 @@ const initState: IProfile = {
     coverPhoto: '',
     followersCount: 0,
     followingCount: 0,
-    dateJoined: null
+    dateJoined: ''
 };
 
 const profileReducer = (state = initState, action: TProfileActionTypes) => {

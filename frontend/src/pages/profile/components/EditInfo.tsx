@@ -22,6 +22,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
         bio: profile?.info.bio || '',
         birthday: profile?.info?.birthday || ''
     });
+    const [bioLength, setBioLength] = useState(200 - field.bio.length);
     const history = useHistory();
     const dispatch = useDispatch();
     let isMountedRef = useRef<boolean | null>(null);
@@ -86,7 +87,10 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     }
 
     const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setField({ ...field, bio: e.target.value });
+        const val = e.target.value;
+
+        setField({ ...field, bio: val });
+        setBioLength(200 - val.length);
     }
 
     const handleBack = () => {
@@ -162,9 +166,12 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         rows={4}
                         readOnly={isUpdating}
                         onChange={handleBioChange}
-                        maxLength={300}
+                        maxLength={200}
                         value={field.bio}
                     />
+                    <span className="text-xs text-gray-400 block text-right">
+                        {bioLength} {bioLength <= 1 ? 'character' : 'characters'} left
+                    </span>
                 </div>
                 {/* ---- SUBMIT BUTTON ----- */}
                 <div className="flex justify-between pt-8">

@@ -57,7 +57,10 @@ const Profile: React.FC<IProps> = (props) => {
                     />
                     <div className="contain relative flex min-h-10rem mt-4 laptop:mt-0 items-start transform laptop:-translate-y-24">
                         <div className="hidden laptop:block laptop:w-1/4 laptop:mr-4 laptop:sticky laptop:top-44">
-                            <Sidebar bio={state.profile.info.bio} />
+                            <Sidebar
+                                bio={state.profile.info.bio}
+                                dateJoined={state.profile.dateJoined}
+                            />
                         </div>
                         <div className="w-full laptop:w-2/4">
                             <Switch>
