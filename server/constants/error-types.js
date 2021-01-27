@@ -1,6 +1,6 @@
-exports.INVALID_INPUT = 'invalid-input';
-exports.INCORRECT_CREDENTIALS = 'incorrect-credentials';
-exports.EMAIL_TAKEN = 'email-taken';
-exports.VALIDATION_ERROR = 'validation-error';
-exports.DUPLICATE_FIELDS = 'duplicate-fields';
-exports.REQUEST_ERROR = 'request-error';
+exports.INVALID_INPUT = 'INVALID_INPUT';
+exports.INCORRECT_CREDENTIALS = 'INCORRECT_CREDENTIALS';
+exports.EMAIL_TAKEN = 'EMAIL_TAKEN';
+exports.VALIDATION_ERROR = 'VALIDATION_ERROR';
+exports.DUPLICATE_FIELDS = 'DUPLICATE_FIELDS';
+exports.REQUEST_ERROR = 'REQUEST_ERROR';

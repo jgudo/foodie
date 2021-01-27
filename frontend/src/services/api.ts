@@ -13,7 +13,12 @@ axios.interceptors.response.use(
     response => response,
     error => {
         const { data, status } = error.response;
-        if (status === 401 && (data?.error?.type || '') !== 'INCORRECT_CREDENTIALS') {
+        console.log('INTERCEPTOR', data);
+        if (status === 401
+            && (data?.error?.type || '') !== 'INCORRECT_CREDENTIALS'
+            && error.config
+            && !error.config.__isRetryRequest) {
+            error.config._retry = true;
             store.dispatch(logoutStart());
         }
         return Promise.reject(error);
