@@ -98,10 +98,16 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
             setMessagesOpen(false);
 
             await readMessage(sender.id);
-            const updated = messages.map(msg => ({
-                ...msg,
-                seen: true
-            }));
+            const updated = messages.map((msg) => {
+                if (msg.from.id === sender.id) {
+                    return {
+                        ...msg,
+                        seen: true
+                    }
+                }
+
+                return msg;
+            });
 
             setMessages(updated);
 
