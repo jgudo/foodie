@@ -14,7 +14,8 @@ import { initiateChat } from '~/redux/action/chatActions';
 import { updateCoverPhoto, updateProfilePicture } from '~/redux/action/profileActions';
 import { uploadPhoto } from '~/services/api';
 import { IImage, IProfile, IUser } from "~/types/types";
-import Tabs from './Tabs';
+import Tabs from '../Tabs';
+import CoverPhotoOverlay from './CoverPhotoOverlay';
 
 interface IProps {
     profile: IProfile,
@@ -139,50 +140,13 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             {/*  ----- COVER PHOTO ------- */}
             <div className="w-full h-60 mb-8 laptop:mb-0 laptop:h-80 bg-gray-200 relative overflow-hidden" ref={coverPhotoRef}>
                 {/* ---- OVERLAY FOR CHOOSING PHOTO AND SHOWING LOADER ----- */}
-                <div
-                    className="w-full h-full laptop:bg-black bg-opacity-50 absolute flex items-center justify-center laptop:invisible transition-all"
-                    ref={coverPhotoOverlayRef}
-                >
-                    <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={coverPhoto.onFileChange}
-                        readOnly={isUploadingCoverPhoto}
-                        id="cover"
-                    />
-                    {profile.isOwnProfile && (
-                        <>
-                            {isUploadingCoverPhoto ? <Loader mode="light" /> : (
-                                <>
-                                    {coverPhoto.imageFile.file ? (
-                                        <div className="flex">
-                                            <label
-                                                className="button--muted !rounded-full cursor-pointer"
-                                                htmlFor="cover"
-                                            >
-                                                Choose another photo
-                                    </label>
-                                    &nbsp;
-                                            <button onClick={handleSaveCoverPhoto}>Save Cover Photo</button>
-                                        </div>
-                                    ) : (
-                                            <label
-                                                className="p-3 laptop:p-4 bg-indigo-700 absolute right-4 top-4  laptop:relative text-white font-medium rounded-full cursor-pointer hover:bg-indigo-800"
-                                                htmlFor="cover"
-                                            >
-                                                {window.screen.width > 800 ? 'Change Cover Photo' : (
-                                                    <CameraOutlined className="text-xl flex items-center justify-center text-white" />
-                                                )}
-                                            </label>
-
-                                        )}
-                                </>
-                            )}
-                        </>
-                    )}
-
-                </div>
+                <CoverPhotoOverlay
+                    coverPhotoOverlayRef={coverPhotoOverlayRef}
+                    coverPhoto={coverPhoto}
+                    isUploadingCoverPhoto={isUploadingCoverPhoto}
+                    isOwnProfile={profile.isOwnProfile}
+                    handleSaveCoverPhoto={handleSaveCoverPhoto}
+                />
                 {/* ---- ACTUAL COVER PHOTO ---- */}
                 <img
                     alt=""
@@ -190,47 +154,49 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                     src={coverPhoto.imageFile.url || profile.coverPhoto || `https://source.unsplash.com/1400x900/?nature`}
                 />
             </div>
-            <div className="contain w-full relative flex laptop:transform laptop:-translate-y-2/4">
+            <div className="laptop:px-6% w-full relative flex mt-2 laptop:transform laptop:-translate-y-2/4">
                 {/* --- PROFILE PICTURE */}
-                {!coverPhoto.imageFile.file && (
-                    <div className="absolute left-0 right-0 mx-auto w-40 h-40 transform -translate-y-44 laptop:transform-none laptop:relative laptop:w-1/3 laptop:h-60 laptop:mr-2 flex justify-center">
-                        <div
+                <div className="absolute left-0 right-0 mx-auto w-40 h-40 transform -translate-y-44 laptop:transform-none laptop:relative laptop:w-1/3 laptop:h-60 laptop:mr-2 flex justify-center">
+                    {(!coverPhoto.imageFile.file) && (
+                        <>
+                            <div
 
-                            className="w-full h-full laptop:w-60 laptop:h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white overflow-hidden"
-                            style={{
-                                background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
-                            }}
-                        >
-                            {isUploadingProfileImage && (
-                                <div className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-                                    <Loader mode="light" />
+                                className="w-full h-full laptop:w-60 laptop:h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white overflow-hidden"
+                                style={{
+                                    background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
+                                }}
+                            >
+                                {isUploadingProfileImage && (
+                                    <div className="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+                                        <Loader mode="light" />
+                                    </div>
+                                )}
+                            </div>
+                            {/* ---- UPDLOAD PROFILE PICTURE ---- */}
+                            {profile.isOwnProfile && (
+                                <div>
+                                    <input
+                                        type="file"
+                                        hidden
+                                        accept="image/*"
+                                        onChange={handleProfilePictureFileChange}
+                                        readOnly={isUploadingProfileImage}
+                                        id="picture"
+                                    />
+                                    <label
+                                        htmlFor="picture"
+                                    >
+                                        <div className="flex items-center w-10 h-10 justify-center cursor-pointer p-4 bg-indigo-700 rounded-full absolute -bottom-2 laptop:bottom-0 left-14 hover:bg-indigo-800">
+                                            <CameraOutlined className="text-xl flex items-center justify-center text-white" />
+                                        </div>
+                                    </label>
                                 </div>
                             )}
-                        </div>
-                        {/* ---- UPDLOAD PROFILE PICTURE ---- */}
-                        {profile.isOwnProfile && (
-                            <div>
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept="image/*"
-                                    onChange={handleProfilePictureFileChange}
-                                    readOnly={isUploadingProfileImage}
-                                    id="picture"
-                                />
-                                <label
-                                    htmlFor="picture"
-                                >
-                                    <div className="flex items-center w-10 h-10 justify-center cursor-pointer p-4 bg-indigo-700 rounded-full absolute -bottom-2 laptop:bottom-0 left-14 hover:bg-indigo-800">
-                                        <CameraOutlined className="text-xl flex items-center justify-center text-white" />
-                                    </div>
-                                </label>
-                            </div>
-                        )}
-                    </div>
-                )}
+                        </>
+                    )}
+                </div>
                 <div className="flex w-full  flex-col self-end">
-                    <div className="w-full flex items-center flex-col laptop:flex-row justify-between mb-2 laptop:ml-2 laptop:mr-14">
+                    <div className="px-4 laptop:px-0 w-full flex items-center flex-col laptop:flex-row justify-between mb-2 laptop:ml-2 laptop:mr-14">
                         {/* ---- NAME AND USERNAME */}
                         <div className="text-center laptop:text-left mb-4 laptop:mb-0">
                             <h2 className="text-3xl">{profile.fullname || `@${profile.username}`}</h2>

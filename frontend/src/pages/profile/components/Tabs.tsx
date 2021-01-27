@@ -1,3 +1,4 @@
+import { FormOutlined, InfoCircleOutlined, StarOutlined, TeamOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -11,12 +12,14 @@ interface IProps {
 const linkStyleName = `
     text-sm laptop:text-lg font-medium text-gray-500 hover:bg-gray-200 
     hover:text-gray-800 rounded-t-md cursor-pointer px-2 laptop:px-4 py-2
-    border-b-4 border-transparent hover:border-indigo-400
+    border-b-4 border-transparent hover:border-indigo-400 flex justify-center
+    items-center
 `;
 
 const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, followingCount }) => {
     const { pathname } = useLocation();
     const [activeNav, setActiveNav] = useState('');
+    const isLaptop = window.screen.width >= 1024;
 
     useEffect(() => {
         const splitPath = pathname.split('/');
@@ -26,13 +29,13 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
     }, [pathname]);
 
     return (
-        <ul className="flex items-center justify-between tablet:justify-evenly flex-wrap laptop:justify-start space-x-1 laptop:space-x-4">
+        <ul className="flex items-center justify-between tablet:justify-evenly flex-wrap laptop:justify-start space-x-1 laptop:space-x-4 px-4 bg-indigo-100 laptop:bg-transparent laptop:p-0">
             <li>
                 <Link
                     to={`/user/${username}/`}
                     className={`${linkStyleName} ${(activeNav === username || activeNav === '') && 'border-indigo-700  border-b-4'}`}
                 >
-                    Posts
+                    {isLaptop ? 'Posts' : <FormOutlined className="flex items-center justify-center text-2xl" />}
                 </Link>
             </li>
             <li>
@@ -40,7 +43,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     to={`/user/${username}/info`}
                     className={`${linkStyleName} ${activeNav === 'info' && 'border-indigo-700  border-b-4'}`}
                 >
-                    Info
+                    {isLaptop ? 'Info' : <InfoCircleOutlined className="flex items-center justify-center text-2xl" />}
                 </Link>
             </li>
             <li>
@@ -50,7 +53,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                 >
                     <span className="laptop:text-lg text-indigo-700">{followersCount}</span>
                     &nbsp;&nbsp;
-                    <span>Followers</span>
+                    {isLaptop ? 'Followers' : <TeamOutlined className="flex items-center justify-center text-2xl" />}
                 </Link>
             </li>
             <li>
@@ -60,7 +63,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                 >
                     <span className="laptop:text-lg text-indigo-700">{followingCount}</span>
                     &nbsp;&nbsp;
-                    <span>Following</span>
+                    {isLaptop ? 'Following' : <UserAddOutlined className="flex items-center justify-center text-2xl" />}
                 </Link>
             </li>
             {isOwnProfile && (
@@ -69,8 +72,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                         to={`/user/${username}/bookmarks`}
                         className={`${linkStyleName} ${activeNav === 'bookmarks' && 'border-indigo-700 border-b-4'}`}
                     >
-                        Bookmarks
-                </Link>
+                        {isLaptop ? 'Bookmarks' : <StarOutlined className="flex items-center justify-center text-2xl" />}
+                    </Link>
                 </li>
             )}
         </ul>

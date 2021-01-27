@@ -83,6 +83,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
             )}
             {(bookmarks.items.length !== 0 && !error) && (
                 <div className="w-full space-y-4">
+                    <h4 className="text-gray-700 mb-4 ml-4 mt-4 laptop:mt-0">Bookmarks</h4>
                     {bookmarks.items.map(item => (
                         <div key={item.id} className="h-24 flex justify-between bg-white rounded-md shadow-lg overflow-hidden">
                             <div className="flex justify-center items-center">
@@ -107,7 +108,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                 to={`/post/${item.post.id}`}
                             >
                                 <div className="flex-grow p-2 pb-4 max-w-sm">
-                                    <h4 className="break-all overflow-hidden overflow-ellipsis h-12">{item.post.description}</h4>
+                                    <h4 className="break-all overflow-hidden overflow-ellipsis h-8 laptop:h-12">{item.post.description}</h4>
                                     <span className="text-xs text-gray-400 self-end">Bookmarked {dayjs(item.createdAt).fromNow()}</span>
                                 </div>
                                 <div

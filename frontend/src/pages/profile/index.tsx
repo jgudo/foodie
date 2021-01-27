@@ -12,7 +12,7 @@ import Bookmarks from "./components/Bookmarks";
 import EditInfo from "./components/EditInfo";
 import Followers from "./components/Followers";
 import Following from "./components/Following";
-import Header from './components/Header';
+import Header from './components/Header/';
 import Info from "./components/Info";
 import Posts from "./components/Posts";
 
@@ -55,7 +55,7 @@ const Profile: React.FC<IProps> = (props) => {
                         auth={state.auth}
                         profile={state.profile}
                     />
-                    <div className="contain relative flex min-h-10rem mt-4 laptop:mt-0 items-start transform laptop:-translate-y-24">
+                    <div className="laptop:px-6% relative flex min-h-10rem  items-start transform laptop:-translate-y-24">
                         <div className="hidden laptop:block laptop:w-1/4 laptop:mr-4 laptop:sticky laptop:top-44">
                             <Sidebar
                                 bio={state.profile.info.bio}

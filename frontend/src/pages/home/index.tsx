@@ -81,14 +81,14 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
     });
 
     return (
-        <div className="contain pt-20 flex items-start">
+        <div className="laptop:px-6% pt-20 flex items-start">
             {/*  --- SIDE MENU --- */}
             <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2">
                 <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
             </div>
             <div className="w-full laptop:w-2/4 relative" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                 {/* --- CREATE POST INPUT ---- */}
-                <div className="flex items-center justify-start">
+                <div className="flex items-center justify-start px-4 laptop:px-0">
                     <Avatar url={state.auth.profilePicture} className="mr-2" />
                     <div className="flex-grow">
                         <input
@@ -109,6 +109,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                         New Feed Available
                     </button>
                 )}
+
                 {/* --- CREATE POST MODAL ----- */}
                 <CreatePostModal
                     isOpen={isOpen}

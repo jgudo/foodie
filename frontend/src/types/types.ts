@@ -164,3 +164,12 @@ export interface IImage {
     url: string;
     file: File | null;
 }
+
+export interface IFileHandler<T> {
+    imageFile: T,
+    setImageFile: React.Dispatch<React.SetStateAction<T>>;
+    isFileLoading: boolean;
+    onFileChange: (event: React.ChangeEvent<HTMLInputElement>, callback?: (file?: IImage) => void) => void;
+    removeImage: (id: string) => void;
+    clearFiles: () => void;
+}

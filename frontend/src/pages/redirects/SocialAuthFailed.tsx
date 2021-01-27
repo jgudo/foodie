@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import useDocumentTitle from "~/hooks/useDocumentTitle";
 
 const SocialAuthFailed = () => {
+    useDocumentTitle('Authentication Failed');
+
     return (
         <div className="contain pt-14 h-full">
             <h1 className="mt-8 text-2xl laptop:text-4xl">Failed to authenticate</h1>

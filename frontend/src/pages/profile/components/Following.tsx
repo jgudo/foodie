@@ -83,6 +83,7 @@ const Following: React.FC<IProps> = ({ username }) => {
             )}
             {followings.length !== 0 && (
                 <div>
+                    <h4 className="text-gray-700 mb-4 ml-4 mt-4 laptop:mt-0">Following</h4>
                     <TransitionGroup component={null}>
                         {followings.map(following => (
                             <CSSTransition

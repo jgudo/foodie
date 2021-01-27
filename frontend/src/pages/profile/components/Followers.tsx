@@ -82,6 +82,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
             )}
             {followers.length !== 0 && (
                 <div>
+                    <h4 className="text-gray-700 mb-4 ml-4 mt-4 laptop:mt-0">Followers</h4>
                     <TransitionGroup component={null}>
                         {followers.map(follower => (
                             <CSSTransition

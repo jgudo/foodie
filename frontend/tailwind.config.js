@@ -26,6 +26,7 @@ module.exports = {
         '15rem': '15rem'
       },
       maxHeight: {
+        '90vh': '90vh',
         '80vh': '80vh',
         '70vh': '70vh',
         '85%': '85%',
@@ -41,10 +42,10 @@ module.exports = {
         '40rem': '40rem'
       },
       padding: {
+        '6%': '6%',
         '60px': '60px',
         '20%': '20%',
         '10%': '10%',
-        '6%': '6%'
       },
       zIndex: {
         '9999': '9999'
@@ -61,7 +62,7 @@ module.exports = {
   },
   variants: {
     cursor: ['hover', 'focus'],
-    backgroundColor: ['hover', 'focus', 'important'],
+    backgroundColor: ['hover', 'focus', 'important', 'responsive'],
     backgroundSize: ['important', 'responsive'],
     backgroundRepeat: ['important', 'responsive'],
     backgroundPosition: ['important', 'responsive'],

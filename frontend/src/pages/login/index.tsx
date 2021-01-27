@@ -1,7 +1,8 @@
-import { FacebookFilled, GithubFilled, LockFilled } from '@ant-design/icons';
+import { LockFilled } from '@ant-design/icons';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import SocialLogin from '~/components/shared/SocialLogin';
 import { REGISTER } from '~/constants/routes';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import bg from '~/images/friends_meal.jpg';
@@ -141,20 +142,7 @@ const Login: React.FC = () => {
                         {/* -- TOO HARD TO REPLICATE PSEUDO IN TAILWIND :() */}
                         <i className="social-login-divider">OR</i>
                         <div className="flex justify-between space-x-2">
-                            <a
-                                className="button w-full bg-blue-500 hover:bg-blue-600 laptop:w-2/4"
-                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/facebook`}
-                            >
-                                <FacebookFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
-                                Facebook
-                            </a>
-                            <a
-                                className="button w-full border border-gray-300 bg-gray-700 hover:bg-gray-600 laptop:w-2/4"
-                                href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/github`}
-                            >
-                                <GithubFilled className="flex items-center justify-center absolute left-4 laptop:left-8 top-0 bottom-0 my-auto" />
-                                GitHub
-                            </a>
+                            <SocialLogin isLoading={isLoading} />
                         </div>
                     </form>
                     <div className="text-center mt-8">
