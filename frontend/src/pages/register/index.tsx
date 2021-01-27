@@ -31,19 +31,19 @@ const Register: React.FC = () => {
     }));
 
     const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
+        const val = e.target.value.trim();
 
         setEmail(val.toLowerCase());
     };
 
     const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
+        const val = e.target.value.trim();
 
         setPassword(val);
     };
 
     const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
+        const val = e.target.value.trim();
 
         setUsername(val.toLowerCase());
     };
@@ -107,7 +107,8 @@ const Register: React.FC = () => {
                                     type="text"
                                     className={`lowercase ${error ? 'input--error' : ''}`}
                                     onChange={onUsernameChange}
-                                    autoComplete="email"
+                                    autoComplete="username"
+                                    maxLength={30}
                                     required
                                     readOnly={isLoading}
                                     placeholder="Username eg: john23 | john_23"
@@ -122,6 +123,7 @@ const Register: React.FC = () => {
                                     className={`lowercase ${error ? 'input--error' : ''}`}
                                     onChange={onEmailChange}
                                     autoComplete="email"
+                                    maxLength={64}
                                     required
                                     readOnly={isLoading}
                                     placeholder="Email eg: john@example.com"

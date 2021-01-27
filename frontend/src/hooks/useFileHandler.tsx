@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { IImage } from '~/types/types';
+import { IFileHandler, IImage } from '~/types/types';
 
-const useFileHandler = <T extends unknown>(type = "multiple", initState: T) => {
+const useFileHandler = <T extends unknown>(type = "multiple", initState: T): IFileHandler<T> => {
     const [imageFile, setImageFile] = useState<T>(initState);
     const [isFileLoading, setFileLoading] = useState(false);
 

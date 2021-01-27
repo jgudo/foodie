@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
         unique: [true, 'Email already taken.'],
         required: [true, 'Email is required.'],
         lowercase: true,
+        maxlength: 64,
         validate: {
             validator: (email) => {
                 const regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;

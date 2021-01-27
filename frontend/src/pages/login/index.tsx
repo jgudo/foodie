@@ -31,7 +31,7 @@ const Login: React.FC = () => {
     }));
 
     const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
+        const val = e.target.value.trim();
 
         setUsername(val);
     };
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
                                     autoComplete="username"
                                     value={username}
                                     required
-                                    maxLength={50}
+                                    maxLength={30}
                                     className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Username"
                                     readOnly={isLoading}
