@@ -235,7 +235,7 @@ router.patch(
                 }, {
                     new: true
                 });
-                await updatedPost.populate('author', 'fullname, username, profilePicture').execPopulate();
+                await updatedPost.populate('author', 'fullname username profilePicture').execPopulate();
 
                 res.status(200).send(makeResponseJson(updatedPost));
             } else {

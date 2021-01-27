@@ -31,6 +31,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
             setIsUpdating(true);
             const updatedPost = await updatePost(props.post.id, { description: description.trim() });
 
+            console.log(updatedPost)
             props.updateSuccessCallback(updatedPost);
             setIsUpdating(false);
             props.closeModal();
