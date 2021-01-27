@@ -51,8 +51,14 @@ const UserSchema = new mongoose.Schema({
     },
     provider_access_token: String,
     provider_refresh_token: String,
-    firstname: String,
-    lastname: String,
+    firstname: {
+        type: String,
+        maxlength: 40
+    },
+    lastname: {
+        type: String,
+        maxlength: 50
+    },
     isEmailValidated: {
         type: Boolean,
         default: false
