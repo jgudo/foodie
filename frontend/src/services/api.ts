@@ -12,8 +12,8 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
     response => response,
     error => {
-        const { status } = error.response;
-        if (status === 401) {
+        const { data, status } = error.response;
+        if (status === 401 && (data?.error?.type || '') !== 'INCORRECT_CREDENTIALS') {
             store.dispatch(logoutStart());
         }
         return Promise.reject(error);
