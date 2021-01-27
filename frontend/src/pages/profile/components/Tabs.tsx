@@ -13,13 +13,12 @@ const linkStyleName = `
     text-sm laptop:text-lg font-medium text-gray-500 hover:bg-gray-200 
     hover:text-gray-800 rounded-t-md cursor-pointer px-2 laptop:px-4 py-2
     border-b-4 border-transparent hover:border-indigo-400 flex justify-center
-    items-center
+    items-center space-x-2
 `;
 
 const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, followingCount }) => {
     const { pathname } = useLocation();
     const [activeNav, setActiveNav] = useState('');
-    const isLaptop = window.screen.width >= 1024;
 
     useEffect(() => {
         const splitPath = pathname.split('/');
@@ -35,7 +34,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     to={`/user/${username}/`}
                     className={`${linkStyleName} ${(activeNav === username || activeNav === '') && 'border-indigo-700  border-b-4'}`}
                 >
-                    {isLaptop ? 'Posts' : <FormOutlined className="flex items-center justify-center text-2xl" />}
+                    <span className="hidden laptop:inline-block">Posts</span>
+                    <FormOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
                 </Link>
             </li>
             <li>
@@ -43,7 +43,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     to={`/user/${username}/info`}
                     className={`${linkStyleName} ${activeNav === 'info' && 'border-indigo-700  border-b-4'}`}
                 >
-                    {isLaptop ? 'Info' : <InfoCircleOutlined className="flex items-center justify-center text-2xl" />}
+                    <span className="hidden laptop:inline-block">Info</span>
+                    <InfoCircleOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
                 </Link>
             </li>
             <li>
@@ -52,8 +53,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     className={`${linkStyleName} ${activeNav === 'followers' && 'border-indigo-700 border-b-4'}`}
                 >
                     <span className="laptop:text-lg text-indigo-700">{followersCount}</span>
-                    &nbsp;&nbsp;
-                    {isLaptop ? 'Followers' : <TeamOutlined className="flex items-center justify-center text-2xl" />}
+                    <span className="hidden laptop:inline-block">{followersCount > 1 ? 'Followers' : 'Follower'}</span>
+                    <TeamOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
                 </Link>
             </li>
             <li>
@@ -62,8 +63,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     className={`${linkStyleName} ${activeNav === 'following' && 'border-indigo-700 border-b-4'}`}
                 >
                     <span className="laptop:text-lg text-indigo-700">{followingCount}</span>
-                    &nbsp;&nbsp;
-                    {isLaptop ? 'Following' : <UserAddOutlined className="flex items-center justify-center text-2xl" />}
+                    <span className="hidden laptop:inline-block">Following</span>
+                    <UserAddOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
                 </Link>
             </li>
             {isOwnProfile && (
@@ -72,7 +73,8 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                         to={`/user/${username}/bookmarks`}
                         className={`${linkStyleName} ${activeNav === 'bookmarks' && 'border-indigo-700 border-b-4'}`}
                     >
-                        {isLaptop ? 'Bookmarks' : <StarOutlined className="flex items-center justify-center text-2xl" />}
+                        <span className="hidden laptop:inline-block">Bookmarks</span>
+                        <StarOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
                     </Link>
                 </li>
             )}
