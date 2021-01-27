@@ -1,4 +1,4 @@
-import { CommentOutlined } from '@ant-design/icons';
+import { CommentOutlined, GlobalOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRef, useState } from 'react';
@@ -66,7 +66,15 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                         <Link to={`/user/${post.author.username}`}>
                             <h5 className="font-bold">{post.author.username}</h5>
                         </Link>
-                        <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
+                        <div className="flex space-x-1">
+                            {post.privacy === 'private'
+                                ? <LockOutlined className="flex items-center justify-center text-gray-400" />
+                                : post.privacy === 'friends'
+                                    ? <UserOutlined className="flex items-center justify-center text-gray-400" />
+                                    : <GlobalOutlined className="flex items-center justify-center text-gray-400" />
+                            }
+                            <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
+                        </div>
                     </div>
                 </div>
                 <PostOptions
