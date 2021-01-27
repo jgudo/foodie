@@ -121,6 +121,8 @@ const Login: React.FC = () => {
                                     required
                                     className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Password"
+                                    minLength={8}
+                                    maxLength={100}
                                     onChange={onPasswordChange}
                                     readOnly={isLoading}
                                     value={password}

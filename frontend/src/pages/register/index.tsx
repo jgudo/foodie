@@ -139,6 +139,8 @@ const Register: React.FC = () => {
                                     onChange={onPasswordChange}
                                     autoComplete="current-password"
                                     required
+                                    minLength={8}
+                                    maxLength={100}
                                     readOnly={isLoading}
                                     placeholder="Password"
                                 />
