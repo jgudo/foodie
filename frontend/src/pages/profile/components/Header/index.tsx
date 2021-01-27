@@ -151,7 +151,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                 <img
                     alt=""
                     className="w-full h-full object-cover"
-                    src={coverPhoto.imageFile.url || profile.coverPhoto || `https://source.unsplash.com/1400x900/?nature`}
+                    src={coverPhoto.imageFile.url || profile.coverPhoto || `https://source.unsplash.com/oDhGIbegZNI/1400x900`}
                 />
             </div>
             <div className="laptop:px-6% w-full relative flex mt-2 laptop:transform laptop:-translate-y-2/4">
