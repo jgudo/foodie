@@ -112,6 +112,7 @@ const Register: React.FC = () => {
                                     required
                                     readOnly={isLoading}
                                     placeholder="Username eg: john23 | john_23"
+                                    value={username}
                                 />
                             </div>
                             <div>
@@ -127,6 +128,7 @@ const Register: React.FC = () => {
                                     required
                                     readOnly={isLoading}
                                     placeholder="Email eg: john@example.com"
+                                    value={email}
                                 />
                             </div>
                             <div>
@@ -143,6 +145,7 @@ const Register: React.FC = () => {
                                     maxLength={100}
                                     readOnly={isLoading}
                                     placeholder="Password"
+                                    value={password}
                                 />
                             </div>
                         </div>
