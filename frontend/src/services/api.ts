@@ -1,10 +1,24 @@
 import axios from 'axios';
+import { logoutStart } from '~/redux/action/authActions';
+import configureStore from '~/redux/store/store';
 import { IFetchParams, IPost, IProfile, IRegister } from '~/types/types';
 
+const store = configureStore();
 const foodieUrl = process.env.REACT_APP_FOODIE_URL || 'http://localhost:9000';
 const foodieApiVersion = process.env.REACT_APP_FOODIE_API_VERSION || 'v1';
 axios.defaults.baseURL = `${foodieUrl}/api/${foodieApiVersion}`;
 axios.defaults.withCredentials = true;
+
+axios.interceptors.response.use(
+    response => response,
+    error => {
+        const { status } = error.response;
+        if (status === 401) {
+            store.dispatch(logoutStart());
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const login = async (username: string, password: string) => {
     try {

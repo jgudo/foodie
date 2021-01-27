@@ -48,7 +48,7 @@ const Register: React.FC = () => {
         setUsername(val.toLowerCase());
     };
 
-    const onSubmit = async (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (email && password && username) {
@@ -97,7 +97,6 @@ const Register: React.FC = () => {
                         </h2>
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
-                        <input type="hidden" name="remember" value="true" />
                         <div className="rounded-md shadow-sm space-y-2">
                             <div>
                                 <label htmlFor="email-address" className="sr-only">Username</label>
@@ -105,13 +104,13 @@ const Register: React.FC = () => {
                                     id="username"
                                     name="username"
                                     type="text"
-                                    className={`lowercase ${error ? 'input--error' : ''}`}
+                                    className={` ${error ? 'input--error' : ''}`}
                                     onChange={onUsernameChange}
                                     autoComplete="username"
                                     maxLength={30}
                                     required
                                     readOnly={isLoading}
-                                    placeholder="Username eg: john23 | john_23"
+                                    placeholder="Username"
                                     value={username}
                                 />
                             </div>
@@ -121,13 +120,13 @@ const Register: React.FC = () => {
                                     id="email-address"
                                     name="email"
                                     type="email"
-                                    className={`lowercase ${error ? 'input--error' : ''}`}
+                                    className={` ${error ? 'input--error' : ''}`}
                                     onChange={onEmailChange}
                                     autoComplete="email"
                                     maxLength={64}
                                     required
                                     readOnly={isLoading}
-                                    placeholder="Email eg: john@example.com"
+                                    placeholder="Email Address"
                                     value={email}
                                 />
                             </div>

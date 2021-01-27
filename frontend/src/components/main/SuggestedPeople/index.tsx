@@ -43,7 +43,7 @@ const SuggestedPeople: React.FC = () => {
             {(!isLoading && error) && (
                 <div className="flex min-h-10rem items-center justify-center">
                     <span className="text-gray-400 italic">
-                        {(error as IError).error.message || 'Something went wrong :('}
+                        {(error as IError)?.error?.message || 'Something went wrong :('}
                     </span>
                 </div>
             )}

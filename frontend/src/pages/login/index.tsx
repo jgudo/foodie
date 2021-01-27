@@ -91,9 +91,7 @@ const Login: React.FC = () => {
                             Login to Foodie
                     </h2>
                     </div>
-                    <form
-                        className="mt-8 space-y-6" onSubmit={onSubmit}>
-                        <input type="hidden" name="remember" value="true" />
+                    <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div className="mb-2">
                                 <label htmlFor="username" className="sr-only">Username</label>
@@ -129,18 +127,13 @@ const Login: React.FC = () => {
                                 />
                             </div>
                         </div>
-
-                        <div className="text-center flex flex-col laptop:items-center laptop:flex-row laptop:justify-between laptop:text-left">
-                            <Link className="font-medium text-sm text-gray-400 mb-4  laptop:mb-0 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
-                                Forgot your password?
+                        <Link className="font-medium text-sm text-gray-400 inline-block laptop:block my-4  laptop:mb-0 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
+                            Forgot your password?
                             </Link>
-                            <div className="laptop:w-2/4">
-                                <button type="submit" className="button--stretch" disabled={isLoading}>
-                                    <LockFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
-                                    {isLoading ? 'Logging In...' : 'Login'}
-                                </button>
-                            </div>
-                        </div>
+                        <button type="submit" className="button--stretch" disabled={isLoading}>
+                            <LockFilled className="flex items-center justify-center absolute left-8 top-0 bottom-0 my-auto" />
+                            {isLoading ? 'Logging In...' : 'Login'}
+                        </button>
                         {/* -- TOO HARD TO REPLICATE PSEUDO IN TAILWIND :() */}
                         <i className="social-login-divider">OR</i>
                         <div className="flex justify-between space-x-2">
