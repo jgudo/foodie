@@ -28,12 +28,14 @@ router.get(
                 .limit(limit)
                 .skip(skip)
 
-            const filteredFeed = feeds.map((feed) => {
-                const isPostLiked = feed.post.isPostLiked(req.user._id);
-                const isBookmarked = req.user.isBookmarked(feed.post.id);
+            const filteredFeed = feeds
+                .filter(feed => feed.post) // filter out null posts (users that have been deleted but posts still in db)
+                .map((feed) => {
+                    const isPostLiked = feed.post.isPostLiked(req.user._id);
+                    const isBookmarked = req.user.isBookmarked(feed.post.id);
 
-                return { ...feed.post.toObject(), isLiked: isPostLiked, isBookmarked };
-            });
+                    return { ...feed.post.toObject(), isLiked: isPostLiked, isBookmarked };
+                });
 
             if (filteredFeed.length === 0) {
                 return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more feed.' }));
