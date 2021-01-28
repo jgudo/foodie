@@ -13,11 +13,11 @@ const sagaMiddleware = createSagaMiddleware();
 const middlewares: any = [sagaMiddleware];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// if (process.env.NODE_ENV === `development`) {
-//     const { logger } = require(`redux-logger`);
+if (process.env.NODE_ENV === `development`) {
+    const { logger } = require(`redux-logger`);
 
-//     middlewares.push(logger);
-// }
+    middlewares.push(logger);
+}
 
 const configureStore = () => {
     const store = createStore(
