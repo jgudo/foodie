@@ -68,7 +68,6 @@ const Comments: React.FC<IProps> = (props) => {
             setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
             setIsLoading(false);
         } catch (e) {
-            console.log('CANT GET COMMENTS', e);
             setIsLoading(false);
             setError(e.error?.message || 'Something went wrong.');
         }

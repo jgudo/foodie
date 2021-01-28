@@ -1,7 +1,7 @@
-import { createStore, compose, applyMiddleware } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import rootSaga from '../sagas';
 import rootReducer from '../reducer/rootReducer';
+import rootSaga from '../sagas';
 
 declare global {
     interface Window {
@@ -13,11 +13,11 @@ const sagaMiddleware = createSagaMiddleware();
 const middlewares: any = [sagaMiddleware];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-if (process.env.NODE_ENV === `development`) {
-    const { logger } = require(`redux-logger`);
+// if (process.env.NODE_ENV === `development`) {
+//     const { logger } = require(`redux-logger`);
 
-    middlewares.push(logger);
-}
+//     middlewares.push(logger);
+// }
 
 const configureStore = () => {
     const store = createStore(
@@ -29,4 +29,6 @@ const configureStore = () => {
     return store;
 };
 
-export default configureStore;
+const store = configureStore();
+
+export default store;

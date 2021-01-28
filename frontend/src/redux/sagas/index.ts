@@ -1,7 +1,6 @@
 import { takeLatest } from 'redux-saga/effects';
 import {
     CHECK_SESSION,
-
     CREATE_POST_START,
     GET_FEED_START,
     GET_USER_START,

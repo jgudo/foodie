@@ -4,10 +4,8 @@ import 'react-image-lightbox/style.css';
 import { Provider } from 'react-redux';
 import '~/styles/app.css';
 import App from './App';
-import configureStore from './redux/store/store';
+import store from './redux/store/store';
 import reportWebVitals from './reportWebVitals';
-
-const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
