@@ -19,7 +19,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
             ) : (
                     <div className="max-h-80vh laptop:max-h-70vh overflow-y-scroll divide-y divide-gray-100">
                         <TransitionGroup component={null}>
-                            {messages.map(message => (
+                            {messages.map(message => (message.from && message.to) && (
                                 <CSSTransition
                                     timeout={500}
                                     classNames="fade"

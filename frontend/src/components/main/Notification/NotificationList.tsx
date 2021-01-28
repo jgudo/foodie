@@ -28,7 +28,7 @@ const NotificationList: React.FC<IProps> = ({ toggleNotification, notifications,
             ) : (
                     <div className="max-h-80vh laptop:max-h-70vh overflow-y-scroll divide-y divide-gray-100">
                         <TransitionGroup component={null}>
-                            {notifications.map((notif) => (
+                            {notifications.map((notif) => notif.initiator && (
                                 <CSSTransition
                                     timeout={500}
                                     classNames="fade"

@@ -55,7 +55,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
             shouldCloseOnOverlayClick={true}
             overlayClassName="modal-overlay"
         >
-            <div className="relative transition-all">
+            <div className="relative transition-all min-w-15rem">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
                     onClick={props.closeModal}

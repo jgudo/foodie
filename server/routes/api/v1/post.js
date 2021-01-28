@@ -346,7 +346,7 @@ router.get(
             }
 
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = myFollowing.following || [];
+            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
 
             const result = post.likes.map((user) => {
                 return {
