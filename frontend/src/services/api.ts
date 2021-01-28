@@ -9,17 +9,25 @@ const foodieApiVersion = process.env.REACT_APP_FOODIE_API_VERSION || 'v1';
 axios.defaults.baseURL = `${foodieUrl}/api/${foodieApiVersion}`;
 axios.defaults.withCredentials = true;
 
+let isLogoutTriggered = false;
+
+function resetIsLogoutTriggered() {
+    isLogoutTriggered = false;
+}
+
 axios.interceptors.response.use(
     response => response,
     error => {
         const { data, status } = error.response;
-        console.log('INTERCEPTOR', data);
         if (status === 401
             && (data?.error?.type || '') !== 'INCORRECT_CREDENTIALS'
             && error.config
-            && !error.config.__isRetryRequest) {
-            error.config._retry = true;
-            store.dispatch(logoutStart());
+            && !error.config.__isRetryRequest
+        ) {
+            if (!isLogoutTriggered) {
+                isLogoutTriggered = true;
+                store.dispatch(logoutStart(resetIsLogoutTriggered));
+            }
         }
         return Promise.reject(error);
     }
