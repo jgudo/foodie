@@ -114,7 +114,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                 <div
                                     className="w-32 h-full !bg-cover !bg-no-repeat !bg-center"
                                     style={{
-                                        background: `#f7f7f7 url(${item.post?.photos[0] || ''})`
+                                        background: `#f7f7f7 url(${item.post.photos[0]})`
                                     }}
                                 />
                             </Link>

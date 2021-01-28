@@ -64,7 +64,7 @@ router.get(
                 .find({ _author_id: req.user._id })
                 .populate({
                     path: 'post',
-                    select: 'photos, description',
+                    select: 'photos description',
                     populate: {
                         path: 'likesCount commentsCount'
                     }
