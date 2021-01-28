@@ -19,6 +19,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
                 yield put(setNewsFeedErrorMessage(null));
 
                 const posts = yield call(getNewsFeed, payload);
+                console.log(posts);
 
                 yield put(isGettingFeed(false));
                 yield put(getNewsFeedSuccess(posts));

@@ -140,7 +140,7 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                 {(state.newsFeed.items.length !== 0) && (
                     <>
                         <TransitionGroup component={null}>
-                            {state.newsFeed.items.map((post: IPost) => (
+                            {state.newsFeed.items.map((post: IPost) => post.author && ( // avoid render posts with null author
                                 <CSSTransition
                                     timeout={500}
                                     classNames="fade"

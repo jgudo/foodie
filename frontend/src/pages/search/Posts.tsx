@@ -38,7 +38,7 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
 
     return (
         <div className="space-y-4">
-            {posts.map((post) => (
+            {posts.map((post) => post.author && (
                 <div
                     className="h-28 laptop:h-24 flex justify-start bg-white rounded-md shadow-lg overflow-hidden cursor-pointer border border-transparent hover:border-indigo-700"
                     key={post.id}
