@@ -52,8 +52,6 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
         }
     }
 
-    console.log(post)
-
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
             {/* --- AVATAR AND OPTIONS */}
