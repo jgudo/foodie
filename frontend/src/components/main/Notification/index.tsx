@@ -140,7 +140,6 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
         hasNextPage: !error && notifications.items.length >= 10,
         onLoadMore: fetchNotifications,
         scrollContainer: 'parent',
-        threshold: 200
     });
 
     return (
@@ -151,7 +150,8 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
                 </Badge>
             </div>
             {isNotificationOpen && (
-                <div className="notification-wrapper fixed top-14 pb-14 laptop:pb-0 laptop:top-10 right-0 h-screen laptop:h-auto w-full laptop:w-30rem bg-white shadow-lg rounded-md laptop:absolute">
+                <div className="notification-wrapper fixed top-14 pb-14 laptop:pb-0 laptop:top-10 right-0 h-screen laptop:h-auto w-full laptop:w-30rem bg-white shadow-lg rounded-md laptop:absolute"
+                >
                     {/*  ----- HEADER ----- */}
                     <div className="py-2 px-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 laptop:rounded-t-md">
                         <h6 className="text-white">Notifications</h6>
@@ -173,20 +173,16 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
                         </div>
                     )}
                     {(notifications.items.length !== 0) && (
-                        <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+                        <div>
                             <NotificationList
                                 notifications={notifications.items}
                                 readNotification={handleReadNotification}
                                 toggleNotification={setNotificationOpen}
+                                infiniteScrollRef={infiniteRef}
                             />
                             {(notifications.items.length !== 0 && !error && isLoading) && (
                                 <div className="flex justify-center py-2">
                                     <Loader />
-                                </div>
-                            )}
-                            {(notifications.items.length !== 0 && error) && (
-                                <div className="flex justify-center py-6">
-                                    <p className="text-gray-400 italic">{error?.error?.message || 'No new notifications.'}</p>
                                 </div>
                             )}
                         </div>

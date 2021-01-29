@@ -166,8 +166,6 @@ router.get(
                         _user_id: Types.ObjectId(user._id)
                     }
                 },
-                { $skip: skip },
-                { $limit: limit },
                 { $unwind: '$following' },
                 {
                     $lookup: {
