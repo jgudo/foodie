@@ -6,3 +6,4 @@ exports.FEED_LIMIT = 10;
 exports.COMMENTS_LIMIT = 10;
 exports.USERS_LIMIT = 10;
 exports.POST_LIMIT = 10;
+exports.BOOKMARKS_LIMIT = 10;

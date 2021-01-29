@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -49,9 +49,16 @@ const Comments: React.FC<IProps> = (props) => {
     const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
     const deleteModal = useModal();
+    let isMountedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         fetchComment({ offset: 0, limit: 1, sort: 'desc' });
+
+        if (isMountedRef) isMountedRef.current = true;
+
+        return () => {
+            if (isMountedRef) isMountedRef.current = false;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -64,12 +71,17 @@ const Comments: React.FC<IProps> = (props) => {
         try {
             setIsLoading(true);
             const { comments: fetchedComments, commentsCount } = await getComments(postID, params);
-            setOffset(offset + 1);
-            setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
-            setIsLoading(false);
+
+            if (isMountedRef.current) {
+                setOffset(offset + 1);
+                setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
+                setIsLoading(false);
+            }
         } catch (e) {
-            setIsLoading(false);
-            setError(e.error?.message || 'Something went wrong.');
+            if (isMountedRef.current) {
+                setIsLoading(false);
+                setError(e.error?.message || 'Something went wrong.');
+            }
         }
     };
 
@@ -84,19 +96,23 @@ const Comments: React.FC<IProps> = (props) => {
                 setIsCommenting(true);
                 const comment = isUpdating ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
 
-                if (isUpdating) {
-                    handleUpdateCommentState(comment);
-                } else {
-                    setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
-                }
+                if (isMountedRef.current) {
+                    if (isUpdating) {
+                        handleUpdateCommentState(comment);
+                    } else {
+                        setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
+                    }
 
-                setCommentBody('');
-                setTargetID('');
-                setIsUpdating(false);
-                setIsCommenting(false);
+                    setCommentBody('');
+                    setTargetID('');
+                    setIsUpdating(false);
+                    setIsCommenting(false);
+                }
             } catch (e) {
-                setIsCommenting(false);
-                setError(e.error.message);
+                if (isMountedRef.current) {
+                    setIsCommenting(false);
+                    setError(e.error.message);
+                }
             }
         } else if (e.key === 'Escape') {
             if (isUpdating) handleCancelUpdate();
@@ -129,8 +145,10 @@ const Comments: React.FC<IProps> = (props) => {
         // eslint-disable-next-line array-callback-return
         const filteredComments = comments.items.filter((comment) => comment.id !== commentID);
 
-        setTargetID('');
-        setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
+        if (isMountedRef.current) {
+            setTargetID('');
+            setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
+        }
     }
 
     return !isCommentVisible ? null : (

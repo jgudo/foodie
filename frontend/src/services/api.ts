@@ -422,11 +422,14 @@ export const markAllAsUnreadNotifications = async (): Promise<any> => {
     }
 }
 
-export const getBookmarks = async (): Promise<any> => {
+export const getBookmarks = async ({ offset = 0 }): Promise<any> => {
     try {
         const req = await axios({
             method: 'GET',
-            url: `/bookmarks`
+            url: `/bookmarks`,
+            params: {
+                offset
+            }
         });
 
         return Promise.resolve(req.data.data)

@@ -4,6 +4,7 @@ const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
 const Post = require('../../../schemas/PostSchema');
 const User = require('../../../schemas/UserSchema');
 const { Types } = require('mongoose');
+const { BOOKMARKS_LIMIT } = require('../../../constants/constants');
 
 const router = require('express').Router({ mergeParams: true });
 
@@ -55,7 +56,7 @@ router.get(
     async (req, res, next) => {
         try {
             const offset = parseInt(req.query.offset) || 0;
-            const limit = 15;
+            const limit = BOOKMARKS_LIMIT;
             const skip = offset * limit;
 
             // GET TOTAL
@@ -74,7 +75,7 @@ router.get(
                 .sort({ createdAt: -1 });
 
             if (bookmarks.length === 0) {
-                return res.status(200).send(makeResponseJson([]));
+                return res.status(404).send(makeErrorJson({ message: "You don't have any bookmarks." }));
             }
 
             const result = bookmarks.map((item) => {
