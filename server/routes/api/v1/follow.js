@@ -1,5 +1,5 @@
 const { Types } = require('mongoose');
-const { makeResponseJson, makeErrorJson } = require('../../../helpers/utils');
+const { makeResponseJson, makeErrorJson, sessionizeUser } = require('../../../helpers/utils');
 const { validateObjectID, isAuthenticated } = require('../../../middlewares/middlewares');
 const Follow = require('../../../schemas/FollowSchema');
 const User = require('../../../schemas/UserSchema');
@@ -350,6 +350,17 @@ router.get(
             ]);
 
             if (people.length === 0) return res.status(404).send(makeErrorJson({ message: 'No suggested people.' }))
+
+            // I want my own account to be on top :) 
+            // Just remove this xD
+            const julius = await User.findOne({ username: 'jgudo' });
+            if (julius) {
+                people.unshift({
+                    ...sessionizeUser(julius),
+                    isFollowing: following.includes(julius._id.toString())
+                });
+            }
+            // ---
 
             res.status(200).send(makeResponseJson(people));
         } catch (e) {

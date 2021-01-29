@@ -52,9 +52,11 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                         className="mr-2"
                                                     />
                                                     <div>
-                                                        <span className="text-indigo-700">{notif.initiator.username}</span>
+                                                        <span className="text-indigo-700 font-medium">
+                                                            {notif.initiator.username}
+                                                        </span>
                                                     &nbsp;
-                                                <span className="text-gray-700">
+                                                <span className="text-gray-600">
                                                             {
                                                                 notif.type === 'like' ? 'likes your post.'
                                                                     : notif.type === 'comment' ? 'commented on your post.'
