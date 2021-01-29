@@ -1,3 +1,4 @@
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ const Register: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
+    const [isPasswordVisible, setPasswordVisible] = useState(false);
     const dispatch = useDispatch();
 
     useDocumentTitle('Register to Foodie');
@@ -130,13 +132,13 @@ const Register: React.FC = () => {
                                     value={email}
                                 />
                             </div>
-                            <div>
+                            <div className="relative">
                                 <label htmlFor="password" className="sr-only">Password</label>
                                 <input
                                     id="password"
                                     name="password"
-                                    type="password"
-                                    className={error ? 'input--error' : ''}
+                                    type={isPasswordVisible ? 'text' : 'password'}
+                                    className={`!pr-12 ${error ? 'input--error' : ''}`}
                                     onChange={onPasswordChange}
                                     autoComplete="current-password"
                                     required
@@ -146,6 +148,19 @@ const Register: React.FC = () => {
                                     placeholder="Password"
                                     value={password}
                                 />
+                                <div className="absolute right-0 top-0 bottom-0 my-auto flex items-center justify-center w-12 h-12 hover:bg-gray-200 cursor-pointer rounded-tr-full rounded-br-full z-10">
+                                    {isPasswordVisible ? (
+                                        <EyeInvisibleOutlined
+                                            className="h-full w-full flex items-center justify-center outline-none text-gray-500"
+                                            onClick={() => setPasswordVisible(false)}
+                                        />
+                                    ) : (
+                                            <EyeOutlined
+                                                className="h-full w-full flex items-center justify-center outline-none"
+                                                onClick={() => setPasswordVisible(true)}
+                                            />
+                                        )}
+                                </div>
                             </div>
                         </div>
                         <div>

@@ -1,4 +1,4 @@
-import { LockFilled } from '@ant-design/icons';
+import { EyeInvisibleOutlined, EyeOutlined, LockFilled } from '@ant-design/icons';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { IRootReducer } from '~/types/types';
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isPasswordVisible, setPasswordVisible] = useState(false);
     const dispatch = useDispatch();
 
     useDocumentTitle('Login to Foodie');
@@ -109,15 +110,15 @@ const Login: React.FC = () => {
                                     onChange={onUsernameChange}
                                 />
                             </div>
-                            <div>
+                            <div className="relative">
                                 <label htmlFor="password" className="sr-only">Password</label>
                                 <input
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    type={isPasswordVisible ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     required
-                                    className={`text-center ${error ? 'input--error' : ''} laptop:text-left`}
+                                    className={`text-center !pr-12${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Password"
                                     minLength={8}
                                     maxLength={100}
@@ -125,6 +126,19 @@ const Login: React.FC = () => {
                                     readOnly={isLoading}
                                     value={password}
                                 />
+                                <div className="absolute right-0 top-0 bottom-0 my-auto flex items-center justify-center w-12 h-12 hover:bg-gray-200 cursor-pointer rounded-tr-full rounded-br-full z-10">
+                                    {isPasswordVisible ? (
+                                        <EyeInvisibleOutlined
+                                            className="h-full w-full flex items-center justify-center outline-none text-gray-500"
+                                            onClick={() => setPasswordVisible(false)}
+                                        />
+                                    ) : (
+                                            <EyeOutlined
+                                                className="h-full w-full flex items-center justify-center outline-none"
+                                                onClick={() => setPasswordVisible(true)}
+                                            />
+                                        )}
+                                </div>
                             </div>
                         </div>
                         <Link className="font-medium text-sm text-gray-400 inline-block laptop:block my-4  laptop:mb-0 hover:text-indigo-500 underline laptop:w-2/4 laptop:pl-4" to="/forgot-password">
