@@ -1,5 +1,5 @@
 import { CloseCircleOutlined, CloseOutlined, FileImageOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -44,10 +44,6 @@ const CreatePostModal: React.FC<IProps> = (props) => {
             props.closeModal();
         }
     };
-
-    useEffect(() => {
-        console.log(imageFile);
-    }, [imageFile])
 
     return (
         <Modal
