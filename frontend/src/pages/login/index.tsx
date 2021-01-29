@@ -155,7 +155,13 @@ const Login: React.FC = () => {
                         </div>
                     </form>
                     <div className="text-center mt-8">
-                        <Link to={REGISTER} className="underline font-medium">I dont have an account</Link>
+                        <Link
+                            className="underline font-medium"
+                            onClick={(e) => isLoading && e.preventDefault()}
+                            to={REGISTER}
+                        >
+                            I dont have an account
+                        </Link>
                     </div>
                     {/* --- COPYRIGHT -- */}
                     <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">

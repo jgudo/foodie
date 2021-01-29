@@ -174,7 +174,13 @@ const Register: React.FC = () => {
                         </div>
                     </form>
                     <div className="text-center mt-8">
-                        <Link to={LOGIN} className="underline font-medium">Login instead</Link>
+                        <Link
+                            className="underline font-medium"
+                            onClick={(e) => isLoading && e.preventDefault()}
+                            to={LOGIN}
+                        >
+                            Login instead
+                        </Link>
                     </div>
                     {/* --- COPYRIGHT -- */}
                     <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">
