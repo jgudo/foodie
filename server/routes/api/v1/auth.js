@@ -62,13 +62,13 @@ router.post(
     }
 );
 
-//@route DELETE /api/v1/auth/facebook FACEBOOK AUTH
+//@route GET /api/v1/auth/facebook FACEBOOK AUTH
 router.get(
     '/v1/auth/facebook',
     passport.authenticate('facebook-auth', { scope: ['email', 'public_profile'] })
 );
 
-//@route DELETE /api/v1/auth/facebook/callback FACEBOOK AUTH CALLBACK
+//@route GET /api/v1/auth/facebook/callback FACEBOOK AUTH CALLBACK
 router.get(
     '/v1/auth/facebook/callback',
     passport.authenticate('facebook-auth', {
@@ -77,13 +77,13 @@ router.get(
     })
 );
 
-//@route DELETE /api/v1/auth/github GITHUB AUTH
+//@route GET /api/v1/auth/github GITHUB AUTH
 router.get(
     '/v1/auth/github',
     passport.authenticate('github-auth')
 );
 
-//@route DELETE /api/v1/auth/github/callback GITHUB AUTH
+//@route GET /api/v1/auth/github/callback GITHUB AUTH
 router.get(
     '/v1/auth/github/callback',
     passport.authenticate('github-auth', {
