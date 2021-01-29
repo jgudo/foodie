@@ -191,11 +191,11 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                             <Avatar
                                                 url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
                                                 size="xs"
-                                                className={`self-end !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
+                                                className={`self-end flex-shrink-0 !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
                                             />
                                             {/*  -- MESSAGE-- */}
                                             <span
-                                                className={`py-2 px-3  text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
+                                                className={`py-2 px-3 break-all text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
                                                 {msg.text}
                                             </span>
                                             <span ref={dummyEl}></span>
