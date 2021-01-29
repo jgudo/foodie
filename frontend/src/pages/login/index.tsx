@@ -118,7 +118,7 @@ const Login: React.FC = () => {
                                     type={isPasswordVisible ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     required
-                                    className={`text-center !pr-12${error ? 'input--error' : ''} laptop:text-left`}
+                                    className={`text-center !pr-12 ${error ? 'input--error' : ''} laptop:text-left`}
                                     placeholder="Password"
                                     minLength={8}
                                     maxLength={100}
