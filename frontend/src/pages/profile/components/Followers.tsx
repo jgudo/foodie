@@ -39,6 +39,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
     const fetchFollowers = async () => {
         try {
             setIsLoading(true);
+            console.log(offset)
             const fetchedFollowers = await getFollowers(username, { offset });
 
             if (isMountedRef.current) {
