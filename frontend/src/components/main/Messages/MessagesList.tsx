@@ -34,7 +34,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                                         <Avatar
                                             url={!message.isOwnMessage ? message.from.profilePicture : message.to.profilePicture}
                                             size="lg"
-                                            className="mr-4"
+                                            className="flex-shrink-0 mr-4"
                                         />
                                         <div className="relative flex-grow">
                                             {/* --- USERNAME --- */}
@@ -42,7 +42,7 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
                                                 {!message.isOwnMessage ? message.from.username : message.to.username}
                                             </h5>
                                             {/* -- MESSAGE--- */}
-                                            <span className={`block max-w-sm whitespace-nowrap overflow-hidden overflow-ellipsis ${(message.seen || message.isOwnMessage) ? 'text-gray-400' : 'text-indigo-600 font-medium'} text-sm`}>
+                                            <span className={`block max-w-16rem laptop:max-w-xs whitespace-nowrap overflow-hidden overflow-ellipsis ${(message.seen || message.isOwnMessage) ? 'text-gray-400' : 'text-indigo-600 font-medium'} text-sm`}>
                                                 {message.isOwnMessage && 'You:'} {message.text}
                                             </span>
                                             {/* --- DATE --- */}
