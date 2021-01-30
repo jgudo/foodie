@@ -67,7 +67,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
 
     return (
         <div className="w-full" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
-            {isLoading && (
+            {(isLoading && followers.length === 0) && (
                 <div className="min-h-10rem px-4">
                     <UserLoader includeButton={true} />
                     <UserLoader includeButton={true} />
@@ -75,7 +75,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
                     <UserLoader includeButton={true} />
                 </div>
             )}
-            {!isLoading && followers.length === 0 && (
+            {(!isLoading && followers.length === 0 && error) && (
                 <div className="w-full min-h-10rem flex items-center justify-center">
                     <h6 className="text-gray-400 italic">{error?.error?.message || 'Something went wrong.'}</h6>
                 </div>
