@@ -23,7 +23,7 @@ const SuggestedPeople = () => {
             setIsLoading(true);
             const users = await getSuggestedPeople({ offset });
 
-            setPeople(users);
+            setPeople([...people, ...users]);
             setOffset(offset + 1);
             setIsLoading(false);
         } catch (e) {
