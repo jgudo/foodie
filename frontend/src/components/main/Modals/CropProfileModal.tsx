@@ -70,9 +70,9 @@ const CropProfileModal: React.FC<IProps> = (props) => {
                 shouldCloseOnOverlayClick={false}
                 overlayClassName="modal-overlay"
             >
-                <div className="w-30rem bg-white rounded-md">
+                <div className="w-full laptop:w-30rem bg-white rounded-md">
                     <div className="p-4 flex items-start justify-between">
-                        <h2>Crop Photo</h2>
+                        <h2 className="text-xl laptop:text-2xl">Crop Photo</h2>
                         <div className="flex items-center">
                             <button
                                 className="button--muted !rounded-full"

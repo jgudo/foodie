@@ -1,7 +1,7 @@
-import { ArrowLeftOutlined, ArrowRightOutlined, CloseOutlined, LogoutOutlined, MenuOutlined, SearchOutlined, StarOutlined, TeamOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, ArrowRightOutlined, CloseOutlined, LogoutOutlined, MenuOutlined, SearchOutlined, StarOutlined, TeamOutlined, UsergroupAddOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { LOGIN, REGISTER } from "~/constants/routes";
+import { LOGIN, REGISTER, SUGGESTED_PEOPLE } from "~/constants/routes";
 import logo from '~/images/logo.svg';
 import { IUser } from "~/types/types";
 import Messages from "../main/Messages";
@@ -139,6 +139,16 @@ const NavBarMobile: React.FC<IProps> = ({ isAuth, auth, openModal }) => {
                                 >
                                     <StarOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
                                     <h6 className="text-sm">Bookmarks</h6>
+                                </Link>
+                            </li>
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                                <Link
+                                    className="flex items-center text-black"
+                                    onClick={onClickMenuItem}
+                                    to={SUGGESTED_PEOPLE}
+                                >
+                                    <UsergroupAddOutlined className="text-indigo-700" style={{ fontSize: '30px', marginRight: '25px' }} />
+                                    <h6 className="text-sm">Suggested People</h6>
                                 </Link>
                             </li>
                             <li className="p-4 cursor-pointer hover:bg-indigo-100">
