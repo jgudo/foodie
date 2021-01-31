@@ -8,7 +8,6 @@ const router = require('express').Router({ mergeParams: true });
 
 router.get(
     '/v1/search',
-    isAuthenticated,
     async (req, res, next) => {
         try {
             const { q, type } = req.query;
@@ -33,6 +32,10 @@ router.get(
                     .limit(limit)
                     .skip(skip);
 
+                if (posts.length === 0) {
+                    return res.status(404).send(makeErrorJson({ message: 'No posts found.' }));
+                }
+
                 const postsMerged = posts.map((post) => {
                     const isPostLiked = post.isPostLiked(req.user._id);
                     const isBookmarked = req.user.isBookmarked(post.id);
@@ -54,17 +57,26 @@ router.get(
                     })
                     .limit(limit)
                     .skip(skip);
-                const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-                following = !myFollowing ? [] : myFollowing.following;
 
-                const usersMerged = users.map((user) => {
-                    return {
-                        ...omit(user.toUserJSON(), 'bookmarks'),
-                        isFollowing: following.includes(user.id)
-                    }
-                });
+                if (users.length === 0) {
+                    return res.status(404).send(makeErrorJson({ message: 'No users found.' }));
+                }
 
-                result = usersMerged;
+                if (req.isAuthenticated()) {
+                    const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+                    following = !myFollowing ? [] : myFollowing.following;
+
+                    const usersMerged = users.map((user) => {
+                        return {
+                            ...omit(user.toUserJSON(), 'bookmarks'),
+                            isFollowing: following.includes(user.id)
+                        }
+                    });
+
+                    result = usersMerged;
+                } else {
+                    result = users;
+                }
             }
 
             res.status(200).send(makeResponseJson(result));
