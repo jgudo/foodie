@@ -40,14 +40,14 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                     <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm">
                         <div className="flex items-center space-x-8">
                             {/* ---- LOGO -------- */}
-                            <NavLink
+                            <Link
                                 to={{
                                     pathname: '/',
                                     state: { from: pathname }
                                 }}
                             >
                                 <img src={logo} alt="" className="w-24" />
-                            </NavLink>
+                            </Link>
                             {/* -------- SEARCH BAR ------- */}
                             <SearchInput />
                         </div>

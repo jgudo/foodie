@@ -38,8 +38,10 @@ const Home: React.FC<IProps> = (props) => {
     const { isOpen, openModal, closeModal } = useModal();
     const from = props.location.state?.from || null;
 
+
     useDocumentTitle('Foodie | Social Network');
     useEffect(() => {
+        console.log('TRIGGER', from)
         if (state.newsFeed.items.length === 0 || from === '/') {
             dispatch(clearNewsFeed());
             dispatch(getNewsFeedStart({ offset: 0 }));
@@ -52,9 +54,7 @@ const Home: React.FC<IProps> = (props) => {
     }, []);
 
     const fetchNewsFeed = () => {
-        if (!state.isLoadingFeed) {
-            dispatch(getNewsFeedStart({ offset: state.newsFeed.offset }));
-        }
+        dispatch(getNewsFeedStart({ offset: state.newsFeed.offset }));
     };
 
     const likeCallback = (post: IPost) => {

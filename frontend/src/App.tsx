@@ -74,7 +74,7 @@ function App() {
             <PublicRoute path={ROUTE.REGISTER} component={Register} />
             <PublicRoute path={ROUTE.LOGIN} component={Login} />
             <ProtectedRoute path={ROUTE.SEARCH} exact component={Search} />
-            <Route path={ROUTE.HOME} exact component={Home} />
+            <Route path={ROUTE.HOME} exact render={(props: any) => <Home key={Date.now()} {...props} />} />
             <ProtectedRoute path={ROUTE.POST} component={Post} />
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
             <ProtectedRoute path={ROUTE.CHAT} component={Chat} />
