@@ -1,5 +1,6 @@
 import { FormOutlined, MessageOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from "react";
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
 import Badge from '~/components/shared/Badge';
@@ -77,11 +78,11 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         }
     }
 
-    const fetchMessages = async (initOffset = 0) => {
+    const fetchMessages = async () => {
         try {
             setLoading(true);
             setError(null);
-            const result = await getMessages({ offset: initOffset });
+            const result = await getMessages({ offset });
 
             setMessages([...messages, ...result]);
             setOffset(offset + 1);
@@ -134,6 +135,13 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         setMessagesOpen(false);
     }
 
+    const infiniteRef = useInfiniteScroll({
+        loading: isLoading,
+        hasNextPage: !error && messages.length >= 10,
+        onLoadMore: fetchMessages,
+        scrollContainer: 'parent',
+    });
+
     return (
         <div className="relative">
             <div onClick={toggleMessages}>
@@ -167,16 +175,9 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                     {(messages.length !== 0) && (
                         <MessagesList
                             messages={messages}
-                            userID={id}
                             handleReadMessage={handleReadMessage}
+                            infiniteScrollRef={infiniteRef}
                         />
-                    )}
-                    {(!isLoading && !error && messages.length >= 10) && (
-                        <div className="see-more-button flex items-center justify-center py-4" onClick={() => fetchMessages(offset)}>
-                            <span className="text-indigo-700 text-sm font-medium">
-                                See more...
-                        </span>
-                        </div>
                     )}
                     {(isLoading && !error && messages.length !== 0) && (
                         <div className="flex items-center justify-center py-4">
