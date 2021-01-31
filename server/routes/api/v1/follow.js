@@ -352,12 +352,14 @@ router.get(
 
             // I want my own account to be on top :) 
             // Just remove this xD
-            const julius = await User.findOne({ username: 'jgudo' });
-            if (julius) {
-                people.unshift({
-                    ...sessionizeUser(julius),
-                    isFollowing: following.includes(julius._id.toString())
-                });
+            if (limit < 10) { // If less than 10, I want to only append mine in Home page Suggested people list
+                const julius = await User.findOne({ username: 'jgudo' });
+                if (julius) {
+                    people.unshift({
+                        ...sessionizeUser(julius),
+                        isFollowing: following.includes(julius._id.toString())
+                    });
+                }
             }
             // ---
 
