@@ -13,7 +13,7 @@ interface IProps {
 const CoverPhotoOverlay: React.FC<IProps> = (props) => {
     return (
         <div
-            className="w-full h-full laptop:bg-black laptop:bg-opacity-50 absolute flex items-center justify-center laptop:invisible transition-all"
+            className="w-full h-full laptop:bg-black laptop:bg-opacity-50 absolute flex items-center justify-center laptop:invisible transition-all z-10"
             ref={props.coverPhotoOverlayRef}
         >
             <input
