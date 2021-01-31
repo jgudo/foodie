@@ -45,7 +45,7 @@ const SuggestedPeople = () => {
                 <h2>Suggested People</h2>
                 <p className="text-gray-400 text-sm">Follow people to see their updates</p>
             </div>
-            {isLoading && (
+            {(isLoading && people.length === 0) && (
                 <div className="min-h-10rem px-4">
                     <UserLoader />
                     <UserLoader />

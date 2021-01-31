@@ -320,6 +320,7 @@ router.get(
 
             if (myFollowing) following = myFollowing.following;
 
+            console.log(limit)
             const people = await User.aggregate([
                 {
                     $match: {
@@ -328,9 +329,7 @@ router.get(
                         }
                     }
                 },
-                {
-                    $sample: { size: limit }
-                },
+                ...(limit < 10 ? ([{ $sample: { size: limit } }]) : []),
                 { $skip: skip },
                 { $limit: limit },
                 {
