@@ -44,7 +44,7 @@ const NavBarMobile: React.FC<IProps> = ({ isAuth, auth, openModal }) => {
             />
         </div>
     ) : (
-            <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm">
+            <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed top-0 left-0 w-full shadow-md laptop:shadow-sm">
                 <div className="flex items-center space-x-8">
                     {/* ---- LOGO -------- */}
                     <Link
