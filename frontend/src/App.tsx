@@ -17,6 +17,7 @@ import Profile from "./pages/profile";
 import SocialAuthFailed from './pages/redirects/SocialAuthFailed';
 import Register from "./pages/register";
 import Search from "./pages/search";
+import SuggestedPeople from './pages/suggested_people';
 import { loginSuccess } from "./redux/action/authActions";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import PublicRoute from "./routers/PublicRoute";
@@ -78,6 +79,7 @@ function App() {
             <ProtectedRoute path={ROUTE.POST} component={Post} />
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
             <ProtectedRoute path={ROUTE.CHAT} component={Chat} />
+            <ProtectedRoute path={ROUTE.SUGGESTED_PEOPLE} component={SuggestedPeople} />
             <Route path={ROUTE.SOCIAL_AUTH_FAILED} component={SocialAuthFailed} />
             <Route component={PageNotFound} />
           </Switch>
