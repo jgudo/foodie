@@ -4,6 +4,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import withAuth from "~/components/hoc/withAuth";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
 import PostItem from "~/components/main/PostItem";
 import SuggestedPeople from "~/components/main/SuggestedPeople";
@@ -21,7 +22,11 @@ interface ILocation {
     from: string;
 }
 
-const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
+interface IProps extends RouteComponentProps<any, any, ILocation> {
+    isAuth: boolean;
+}
+
+const Home: React.FC<IProps> = (props) => {
     const state = useSelector((state: IRootReducer) => ({
         newsFeed: state.newsFeed,
         auth: state.auth,
@@ -47,7 +52,9 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
     }, []);
 
     const fetchNewsFeed = () => {
-        dispatch(getNewsFeedStart({ offset: state.newsFeed.offset }));
+        if (!state.isLoadingFeed) {
+            dispatch(getNewsFeedStart({ offset: state.newsFeed.offset }));
+        }
     };
 
     const likeCallback = (post: IPost) => {
@@ -74,31 +81,34 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
 
     const infiniteRef = useInfiniteScroll({
         loading: state.isLoadingFeed,
-        hasNextPage: !state.error && state.newsFeed.items.length !== 0,
+        hasNextPage: !state.error && state.newsFeed.items.length >= 10,
         onLoadMore: fetchNewsFeed,
         scrollContainer: 'window',
-        threshold: 200
     });
 
     return (
         <div className="laptop:px-6% pt-20 flex items-start">
             {/*  --- SIDE MENU --- */}
             <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2">
-                <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
+                {props.isAuth && (
+                    <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
+                )}
             </div>
-            <div className="w-full laptop:w-2/4 relative" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+            <div className="w-full laptop:w-2/4 relative">
                 {/* --- CREATE POST INPUT ---- */}
-                <div className="flex items-center justify-start px-4 laptop:px-0">
-                    <Avatar url={state.auth.profilePicture} className="mr-2" />
-                    <div className="flex-grow">
-                        <input
-                            type="text"
-                            placeholder="Create a post."
-                            onClick={() => !state.isLoadingCreatePost && openModal()}
-                            readOnly={state.isLoadingFeed || state.isLoadingCreatePost}
-                        />
+                {props.isAuth && (
+                    <div className="flex items-center justify-start mb-4 px-4 laptop:px-0">
+                        <Avatar url={state.auth.profilePicture} className="mr-2" />
+                        <div className="flex-grow">
+                            <input
+                                type="text"
+                                placeholder="Create a post."
+                                onClick={() => !state.isLoadingCreatePost && openModal()}
+                                readOnly={state.isLoadingFeed || state.isLoadingCreatePost}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
                 {/*  --- HAS NEW FEED NOTIF --- */}
                 {state.newsFeed.hasNewFeed && (
                     <button
@@ -109,14 +119,15 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                         New Feed Available
                     </button>
                 )}
-
                 {/* --- CREATE POST MODAL ----- */}
-                <CreatePostModal
-                    isOpen={isOpen}
-                    openModal={openModal}
-                    closeModal={closeModal}
-                    dispatchCreatePost={dispatchCreatePost}
-                />
+                {props.isAuth && (
+                    <CreatePostModal
+                        isOpen={isOpen}
+                        openModal={openModal}
+                        closeModal={closeModal}
+                        dispatchCreatePost={dispatchCreatePost}
+                    />
+                )}
                 {(state.error && state.newsFeed.items.length === 0) && (
                     <div className="flex flex-col w-full min-h-24rem items-center justify-center">
                         <CoffeeOutlined className="text-8xl text-gray-300 mb-4" />
@@ -136,25 +147,32 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
                         <PostLoader />
                     </div>
                 )}
+                {!props.isAuth && (
+                    <div className="px-4 laptop:px-0 py-4 mb-4">
+                        <h2>Public posts that might <br />interest you.</h2>
+                    </div>
+                )}
                 {/* ---- NEWS FEED ---- */}
                 {(state.newsFeed.items.length !== 0) && (
                     <>
                         <TransitionGroup component={null}>
-                            {state.newsFeed.items.map((post: IPost) => post.author && ( // avoid render posts with null author
-                                <CSSTransition
-                                    timeout={500}
-                                    classNames="fade"
-                                    key={post.id}
-                                >
-                                    <PostItem
+                            <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
+                                {state.newsFeed.items.map((post: IPost) => post.author && ( // avoid render posts with null author
+                                    <CSSTransition
+                                        timeout={500}
+                                        classNames="fade"
                                         key={post.id}
-                                        post={post}
-                                        likeCallback={likeCallback}
-                                        updateSuccessCallback={updateSuccessCallback}
-                                        deleteSuccessCallback={deleteSuccessCallback}
-                                    />
-                                </CSSTransition>
-                            ))}
+                                    >
+                                        <PostItem
+                                            key={post.id}
+                                            post={post}
+                                            likeCallback={likeCallback}
+                                            updateSuccessCallback={updateSuccessCallback}
+                                            deleteSuccessCallback={deleteSuccessCallback}
+                                        />
+                                    </CSSTransition>
+                                ))}
+                            </div>
                         </TransitionGroup>
                         {state.isLoadingFeed && (
                             <div className="flex justify-center py-6">
@@ -171,10 +189,12 @@ const Home: React.FC<RouteComponentProps<any, any, ILocation>> = (props) => {
             </div>
             {/* --- SUGGESTED PEOPLE --- */}
             <div className="hidden laptop:block laptop:w-1/4 laptop:sticky laptop:top-20 ml-4">
-                <SuggestedPeople />
+                {props.isAuth && (
+                    <SuggestedPeople />
+                )}
             </div>
         </div >
     );
 };
 
-export default Home;
+export default withAuth(Home);

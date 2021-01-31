@@ -4,6 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import withAuth from '~/components/hoc/withAuth';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
 import Avatar from '~/components/shared/Avatar';
 import ImageGrid from '~/components/shared/ImageGrid';
@@ -22,9 +23,11 @@ interface IProps {
     likeCallback: (post: IPost) => void;
     updateSuccessCallback: (post: IPost) => void;
     deleteSuccessCallback: (postID: string) => void;
+    isAuth: boolean;
 }
 
-const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback, deleteSuccessCallback }) => {
+const PostItem: React.FC<IProps> = (props) => {
+    const { post, likeCallback, updateSuccessCallback, deleteSuccessCallback, isAuth } = props;
     const userID = useSelector((state: IRootReducer) => state.auth.id);
     const [isCommentVisible, setCommentVisible] = useState(false);
     const deleteModal = useModal();
@@ -33,6 +36,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
     const commentInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleToggleComment = () => {
+        if (!isAuth) return;
         if (!isCommentVisible) setCommentVisible(true);
         if (commentInputRef.current) commentInputRef.current.focus();
     }
@@ -76,12 +80,14 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                         </div>
                     </div>
                 </div>
-                <PostOptions
-                    openDeleteModal={deleteModal.openModal}
-                    openUpdateModal={updateModal.openModal}
-                    post={post}
-                    isOwnPost={userID === post.author.id}
-                />
+                {isAuth && (
+                    <PostOptions
+                        openDeleteModal={deleteModal.openModal}
+                        openUpdateModal={updateModal.openModal}
+                        post={post}
+                        isOwnPost={userID === post.author.id}
+                    />
+                )}
             </div>
             {/* --- DESCRIPTION */}
             <div className="mb-3 mt-2">
@@ -91,7 +97,7 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
             {post.photos.length !== 0 && <ImageGrid images={post.photos} />}
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
-                <div onClick={likesModal.openModal}>
+                <div onClick={() => isAuth && likesModal.openModal()}>
                     {post.likesCount > 0 && (
                         <span className="text-gray-700 text-sm cursor-pointer hover:underline">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
@@ -111,44 +117,54 @@ const PostItem: React.FC<IProps> = ({ post, likeCallback, updateSuccessCallback,
                 </div>
             </div>
             {/* --- LIKE/COMMENT BUTTON */}
-            <div className="flex items-center justify-around py-2 border-t border-gray-200">
-                <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
-                <span
-                    className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4"
-                    onClick={handleToggleComment}
-                >
-                    <CommentOutlined />&nbsp;Comment
-                    </span>
-            </div>
-            <Comments
-                postID={post.id}
-                authorID={post.author.id}
-                isCommentVisible={isCommentVisible}
-                commentInputRef={commentInputRef}
-                setInputCommentVisible={setCommentVisible}
-            />
-            <DeletePostModal
-                isOpen={deleteModal.isOpen}
-                openModal={deleteModal.openModal}
-                closeModal={deleteModal.closeModal}
-                postID={post.id}
-                deleteSuccessCallback={deleteSuccessCallback}
-            />
-            <EditPostModal
-                isOpen={updateModal.isOpen}
-                openModal={updateModal.openModal}
-                closeModal={updateModal.closeModal}
-                post={post}
-                updateSuccessCallback={updateSuccessCallback}
-            />
-            <PostLikesModal
-                isOpen={likesModal.isOpen}
-                openModal={likesModal.openModal}
-                closeModal={likesModal.closeModal}
-                postID={post.id}
-            />
+            {isAuth ? (
+                <div className="flex items-center justify-around py-2 border-t border-gray-200">
+                    <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
+                    <span
+                        className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4"
+                        onClick={handleToggleComment}
+                    >
+                        <CommentOutlined />&nbsp;Comment
+                        </span>
+                </div>
+            ) : (
+                    <div className="text-center py-2">
+                        <span className="text-gray-400 text-sm">Login to like or comment on post.</span>
+                    </div>
+                )}
+            {isAuth && (
+                <>
+                    <Comments
+                        postID={post.id}
+                        authorID={post.author.id}
+                        isCommentVisible={isCommentVisible}
+                        commentInputRef={commentInputRef}
+                        setInputCommentVisible={setCommentVisible}
+                    />
+                    <DeletePostModal
+                        isOpen={deleteModal.isOpen}
+                        openModal={deleteModal.openModal}
+                        closeModal={deleteModal.closeModal}
+                        postID={post.id}
+                        deleteSuccessCallback={deleteSuccessCallback}
+                    />
+                    <EditPostModal
+                        isOpen={updateModal.isOpen}
+                        openModal={updateModal.openModal}
+                        closeModal={updateModal.closeModal}
+                        post={post}
+                        updateSuccessCallback={updateSuccessCallback}
+                    />
+                    <PostLikesModal
+                        isOpen={likesModal.isOpen}
+                        openModal={likesModal.openModal}
+                        closeModal={likesModal.closeModal}
+                        postID={post.id}
+                    />
+                </>
+            )}
         </div>
     );
 };
 
-export default PostItem;
+export default withAuth(PostItem);

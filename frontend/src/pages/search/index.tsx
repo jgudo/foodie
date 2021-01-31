@@ -4,7 +4,7 @@ import { Redirect, RouteComponentProps, useLocation } from "react-router-dom";
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
 import { search } from "~/services/api";
-import { IPost, IProfile } from "~/types/types";
+import { IError, IPost, IProfile } from "~/types/types";
 import Posts from "./Posts";
 import Users from "./Users";
 
@@ -16,7 +16,7 @@ const useQuery = () => {
 const Search: React.FC<RouteComponentProps> = ({ history }) => {
     const [users, setUsers] = useState<IProfile[]>([]);
     const [posts, setPosts] = useState<IPost[]>([]);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const [userOffset, setUserOffset] = useState(0);
     const [postOffset, setPostOffset] = useState(0);
     const [isLoadingUser, setIsLoadingUser] = useState(false);
@@ -47,29 +47,25 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
         try {
             if (searchQuery && searchType) {
                 setIsLoadingPost(true);
-                setError('');
+                setError(null);
                 const fetchedPosts = await search({ q: searchQuery, type: 'posts', offset: postOffset });
 
                 if (isMountedRef.current) {
                     setPosts([...posts, ...fetchedPosts]);
                     setIsLoadingPost(false);
                     setPostOffset(postOffset + 1);
-
-                    if (fetchedPosts.length === 0) {
-                        setError('No posts found.');
-                    }
                 }
             }
         } catch (e) {
             setIsLoadingPost(false);
-            setError(e.error.message);
+            setError(e);
         }
     }
 
     const dispatchSearchUsers = async () => {
         try {
             if (searchQuery) {
-                setError('');
+                setError(null);
                 setIsLoadingUser(true);
                 const fetchedUsers = await search({ q: searchQuery, offset: userOffset });
 
@@ -77,10 +73,6 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                     setUsers([...users, ...fetchedUsers]);
                     setIsLoadingUser(false);
                     setUserOffset(userOffset + 1);
-
-                    if (fetchedUsers.length === 0) {
-                        setError('No users found.');
-                    }
                 }
             }
         } catch (e) {
@@ -147,7 +139,9 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                             )}
                             {(!isLoadingPost && posts.length === 0 && error) && (
                                 <div className="p-4 flex items-center justify-center">
-                                    <span className="text-gray-400 italic font-medium">{error}</span>
+                                    <span className="text-gray-400 italic font-medium">
+                                        {error?.error?.message || 'Something went wrong :('}
+                                    </span>
                                 </div>
                             )}
                             {(posts.length !== 0) && (
@@ -172,7 +166,9 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                                 )}
                                 {(!isLoadingUser && users.length === 0 && error) && (
                                     <div className="p-4 flex items-center justify-center">
-                                        <span className="text-gray-400 italic font-medium">{error}</span>
+                                        <span className="text-gray-400 italic font-medium">
+                                            {error?.error?.message || 'Something went wrong :('}
+                                        </span>
                                     </div>
                                 )}
                                 {(users.length !== 0) && <Users users={users} />}

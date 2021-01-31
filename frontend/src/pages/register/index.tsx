@@ -66,7 +66,9 @@ const Register: React.FC = () => {
                 }}
             >
                 {/* --- LOGO --- */}
-                <img src={logo} alt="Foodie Logo" className="w-24 absolute left-8 top-8" />
+                <Link className="absolute left-8 top-8" to="/">
+                    <img src={logo} alt="Foodie Logo" className="w-24" />
+                </Link>
                 {/* -- INFO --- */}
                 <h3 className="animate-fade text-white w-9/12 mb-14">
                     Create your account now and discover new ideas and connect with people.
@@ -82,11 +84,13 @@ const Register: React.FC = () => {
                 </a>
             </div>
             <div className="relative animate-fade w-full text-center laptop:w-5/12 laptop:text-left flex items-center justify-start">
-                <img
-                    src={logo_dark}
-                    alt="Foodie Logo"
-                    className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
-                />
+                <Link to="/">
+                    <img
+                        src={logo_dark}
+                        alt="Foodie Logo"
+                        className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
+                    />
+                </Link>
                 {error && (
                     <div className="p-4 w-full text-center bg-red-100 border-red-400 absolute top-0 left-0">
                         <p className="text-red-500 text-sm">{error?.error?.message || 'Something went wrong :('}</p>

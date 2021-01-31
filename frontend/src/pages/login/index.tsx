@@ -60,7 +60,9 @@ const Login: React.FC = () => {
                 }}
             >
                 {/* --- LOGO --- */}
-                <img src={logo} alt="Foodie Logo" className="w-24 absolute left-8 top-8" />
+                <Link className="absolute left-8 top-8" to="/">
+                    <img src={logo} alt="Foodie Logo" className="w-24" />
+                </Link>
                 {/* -- INFO --- */}
                 <h3 className="animate-fade text-white w-9/12 mb-14">
                     Looking for a new idea for your next menu? You're in the right place.
@@ -76,11 +78,13 @@ const Login: React.FC = () => {
                 </a>
             </div>
             <div className="animate-fade laptop:w-5/12 w-full flex items-center justify-start relative">
-                <img
-                    src={logo_dark}
-                    alt="Foodie Logo"
-                    className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
-                />
+                <Link to="/">
+                    <img
+                        src={logo_dark}
+                        alt="Foodie Logo"
+                        className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
+                    />
+                </Link>
                 {error && (
                     <div className="py-2 w-full text-center bg-red-100 border-red-300 absolute top-0 left-0">
                         <p className="text-red-500">{error?.error?.message || 'Something went wrong :('}</p>

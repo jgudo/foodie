@@ -5,11 +5,13 @@ import { IMessage, IUser } from "~/types/types";
 
 interface IProps {
     messages: IMessage[];
-    userID: string;
     handleReadMessage: (sender: IUser) => void;
+    infiniteScrollRef: React.RefObject<HTMLElement>;
 }
 
-const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage }) => {
+const MessagesList: React.FC<IProps> = (props) => {
+    const { messages, handleReadMessage, infiniteScrollRef } = props;
+
     return (
         <div>
             {messages.length === 0 ? (
@@ -19,45 +21,47 @@ const MessagesList: React.FC<IProps> = ({ messages, userID, handleReadMessage })
             ) : (
                     <div className="max-h-80vh laptop:max-h-70vh overflow-y-scroll divide-y divide-gray-100">
                         <TransitionGroup component={null}>
-                            {messages.map(message => (message.from && message.to) && (
-                                <CSSTransition
-                                    timeout={500}
-                                    classNames="fade"
-                                    key={message.id}
-                                >
-                                    <div
-                                        className={`flex justify-start cursor-pointer hover:bg-gray-100 px-2 py-3 relative ${(!message.seen && !message.isOwnMessage) && 'bg-indigo-100 hover:bg-indigo-200'}`}
+                            <div ref={infiniteScrollRef as React.RefObject<HTMLDivElement>}>
+                                {messages.map(message => (message.from && message.to) && (
+                                    <CSSTransition
+                                        timeout={500}
+                                        classNames="fade"
                                         key={message.id}
-                                        onClick={() => handleReadMessage(message.isOwnMessage ? message.to : message.from)}
                                     >
-                                        {/* --- IMAGE--- */}
-                                        <Avatar
-                                            url={!message.isOwnMessage ? message.from.profilePicture : message.to.profilePicture}
-                                            size="lg"
-                                            className="flex-shrink-0 mr-4"
-                                        />
-                                        <div className="relative flex-grow">
-                                            {/* --- USERNAME --- */}
-                                            <h5 className={`${(!message.seen && !message.isOwnMessage) && 'font-bold text-gray-800'} text-gray-500`}>
-                                                {!message.isOwnMessage ? message.from.username : message.to.username}
-                                            </h5>
-                                            {/* -- MESSAGE--- */}
-                                            <span className={`block max-w-16rem laptop:max-w-xs whitespace-nowrap overflow-hidden overflow-ellipsis ${(message.seen || message.isOwnMessage) ? 'text-gray-400' : 'text-indigo-600 font-medium'} text-sm`}>
-                                                {message.isOwnMessage && 'You:'} {message.text}
-                                            </span>
-                                            {/* --- DATE --- */}
-                                            <span className="absolute right-4 top-1 text-xs text-gray-400">
-                                                {displayTime(message.createdAt)}
-                                            </span>
-                                            {/* --- BADGE ---- */}
-                                            {(!message.isOwnMessage && !message.seen) && (
-                                                <div className="absolute rounded-full  bottom-0 top-0 right-4 my-auto w-2 h-2 bg-red-600" />
-                                            )}
+                                        <div
+                                            className={`flex justify-start cursor-pointer hover:bg-gray-100 px-2 py-3 relative ${(!message.seen && !message.isOwnMessage) && 'bg-indigo-100 hover:bg-indigo-200'}`}
+                                            key={message.id}
+                                            onClick={() => handleReadMessage(message.isOwnMessage ? message.to : message.from)}
+                                        >
+                                            {/* --- IMAGE--- */}
+                                            <Avatar
+                                                url={!message.isOwnMessage ? message.from.profilePicture : message.to.profilePicture}
+                                                size="lg"
+                                                className="flex-shrink-0 mr-4"
+                                            />
+                                            <div className="relative flex-grow">
+                                                {/* --- USERNAME --- */}
+                                                <h5 className={`${(!message.seen && !message.isOwnMessage) && 'font-bold text-gray-800'} text-gray-500`}>
+                                                    {!message.isOwnMessage ? message.from.username : message.to.username}
+                                                </h5>
+                                                {/* -- MESSAGE--- */}
+                                                <span className={`block max-w-16rem laptop:max-w-xs whitespace-nowrap overflow-hidden overflow-ellipsis ${(message.seen || message.isOwnMessage) ? 'text-gray-400' : 'text-indigo-600 font-medium'} text-sm`}>
+                                                    {message.isOwnMessage && 'You:'} {message.text}
+                                                </span>
+                                                {/* --- DATE --- */}
+                                                <span className="absolute right-4 top-1 text-xs text-gray-400">
+                                                    {displayTime(message.createdAt)}
+                                                </span>
+                                                {/* --- BADGE ---- */}
+                                                {(!message.isOwnMessage && !message.seen) && (
+                                                    <div className="absolute rounded-full  bottom-0 top-0 right-4 my-auto w-2 h-2 bg-red-600" />
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </CSSTransition>
-                            )
-                            )}
+                                    </CSSTransition>
+                                )
+                                )}
+                            </div>
                         </TransitionGroup>
                     </div>
                 )}

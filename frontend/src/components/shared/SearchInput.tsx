@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { search } from '~/services/api';
-import { IProfile, IUser } from '~/types/types';
+import { IError, IProfile, IUser } from '~/types/types';
 import Avatar from './Avatar';
 import Loader from './Loader';
 
@@ -20,7 +20,7 @@ const SearchInput: React.FC<IProps> = (props) => {
     const [isSuggesting, setSuggesting] = useState(false);
     const [suggestions, setSuggestions] = useState<IProfile[]>([]);
     const [isVisibleSuggestion, setVisibleSuggestion] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const history = useHistory();
     const isVisibleSuggestionRef = useRef(isVisibleSuggestion);
 
@@ -55,17 +55,11 @@ const SearchInput: React.FC<IProps> = (props) => {
                 setSuggesting(true);
                 const users = await search({ q: val, limit: 5 });
 
-                if (users.length === 0) {
-                    setError('No suggestion found.');
-                } else {
-                    setError('');
-                }
-
                 setSuggestions(users);
                 setSuggesting(false);
             } catch (e) {
                 setSuggesting(false);
-                setError(e.error.message);
+                setError(e);
             }
         })();
     }
@@ -130,7 +124,9 @@ const SearchInput: React.FC<IProps> = (props) => {
                     ))}
                     {(error && suggestions.length === 0 && props.showNoResultMessage) && (
                         <div className="flex items-center justify-center p-4">
-                            <span className="text-gray-400 text-sm italic">No user found.</span>
+                            <span className="text-gray-400 text-sm italic">
+                                {error?.error?.message || 'Something went wrong :('}
+                            </span>
                         </div>
                     )}
                 </div>
