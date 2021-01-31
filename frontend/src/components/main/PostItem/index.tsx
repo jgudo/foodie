@@ -8,6 +8,7 @@ import withAuth from '~/components/hoc/withAuth';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
 import Avatar from '~/components/shared/Avatar';
 import ImageGrid from '~/components/shared/ImageGrid';
+import { LOGIN } from '~/constants/routes';
 import useModal from '~/hooks/useModal';
 import { IPost, IRootReducer } from "~/types/types";
 import Comments from '../Comments';
@@ -129,7 +130,9 @@ const PostItem: React.FC<IProps> = (props) => {
                 </div>
             ) : (
                     <div className="text-center py-2">
-                        <span className="text-gray-400 text-sm">Login to like or comment on post.</span>
+                        <span className="text-gray-400 text-sm">
+                            <Link className="font-medium underline" to={LOGIN}>Login</Link> to like or comment on post.
+                        </span>
                     </div>
                 )}
             {isAuth && (
