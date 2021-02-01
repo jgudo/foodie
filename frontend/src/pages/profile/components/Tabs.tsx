@@ -28,7 +28,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
     }, [pathname]);
 
     return (
-        <ul className="flex items-center justify-between tablet:justify-evenly flex-wrap laptop:justify-start space-x-1 laptop:space-x-4 px-4 bg-indigo-100 laptop:bg-transparent laptop:p-0">
+        <ul className="flex items-center justify-between tablet:justify-evenly flex-wrap laptop:justify-start space-x-1 laptop:space-x-4 px-4 bg-indigo-100 dark:bg-indigo-1000 laptop:dark:bg-transparent laptop:bg-transparent laptop:p-0">
             <li>
                 <Link
                     to={`/user/${username}/`}

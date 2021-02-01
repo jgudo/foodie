@@ -70,7 +70,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
                         <ExclamationCircleOutlined className="inline-flex items-center justify-center text-red-500 mr-2 pt-2" />
                         Delete Post
                     </h2>
-                    <p className="text-gray-600 my-4">Are you sure you want to delete this post?</p>
+                    <p className="text-gray-600 my-4 dark:text-gray-400">Are you sure you want to delete this post?</p>
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"

@@ -62,7 +62,7 @@ const Profile: React.FC<IProps> = (props) => {
                                 dateJoined={state.profile.dateJoined}
                             />
                         </div>
-                        <div className="w-full laptop:w-2/4">
+                        <div className="w-full laptop:w-2/4 mb-14">
                             <Switch>
                                 <Route exact path={ROUTE.PROFILE}>
                                     <Posts
