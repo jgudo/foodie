@@ -8,6 +8,7 @@ export interface IRootReducer {
     newsFeed: INewsFeed;
     profile: IProfile;
     chats: IChatState
+    settings: ISettingsState;
 }
 
 export interface IErrorState {
@@ -117,6 +118,10 @@ export interface IMessage {
     seen: boolean;
     unseenCount?: number;
     isOwnMessage?: boolean;
+}
+
+export interface ISettingsState {
+    theme: 'light' | 'dark';
 }
 
 export interface IBookmark {

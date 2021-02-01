@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #f9f9f9;
+  --modalBackground: #fff;
+  --modalOverlayBackground: rgba(0,0,0, .3);
+  --scrollBarTrackBg: #cacaca;
+}
+
+:root.dark {
+  --background: #08070f;
+  --modalBackground: #100f17;
+  --modalOverlayBackground: rgba(0,0,0, .7);
+  --scrollBarTrackBg: #1e1c2a;
+}
+
 @layer base {
   h1, h2 {
     @apply font-bold;
@@ -122,17 +136,24 @@
 
 @layer utilities {
     .scrollbar {
-        scrollbar-color: red white;
+        scrollbar-color: white;
         scrollbar-width: thin;
+
         &::-webkit-scrollbar {
-            width: 10px;
+          width: 10px;
         }
+   
         &::-webkit-scrollbar-track {
-            border: 1px solid #e1e1e1; 
+            background: var(--scrollBarTrackBg);
         }
+   
         &::-webkit-scrollbar-thumb {
-            @apply bg-indigo-700;
+            @apply bg-gray-500;
             border-radius: 10px;
+
+            &:hover {
+              @apply bg-indigo-500;
+            }
         }
     }
 }
@@ -144,7 +165,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     line-height: 1.6;
-    @apply bg-gray-100;
+    background: var(--background);
     
   }
 

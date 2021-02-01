@@ -108,27 +108,27 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     return !searchQuery ? <Redirect to={'/'} /> : (
         <div className="min-h-screen pt-20">
             <div className="contain">
-                <h2 className="text-lg laptop:text-2xl">
+                <h2 className="text-lg laptop:text-2xl dark:text-white">
                     You searched for:
-                    <span className="text-indigo-700">{searchQuery}</span>
+                    <span className="text-indigo-700 dark:text-indigo-400">{searchQuery}</span>
                 </h2>
                 <span className="text-gray-400">Search Result</span>
                 <ul className="space-x-4 mt-4">
                     <li
-                        className={`inline-block border-b-4 border-transparent px-2 py-4 cursor-pointer font-medium hover:border-indigo-700 text-gray-400 ${searchType !== 'posts' && ' border-indigo-700 text-gray-900'}`}
+                        className={`inline-block border-b-4 border-transparent px-2 py-4 cursor-pointer font-medium hover:border-indigo-700 text-gray-400 ${searchType !== 'posts' && ' border-indigo-700 text-gray-900 dark:text-white dark:border-indigo-400'}`}
                         onClick={onClickUserTab}
                     >
                         Users
                     </li>
                     <li
-                        className={`inline-block border-b-4 border-transparent px-2 py-4 cursor-pointer font-medium hover:border-indigo-700 text-gray-400 ${searchType === 'posts' && ' border-indigo-700 text-gray-900'}`}
+                        className={`inline-block border-b-4 border-transparent px-2 py-4 cursor-pointer font-medium hover:border-indigo-700 text-gray-400 ${searchType === 'posts' && ' border-indigo-700 text-gray-900 dark:text-white dark:border-indigo-400'}`}
                         onClick={onClickPostTab}
                     >
                         Posts
                     </li>
                 </ul>
             </div>
-            <div className="contain bg-gray-200 py-8 min-h-10rem">
+            <div className="contain bg-gray-200 dark:bg-indigo-1000 py-8 min-h-10rem">
                 <div className="w-full laptop:w-3/4">
                     {searchType === 'posts' ? (
                         <div ref={infinitePostRef as React.RefObject<HTMLDivElement>}>

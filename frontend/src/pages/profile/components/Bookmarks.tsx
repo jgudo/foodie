@@ -80,7 +80,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
     return (!isOwnProfile && username) ? <Redirect to={`/${username}`} /> : (
         <div className="flex flex-col items-start justify-start w-full min-h-10rem">
             {(isLoading && bookmarks.items.length === 0) && (
-                <div className="flex w-full items-center justify-center">
+                <div className="flex w-full items-center justify-center min-h-10rem">
                     <Loader />
                 </div>
             )}
@@ -93,7 +93,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
             )}
             {(bookmarks.items.length !== 0 && !error) && (
                 <div className="w-full space-y-4" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
-                    <h4 className="text-gray-700 mb-4 ml-4 mt-4 laptop:mt-0">Bookmarks</h4>
+                    <h4 className="text-gray-700 dark:text-white mb-4 ml-4 mt-4 laptop:mt-0">Bookmarks</h4>
                     <TransitionGroup component={null}>
                         {bookmarks.items.map(item => (
                             <CSSTransition
@@ -101,7 +101,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                 classNames="fade"
                                 key={item.id}
                             >
-                                <div key={item.id} className="h-24 flex justify-between bg-white rounded-md shadow-lg overflow-hidden">
+                                <div key={item.id} className="h-24 flex justify-between bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden">
                                     <div className="flex justify-center items-center">
                                         <BookmarkButton postID={item.post.id} initBookmarkState={item.isBookmarked}>
                                             {({ dispatchBookmark, isBookmarked }) => (
@@ -119,12 +119,14 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                         </BookmarkButton>
                                     </div>
                                     <Link
-                                        className="flex flex-grow justify-between hover:bg-indigo-100 "
+                                        className="flex flex-grow justify-between hover:bg-indigo-100 border border-transparent dark:hover:bg-indigo-1000 dark:hover:border-gray-800"
                                         key={item.id}
                                         to={`/post/${item.post.id}`}
                                     >
                                         <div className="flex-grow p-2 pb-4 max-w-sm">
-                                            <h4 className="break-all overflow-hidden overflow-ellipsis h-8 laptop:h-12">{item.post.description}</h4>
+                                            <h4 className="break-all overflow-hidden overflow-ellipsis h-8 laptop:h-12 dark:text-indigo-400">
+                                                {item.post.description}
+                                            </h4>
                                             <span className="text-xs text-gray-400 self-end">Bookmarked {dayjs(item.createdAt).fromNow()}</span>
                                         </div>
                                         <div

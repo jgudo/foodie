@@ -12,7 +12,7 @@ const Users: React.FC<IProps> = ({ users }) => {
     return (
         <div>
             {users.map((user) => (
-                <div className="bg-white rounded-md mb-4 shadow-md" key={user._id}>
+                <div className="bg-white dark:bg-indigo-1100 rounded-md mb-4 shadow-md dark:shadow-none divide-y divide-y-transparent dark:divide-gray-800" key={user._id}>
                     <UserCard
                         profile={user}
                         isFollowing={user.isFollowing}

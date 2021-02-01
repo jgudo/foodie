@@ -7,20 +7,20 @@ interface IProps {
 
 const Sidebar: React.FC<IProps> = ({ bio, dateJoined }) => {
     return (
-        <aside className="p-4 bg-white shadow-lg rounded-md space-y-4">
+        <aside className="p-4 bg-white dark:bg-indigo-1000 shadow-lg rounded-md space-y-4">
             <div>
-                <h4 className="mb-2">Bio</h4>
+                <h4 className="mb-2 dark:text-white">Bio</h4>
                 {
                     bio ? (
-                        <p className="text-gray-600">{bio}</p>
+                        <p className="text-gray-600 dark:text-gray-400">{bio}</p>
                     ) : (
                             <p className="text-gray-400 italic">No bio set.</p>
                         )
                 }
             </div>
             <div>
-                <h4 className="mb-2">Joined</h4>
-                <p className="text-gray-600">{dayjs(dateJoined).format('MMM.DD, YYYY')}</p>
+                <h4 className="mb-2 dark:text-white">Joined</h4>
+                <p className="text-gray-600 dark:text-gray-400">{dayjs(dateJoined).format('MMM.DD, YYYY')}</p>
             </div>
         </aside>
     );

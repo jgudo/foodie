@@ -83,7 +83,7 @@ const Following: React.FC<IProps> = ({ username }) => {
             )}
             {followings.length !== 0 && (
                 <div>
-                    <h4 className="text-gray-700 mb-4 ml-4 mt-4 laptop:mt-0">Following</h4>
+                    <h4 className="text-gray-700 dark:text-white mb-4 ml-4 mt-4 laptop:mt-0">Following</h4>
                     <TransitionGroup component={null}>
                         {followings.map(following => (
                             <CSSTransition
@@ -91,7 +91,7 @@ const Following: React.FC<IProps> = ({ username }) => {
                                 classNames="fade"
                                 key={following.user._id}
                             >
-                                <div className="bg-white rounded-md mb-4 shadow-md" key={following.user._id}>
+                                <div className="bg-white dark:bg-indigo-1000 rounded-md mb-4 shadow-md" key={following.user._id}>
                                     <UserCard
                                         profile={following.user}
                                         isFollowing={following.isFollowing}

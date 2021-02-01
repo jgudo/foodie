@@ -103,13 +103,14 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     }
 
     return (!isOwnProfile && profile.username) ? <Redirect to={`/${profile.username}`} /> : (
-        <div className="p-4 pb-8 bg-white rounded-md min-h-10rem shadow-lg">
-            <h3 className="text-gray-500">Edit Info</h3>
-            <form className="mt-8 space-y-4 divide-y divide-gray-100" onSubmit={handleSubmit}>
+        <div className="p-4 pb-8 bg-white dark:bg-indigo-1000 rounded-md min-h-10rem shadow-lg">
+            <h3 className="text-gray-500 dark:text-white">Edit Info</h3>
+            <form className="mt-8 space-y-4 divide-y divide-gray-100 dark:divide-gray-800" onSubmit={handleSubmit}>
                 {/* ---- FIRST NAME ------- */}
                 <div className="flex flex-col py-2">
                     <label htmlFor="firstname" className="ml-4 text-gray-400 mb-2">First Name</label>
                     <input
+                        className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                         readOnly={isUpdating}
                         id="firstname"
                         type="text"
@@ -122,6 +123,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                 <div className="flex flex-col py-2">
                     <label htmlFor="lastname" className="ml-4 text-gray-400 mb-2">Last Name</label>
                     <input
+                        className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                         readOnly={isUpdating}
                         id="lastname"
                         type="text"
@@ -135,6 +137,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                     <div className="flex flex-col py-2">
                         <label htmlFor="gender" className="ml-4 text-gray-400 mb-2">Gender</label>
                         <select
+                            className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                             id="gender"
                             onChange={handleGenderChange}
                             disabled={isUpdating}
@@ -149,6 +152,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                     <div className="flex flex-col py-2">
                         <label htmlFor="birthday" className="ml-4 text-gray-400 mb-2">Birthday (mm/dd/yyyy)</label>
                         <input
+                            className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                             readOnly={isUpdating}
                             type="date"
                             value={field.birthday ? new Date(field.birthday).toISOString().split('T')[0] : ''}
@@ -164,6 +168,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         id="bio"
                         cols={10}
                         rows={4}
+                        className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                         readOnly={isUpdating}
                         onChange={handleBioChange}
                         maxLength={200}
@@ -179,7 +184,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         disabled={isUpdating}
                         type="button"
                         onClick={handleBack}
-                        className="button--muted !rounded-full"
+                        className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
                     >
                         <ArrowLeftOutlined className="text-xl flex items-center justify-center mr-4" />
                         Back to Info

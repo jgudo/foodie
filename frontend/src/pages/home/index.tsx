@@ -89,7 +89,7 @@ const Home: React.FC<IProps> = (props) => {
     return (
         <div className="laptop:px-6% pt-20 flex items-start">
             {/*  --- SIDE MENU --- */}
-            <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2">
+            <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2 dark:bg-indigo-1000">
                 {props.isAuth && (
                     <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
                 )}
@@ -101,6 +101,7 @@ const Home: React.FC<IProps> = (props) => {
                         <Avatar url={state.auth.profilePicture} className="mr-2" />
                         <div className="flex-grow">
                             <input
+                                className="dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                                 type="text"
                                 placeholder="Create a post."
                                 onClick={() => !state.isLoadingCreatePost && openModal()}
@@ -149,7 +150,7 @@ const Home: React.FC<IProps> = (props) => {
                 )}
                 {(!props.isAuth && !state.isLoadingFeed && !state.error) && (
                     <div className="px-4 laptop:px-0 py-4 mb-4">
-                        <h2>Public posts that might <br />interest you.</h2>
+                        <h2 className="dark:text-white">Public posts that might <br />interest you.</h2>
                     </div>
                 )}
                 {/* ---- NEWS FEED ---- */}

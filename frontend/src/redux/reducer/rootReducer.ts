@@ -5,6 +5,7 @@ import errorReducer from './errorReducer';
 import loadingReducer from './loadingReducer';
 import newsFeedReducer from './newsFeedReducer';
 import profileReducer from './profileReducer';
+import settingsReducer from './settingsReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     loading: loadingReducer,
     newsFeed: newsFeedReducer,
     profile: profileReducer,
-    chats: chatReducer
+    chats: chatReducer,
+    settings: settingsReducer,
 });
 
 export default rootReducer;

@@ -56,10 +56,10 @@ const EditPostModal: React.FC<IProps> = (props) => {
         >
             <div className="relative">
                 <div
-                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
                     onClick={props.closeModal}
                 >
-                    <CloseOutlined className="p-2  outline-none text-gray-500" />
+                    <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 {error && (
                     <span className="p-4 bg-red-100 text-red-500 block">
@@ -67,13 +67,14 @@ const EditPostModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <div className="p-4 laptop:px-8 w-full laptop:w-40rem">
-                    <h2>
+                    <h2 className="dark:text-white">
                         <EditOutlined className="inline-flex items-center justify-center mr-2 pt-2" />
                         Edit Post
                     </h2>
                     <br />
                     <label htmlFor="update-post">Description</label>
                     <textarea
+                        className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                         name="update-post"
                         id="update-post"
                         cols={30}
@@ -84,7 +85,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
                     />
                     <div className="flex justify-between mt-4">
                         <button
-                            className="button--muted !rounded-full"
+                            className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
                             onClick={props.closeModal}
                         >
                             Cancel

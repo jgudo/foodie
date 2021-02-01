@@ -53,12 +53,14 @@ const SearchInput: React.FC<IProps> = (props) => {
         (async () => {
             try {
                 setSuggesting(true);
+                setError(null);
                 const users = await search({ q: val, limit: 5 });
 
                 setSuggestions(users);
                 setSuggesting(false);
             } catch (e) {
                 setSuggesting(false);
+                setSuggestions([]);
                 setError(e);
             }
         })();
@@ -93,7 +95,7 @@ const SearchInput: React.FC<IProps> = (props) => {
         <div className={`input-wrapper relative flex flex-col items-center ${props.inputClassName}`}>
             <SearchOutlined className="flex items-center justify-center text-gray-400 absolute left-3 top-3 z-50" />
             <input
-                className="!border-gray-100 !pl-10 !py-2"
+                className="!border-gray-100 !pl-10 !py-2 dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                 placeholder="Search..."
                 type="text"
                 onFocus={onFocusInput}
@@ -101,9 +103,9 @@ const SearchInput: React.FC<IProps> = (props) => {
                 onKeyDown={onSearchSubmit}
             />
             {(searchInput && isVisibleSuggestion) && (
-                <div className={` bg-white shadow-lg rounded-md w-full flex justify-center flex-col overflow-hidden ${props.floatingResult ? 'absolute top-12' : 'relative top-0'}`}>
+                <div className={` bg-white dark:bg-indigo-1000 shadow-lg rounded-md w-full flex justify-center flex-col overflow-hidden ${props.floatingResult ? 'absolute top-12' : 'relative top-0'}`}>
                     {(!props.showNoResultMessage && !error) && (
-                        <h6 className="p-4 text-xs border-b border-gray-100">Search Suggestion</h6>
+                        <h6 className="p-4 text-xs border-b dark:text-white border-gray-100 dark:border-gray-800">Search Suggestion</h6>
                     )}
                     {(isSuggesting && !error) && (
                         <div className="flex items-center justify-center p-4">
@@ -112,13 +114,13 @@ const SearchInput: React.FC<IProps> = (props) => {
                     )}
                     {(!isSuggesting && !error && suggestions.length !== 0) && suggestions.map((user) => (
                         <div
-                            className="hover:bg-indigo-100 p-2 cursor-pointer"
+                            className="hover:bg-indigo-100 dark:hover:bg-indigo-900 p-2 cursor-pointer"
                             key={user.id}
                             onClick={() => onClickItem(user)}
                         >
                             <div className="flex items-center">
                                 <Avatar url={user.profilePicture} className="mr-2" />
-                                <h6 className="mr-10 text-sm max-w-md overflow-ellipsis overflow-hidden">{user.username}</h6>
+                                <h6 className="mr-10 text-sm max-w-md overflow-ellipsis overflow-hidden dark:text-white">{user.username}</h6>
                             </div>
                         </div>
                     ))}
