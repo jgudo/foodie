@@ -136,10 +136,12 @@ router.get(
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
                 const isPostLiked = post.isPostLiked(req.user._id);
                 const isBookmarked = req.user.isBookmarked(post._id);
+                const isOwnPost = post._author_id.toString() === req.user._id.toString();
 
                 return {
                     ...post.toObject(),
                     isBookmarked,
+                    isOwnPost,
                     isLiked: isPostLiked
                 }
             });
@@ -313,7 +315,8 @@ router.get(
 
             const isBookmarked = req.user.isBookmarked(post_id);
             const isPostLiked = post.isPostLiked(req.user._id);
-            const result = { ...post.toObject(), isLiked: isPostLiked, isBookmarked };
+            const isOwnPost = post._author_id.toString() === req.user._id.toString();
+            const result = { ...post.toObject(), isLiked: isPostLiked, isBookmarked, isOwnPost };
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET POST', e);

@@ -50,6 +50,7 @@ export interface IPost {
     likesCount: number;
     isBookmarked: boolean;
     isLiked: boolean;
+    isOwnPost: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

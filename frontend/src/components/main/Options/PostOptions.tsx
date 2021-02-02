@@ -13,7 +13,6 @@ interface IProps {
     openDeleteModal: () => void;
     openUpdateModal: () => void;
     post: IPost;
-    isOwnPost: boolean;
 }
 
 const PostOptions: React.FC<IProps> = (props) => {
@@ -54,7 +53,7 @@ const PostOptions: React.FC<IProps> = (props) => {
             </div>
             {isOpenOption && (
                 <div className="w-60 flex flex-col bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden absolute top-8 right-3 border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
-                    {props.isOwnPost ? (
+                    {props.post.isOwnPost ? (
                         <>
                             <h4
                                 className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer dark:text-white"

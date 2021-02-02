@@ -73,8 +73,9 @@ const PostItem: React.FC<IProps> = (props) => {
                         <div className="flex items-center space-x-1">
                             <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
                             <div
-                                className={`w-4 h-4 rounded-full flex items-center justify-center ${userID === post.author.id && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-indigo-900'}`}
-                                onClick={() => userID === post.author.id && updateModal.openModal()}
+                                className={`w-4 h-4 rounded-full flex items-center justify-center ${post.isOwnPost && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-indigo-900'}`}
+                                onClick={() => post.isOwnPost && updateModal.openModal()}
+                                title={post.isOwnPost ? 'Change Privacy' : ''}
                             >
                                 {post.privacy === 'private'
                                     ? <LockOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
@@ -91,7 +92,6 @@ const PostItem: React.FC<IProps> = (props) => {
                         openDeleteModal={deleteModal.openModal}
                         openUpdateModal={updateModal.openModal}
                         post={post}
-                        isOwnPost={userID === post.author.id}
                     />
                 )}
             </div>
