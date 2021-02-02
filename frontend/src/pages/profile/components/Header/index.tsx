@@ -138,7 +138,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                 onCropSuccessCallback={onCropSuccessCallback}
             />
             {/*  ----- COVER PHOTO ------- */}
-            <div className="w-full h-60 mb-8 laptop:mb-0 laptop:h-80 bg-gray-200 dark:bg-indigo-1000 relative overflow-hidden" ref={coverPhotoRef}>
+            <div className="w-full h-60 mb-8 laptop:mb-0 laptop:h-80 bg-gray-200 dark:bg-gray-800 relative overflow-hidden" ref={coverPhotoRef}>
                 {/* ---- OVERLAY FOR CHOOSING PHOTO AND SHOWING LOADER ----- */}
                 <CoverPhotoOverlay
                     coverPhotoOverlayRef={coverPhotoOverlayRef}

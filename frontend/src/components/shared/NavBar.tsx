@@ -44,7 +44,7 @@ const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
         : (
             <>
                 {isLaptop ? (
-                    <nav className="contain flex justify-between items-center z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm dark:bg-indigo-1000">
+                    <nav className="contain flex justify-between items-center z-9999 border-b border-transparent dark:border-gray-900 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm dark:bg-indigo-1000">
                         <div className="flex items-center space-x-8">
                             {/* ---- LOGO -------- */}
                             <Link

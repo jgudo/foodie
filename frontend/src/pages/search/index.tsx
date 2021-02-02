@@ -77,7 +77,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
             }
         } catch (e) {
             setIsLoadingUser(false);
-            setError(e.error.message);
+            setError(e);
         }
     }
 
@@ -109,8 +109,8 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
         <div className="min-h-screen pt-20">
             <div className="contain">
                 <h2 className="text-lg laptop:text-2xl dark:text-white">
-                    You searched for:
-                    <span className="text-indigo-700 dark:text-indigo-400">{searchQuery}</span>
+                    You searched for: &nbsp;
+                    <span className="text-indigo-700 dark:text-indigo-400 break-all">{searchQuery}</span>
                 </h2>
                 <span className="text-gray-400">Search Result</span>
                 <ul className="space-x-4 mt-4">

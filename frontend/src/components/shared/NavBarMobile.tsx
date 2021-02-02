@@ -46,7 +46,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
             />
         </div>
     ) : (
-            <nav className="contain flex justify-between z-9999 align-center w-100 bg-white dark:bg-indigo-1000 text-gray-700 h-60px py-2 fixed top-0 left-0 w-full shadow-md laptop:shadow-sm">
+            <nav className="contain flex justify-between z-9999 align-center w-100 border-b border-transparent bg-white dark:bg-indigo-1000 text-gray-700 h-60px py-2 fixed top-0 left-0 w-full shadow-md laptop:shadow-sm dark:border-gray-800">
                 <div className="flex items-center space-x-8">
                     {/* ---- LOGO -------- */}
                     <Link
@@ -108,7 +108,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                     </div>
                     {isAuth ? (
                         <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-                            <li className="px-4 py-3 pb-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="px-4 py-3 pb-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <Link
                                     className="flex font-medium dark:text-indigo-400"
                                     onClick={onClickMenuItem}
@@ -121,7 +121,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     </div>
                                 </Link>
                             </li>
-                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <Link
                                     className="flex items-center text-black dark:text-white"
                                     onClick={onClickMenuItem}
@@ -131,7 +131,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     <h6 className="text-sm">Following</h6>
                                 </Link>
                             </li>
-                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <Link
                                     className="flex items-center text-black dark:text-white"
                                     onClick={onClickMenuItem}
@@ -141,7 +141,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     <h6 className="text-sm">Followers</h6>
                                 </Link>
                             </li>
-                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <Link
                                     className="flex items-center text-black dark:text-white"
                                     onClick={onClickMenuItem}
@@ -151,7 +151,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     <h6 className="text-sm">Bookmarks</h6>
                                 </Link>
                             </li>
-                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <Link
                                     className="flex items-center text-black dark:text-white"
                                     onClick={onClickMenuItem}
@@ -161,7 +161,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     <h6 className="text-sm">Suggested People</h6>
                                 </Link>
                             </li>
-                            <li className="p-4 cursor-pointer hover:bg-indigo-100">
+                            <li className="p-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100">
                                 <div
                                     className="flex items-center text-black dark:text-white"
                                     onClick={() => {
@@ -175,20 +175,20 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                             </li>
                         </ul>
                     ) : (
-                            <ul className="divide-y divide-gray-100">
-                                <li className="px-4 cursor-pointer hover:bg-indigo-100 flex items-center">
-                                    <ArrowRightOutlined className="flex items-center justify-center" />
+                            <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+                                <li className="px-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100 flex items-center justify-start">
+                                    <ArrowRightOutlined className="flex items-center justify-center dark:text-white" />
                                     <Link
-                                        className="p-4 font-medium"
+                                        className="p-4 font-medium dark:text-indigo-400 flex-grow"
                                         to={LOGIN}
                                     >
                                         Login
                                     </Link>
                                 </li>
-                                <li className="px-4 cursor-pointer hover:bg-indigo-100 flex items-center">
-                                    <ArrowRightOutlined className="flex items-center justify-center" />
+                                <li className="px-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100 flex items-center justify-start">
+                                    <ArrowRightOutlined className="flex items-center justify-center dark:text-white" />
                                     <Link
-                                        className="p-4 font-medium"
+                                        className="p-4 font-medium dark:text-indigo-400 flex-grow"
                                         to={REGISTER}
                                     >
                                         Register

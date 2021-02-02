@@ -150,7 +150,7 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
                 </Badge>
             </div>
             {isNotificationOpen && (
-                <div className="notification-wrapper fixed top-14 pb-14 laptop:pb-0 laptop:top-10 right-0 h-screen laptop:h-auto w-full laptop:w-30rem bg-white dark:bg-indigo-1000 shadow-lg rounded-md laptop:absolute"
+                <div className="notification-wrapper border border-transparent dark:border-gray-800 fixed top-14 pb-14 laptop:pb-0 laptop:top-10 right-0 h-screen laptop:h-auto w-full laptop:w-30rem bg-white dark:bg-indigo-1000 shadow-lg rounded-md laptop:absolute"
                 >
                     {/*  ----- HEADER ----- */}
                     <div className="py-2 px-4 border-b-gray-200 flex justify-between items-center bg-indigo-700 laptop:rounded-t-md">
