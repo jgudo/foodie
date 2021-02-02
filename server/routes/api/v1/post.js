@@ -224,7 +224,7 @@ router.patch(
             if (!description && !privacy) return res.sendStatus(400);
 
             if (description) obj.description = description.trim();
-            if (privacy && (privacy === 'public' || privacy === 'private')) obj.privacy = privacy;
+            if (privacy) obj.privacy = privacy;
 
             const post = await Post.findById(post_id);
             if (!post) return res.sendStatus(404);

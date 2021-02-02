@@ -75,7 +75,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                 )}
                 {likes.length !== 0 && (
                     <div className="p-4 px-4 w-30rem max-h-70vh overflow-y-scroll scrollbar">
-                        <div className="divide-y divide-gray-100">
+                        <div className="divide-y divide-gray-100 dark:divide-gray-800">
                             {likes.map(user => (
                                 <div key={user.id}>
                                     <UserCard profile={user} isFollowing={user.isFollowing} />

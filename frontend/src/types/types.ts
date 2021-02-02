@@ -40,7 +40,7 @@ export interface IUser {
 
 export interface IPost {
     id: string;
-    privacy: 'public' | 'private' | 'friends';
+    privacy: 'public' | 'private' | 'follower';
     photos: string[];
     comments: any[];
     description: string;

@@ -96,7 +96,9 @@ const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
                             ) : (
                                     <ul className="flex items-center">
                                         <li className="group inline-block mx-3">
-                                            <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500" activeClassName="nav-active">Login</NavLink>
+                                            <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500 dark:hover:text-white" activeClassName="nav-active">
+                                                Login
+                                            </NavLink>
                                         </li>
                                         <li className="group inline-block mx-3">
                                             <NavLink to="/register" className="button py-1 group-hover:text-indigo-600" activeClassName="nav-active">

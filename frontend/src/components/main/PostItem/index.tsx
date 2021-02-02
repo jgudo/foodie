@@ -51,7 +51,7 @@ const PostItem: React.FC<IProps> = (props) => {
         if (isLiked && likesCount <= 1) {
             return 'You like this.'
         } else if (isLiked && likesCount > 1) {
-            return `You and ${likesCount - 1} ${peopleMinusSelf} ${likeMinusSelf} this.`;
+            return `You and ${likesCount - 1} other ${peopleMinusSelf} ${likeMinusSelf} this.`;
         } else {
             return `${likesCount} ${people} ${like} this.`;
         }
@@ -70,14 +70,19 @@ const PostItem: React.FC<IProps> = (props) => {
                         <Link className="dark:text-indigo-400" to={`/user/${post.author.username}`}>
                             <h5 className="font-bold">{post.author.username}</h5>
                         </Link>
-                        <div className="flex space-x-1">
-                            {post.privacy === 'private'
-                                ? <LockOutlined className="flex items-center justify-center text-gray-400" />
-                                : post.privacy === 'friends'
-                                    ? <UserOutlined className="flex items-center justify-center text-gray-400" />
-                                    : <GlobalOutlined className="flex items-center justify-center text-gray-400" />
-                            }
+                        <div className="flex items-center space-x-1">
                             <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
+                            <div
+                                className="w-4 h-4 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-indigo-900"
+                                onClick={updateModal.openModal}
+                            >
+                                {post.privacy === 'private'
+                                    ? <LockOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
+                                    : post.privacy === 'follower'
+                                        ? <UserOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
+                                        : <GlobalOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

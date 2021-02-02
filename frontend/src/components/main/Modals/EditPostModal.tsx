@@ -1,5 +1,5 @@
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { updatePost } from '~/services/api';
@@ -18,18 +18,32 @@ Modal.setAppElement('#root');
 
 const EditPostModal: React.FC<IProps> = (props) => {
     const [description, setDescription] = useState(props.post.description || '');
+    const [privacy, setPrivacy] = useState(props.post.privacy || 'public');
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState<IError | null>(null);
+
+    useEffect(() => {
+        return () => {
+            setPrivacy(props.post.privacy);
+            setDescription(props.post.description)
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
         setDescription(val);
     }
 
+    const handlePrivacyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const val = e.target.value as IPost['privacy'];
+        setPrivacy(val);
+    }
+
     const handleUpdatePost = async () => {
         try {
             setIsUpdating(true);
-            const updatedPost = await updatePost(props.post.id, { description: description.trim() });
+            const updatedPost = await updatePost(props.post.id, { description: description.trim(), privacy });
 
             console.log(updatedPost)
             props.updateSuccessCallback(updatedPost);
@@ -71,6 +85,18 @@ const EditPostModal: React.FC<IProps> = (props) => {
                         <EditOutlined className="inline-flex items-center justify-center mr-2 pt-2" />
                         Edit Post
                     </h2>
+                    <select
+                        className="!py-1 !text-sm w-32 dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
+                        id="privacy"
+                        name="privacy"
+                        onChange={handlePrivacyChange}
+                        value={privacy}
+                    >
+                        <option value="public">Public</option>
+                        <option value="follower">Follower</option>
+                        <option value="private">Only Me</option>
+                    </select>
+                    <br />
                     <br />
                     <label htmlFor="update-post">Description</label>
                     <textarea

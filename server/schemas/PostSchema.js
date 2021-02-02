@@ -10,7 +10,7 @@ const PostSchema = new mongoose.Schema({
     privacy: {
         type: String,
         default: 'public',
-        enum: ['private', 'public', 'friends']
+        enum: ['private', 'public', 'follower']
     },
     photos: [String],
     description: {

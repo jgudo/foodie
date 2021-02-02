@@ -131,7 +131,7 @@ const Home: React.FC<IProps> = (props) => {
                 )}
                 {(state.error && state.newsFeed.items.length === 0) && (
                     <div className="flex flex-col w-full min-h-24rem items-center justify-center">
-                        <CoffeeOutlined className="text-8xl text-gray-300 mb-4" />
+                        <CoffeeOutlined className="text-8xl text-gray-300 mb-4 dark:text-gray-800" />
                         <h5 className="text-gray-500">News feed is empty</h5>
                         <p className="text-gray-400">Start following people or create your first post.</p>
                     </div>
