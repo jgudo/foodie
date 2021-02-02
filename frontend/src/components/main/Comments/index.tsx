@@ -50,7 +50,7 @@ const Comments: React.FC<IProps> = (props) => {
     const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
     const deleteModal = useModal();
-    const didMount = useDidMount();
+    const didMount = useDidMount(true);
 
     useEffect(() => {
         fetchComment({ offset: 0, limit: 1, sort: 'desc' });
