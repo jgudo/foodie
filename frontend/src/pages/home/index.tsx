@@ -104,7 +104,7 @@ const Home: React.FC<IProps> = (props) => {
                                 className="dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                                 type="text"
                                 placeholder="Create a post."
-                                onClick={() => !state.isLoadingCreatePost && openModal()}
+                                onClick={() => (!state.isLoadingCreatePost && !state.isLoadingFeed) && openModal()}
                                 readOnly={state.isLoadingFeed || state.isLoadingCreatePost}
                             />
                         </div>
@@ -131,9 +131,17 @@ const Home: React.FC<IProps> = (props) => {
                 )}
                 {(state.error && state.newsFeed.items.length === 0) && (
                     <div className="flex flex-col w-full min-h-24rem items-center justify-center">
-                        <CoffeeOutlined className="text-8xl text-gray-300 mb-4 dark:text-gray-800" />
-                        <h5 className="text-gray-500">News feed is empty</h5>
-                        <p className="text-gray-400">Start following people or create your first post.</p>
+                        {state.error.status_code === 404 ? (
+                            <>
+                                <CoffeeOutlined className="text-8xl text-gray-300 mb-4 dark:text-gray-800" />
+                                <h5 className="text-gray-500">News feed is empty</h5>
+                                <p className="text-gray-400">Start following people or create your first post.</p>
+                            </>
+                        ) : (
+                                <h5 className="text-gray-500 italic">
+                                    {state.error?.error?.message || 'Something went wrong :('}
+                                </h5>
+                            )}
                     </div>
                 )}
                 {/* ---- LOADING INDICATOR ----- */}

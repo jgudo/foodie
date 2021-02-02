@@ -49,9 +49,17 @@ const MessagesList: React.FC<IProps> = (props) => {
                                                     {message.isOwnMessage && 'You:'} {message.text}
                                                 </span>
                                                 {/* --- DATE --- */}
-                                                <span className="absolute right-4 top-1 text-xs text-gray-400">
+                                                <span className="absolute right-4 top-0 text-1xs text-gray-400">
                                                     {displayTime(message.createdAt)}
                                                 </span>
+                                                {/* ---- SEEN ---- */}
+                                                {(message.isOwnMessage && message.seen) && (
+                                                    <Avatar
+                                                        className="absolute right-4 bottom-0"
+                                                        size="xs"
+                                                        url={message.to.profilePicture}
+                                                    />
+                                                )}
                                                 {/* --- BADGE ---- */}
                                                 {(!message.isOwnMessage && !message.seen) && (
                                                     <div className="absolute rounded-full  bottom-0 top-0 right-4 my-auto w-2 h-2 bg-red-600" />

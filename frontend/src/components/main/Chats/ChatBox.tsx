@@ -173,7 +173,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 )}
                 {(target.chats.length !== 0) && (
                     <TransitionGroup component={null}>
-                        {target.chats.map(msg => (
+                        {target.chats.map((msg, i) => (
                             <CSSTransition
                                 timeout={500}
                                 classNames="fade"
@@ -200,9 +200,14 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                         </div>
                                     </div>
                                     <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
-                                        <span className="text-gray-400 text-1xs">
+                                        <span className={`text-gray-400 text-1xs ${msg.isOwnMessage ? 'order-2' : 'order-1'}`}>
                                             {displayTime(msg.createdAt, true)}
                                         </span>
+                                        {(msg.isOwnMessage && msg.seen && i === target.chats.length - 1) && (
+                                            <span className={`text-gray-400 mx-2 text-1xs italic flex-grow ${msg.isOwnMessage ? 'order-1' : 'order-2'}`}>
+                                                &nbsp;Seen
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </CSSTransition>
