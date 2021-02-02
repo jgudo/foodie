@@ -147,26 +147,32 @@ const PostItem: React.FC<IProps> = (props) => {
                         commentInputRef={commentInputRef}
                         setInputCommentVisible={setCommentVisible}
                     />
-                    <DeletePostModal
-                        isOpen={deleteModal.isOpen}
-                        openModal={deleteModal.openModal}
-                        closeModal={deleteModal.closeModal}
-                        postID={post.id}
-                        deleteSuccessCallback={deleteSuccessCallback}
-                    />
-                    <EditPostModal
-                        isOpen={updateModal.isOpen}
-                        openModal={updateModal.openModal}
-                        closeModal={updateModal.closeModal}
-                        post={post}
-                        updateSuccessCallback={updateSuccessCallback}
-                    />
-                    <PostLikesModal
-                        isOpen={likesModal.isOpen}
-                        openModal={likesModal.openModal}
-                        closeModal={likesModal.closeModal}
-                        postID={post.id}
-                    />
+                    {deleteModal.isOpen && (
+                        <DeletePostModal
+                            isOpen={deleteModal.isOpen}
+                            openModal={deleteModal.openModal}
+                            closeModal={deleteModal.closeModal}
+                            postID={post.id}
+                            deleteSuccessCallback={deleteSuccessCallback}
+                        />
+                    )}
+                    {updateModal.isOpen && (
+                        <EditPostModal
+                            isOpen={updateModal.isOpen}
+                            openModal={updateModal.openModal}
+                            closeModal={updateModal.closeModal}
+                            post={post}
+                            updateSuccessCallback={updateSuccessCallback}
+                        />
+                    )}
+                    {likesModal.isOpen && (
+                        <PostLikesModal
+                            isOpen={likesModal.isOpen}
+                            openModal={likesModal.openModal}
+                            closeModal={likesModal.closeModal}
+                            postID={post.id}
+                        />
+                    )}
                 </>
             )}
         </div>

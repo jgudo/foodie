@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { Redirect, RouteComponentProps, useLocation } from "react-router-dom";
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
+import useDidMount from "~/hooks/useDidMount";
 import { search } from "~/services/api";
 import { IError, IPost, IProfile } from "~/types/types";
 import Posts from "./Posts";
@@ -22,17 +23,9 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     const [isLoadingUser, setIsLoadingUser] = useState(false);
     const [isLoadingPost, setIsLoadingPost] = useState(false);
     const query = useQuery();
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount(true);
     const searchQuery = query.get('q');
     const searchType = query.get('type');
-
-    useEffect(() => {
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
-    }, []);
 
     useEffect(() => {
         if (searchType === 'posts') {
@@ -50,15 +43,17 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 setError(null);
                 const fetchedPosts = await search({ q: searchQuery, type: 'posts', offset: postOffset });
 
-                if (isMountedRef.current) {
+                if (didMount) {
                     setPosts([...posts, ...fetchedPosts]);
                     setIsLoadingPost(false);
                     setPostOffset(postOffset + 1);
                 }
             }
         } catch (e) {
-            setIsLoadingPost(false);
-            setError(e);
+            if (didMount) {
+                setIsLoadingPost(false);
+                setError(e);
+            }
         }
     }
 
@@ -69,15 +64,17 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 setIsLoadingUser(true);
                 const fetchedUsers = await search({ q: searchQuery, offset: userOffset });
 
-                if (isMountedRef.current) {
+                if (didMount) {
                     setUsers([...users, ...fetchedUsers]);
                     setIsLoadingUser(false);
                     setUserOffset(userOffset + 1);
                 }
             }
         } catch (e) {
-            setIsLoadingUser(false);
-            setError(e);
+            if (didMount) {
+                setIsLoadingUser(false);
+                setError(e);
+            }
         }
     }
 

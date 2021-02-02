@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from '~/components/main/UserCard';
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
+import useDidMount from "~/hooks/useDidMount";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import { getFollowing } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
@@ -22,17 +23,11 @@ const Following: React.FC<IProps> = ({ username }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     const [error, setError] = useState<IError | null>(null);
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount(true);
 
     useDocumentTitle(`Following - ${username} | Foodie`);
     useEffect(() => {
         fetchFollowing();
-
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -41,7 +36,7 @@ const Following: React.FC<IProps> = ({ username }) => {
             setIsLoading(true);
             const fetchedFollowing = await getFollowing(username, { offset });
 
-            if (isMountedRef.current) {
+            if (didMount) {
                 setFollowing([...followings, ...fetchedFollowing]);
                 setIsLoading(false);
                 setOffset(offset + 1);
@@ -49,7 +44,7 @@ const Following: React.FC<IProps> = ({ username }) => {
             }
         } catch (e) {
             console.log(e);
-            if (isMountedRef.current) {
+            if (didMount) {
                 setIsLoading(false);
                 setError(e);
             }

@@ -1,7 +1,8 @@
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
+import useDidMount from '~/hooks/useDidMount';
 import { updatePost } from '~/services/api';
 import { IError, IPost } from '~/types/types';
 
@@ -21,14 +22,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
     const [privacy, setPrivacy] = useState(props.post.privacy || 'public');
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState<IError | null>(null);
-
-    useEffect(() => {
-        return () => {
-            setPrivacy(props.post.privacy);
-            setDescription(props.post.description)
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const didMount = useDidMount();
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -45,16 +39,20 @@ const EditPostModal: React.FC<IProps> = (props) => {
             setIsUpdating(true);
             const updatedPost = await updatePost(props.post.id, { description: description.trim(), privacy });
 
-            console.log(updatedPost)
+            if (didMount) {
+                setIsUpdating(false);
+            }
+
             props.updateSuccessCallback(updatedPost);
-            setIsUpdating(false);
             props.closeModal();
             toast.dark('Post updated successfully.', {
                 progressStyle: { backgroundColor: '#4caf50' }
             });
         } catch (e) {
-            setIsUpdating(false);
-            setError(e);
+            if (didMount) {
+                setIsUpdating(false);
+                setError(e);
+            }
         }
     };
 

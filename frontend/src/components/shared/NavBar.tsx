@@ -120,15 +120,18 @@ const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
                                 openModal={logoutModal.openModal}
                             />
                         </Suspense>
-                    )}
-                <LogoutModal
-                    isOpen={logoutModal.isOpen}
-                    closeModal={logoutModal.closeModal}
-                    openModal={logoutModal.openModal}
-                    dispatchLogout={onLogout}
-                    error={error}
-                    isLoggingOut={isLoadingAuth}
-                />
+                    )
+                }
+                {logoutModal.isOpen && (
+                    <LogoutModal
+                        isOpen={logoutModal.isOpen}
+                        closeModal={logoutModal.closeModal}
+                        openModal={logoutModal.openModal}
+                        dispatchLogout={onLogout}
+                        error={error}
+                        isLoggingOut={isLoadingAuth}
+                    />
+                )}
             </>
         )
 };

@@ -121,7 +121,7 @@ const Home: React.FC<IProps> = (props) => {
                     </button>
                 )}
                 {/* --- CREATE POST MODAL ----- */}
-                {props.isAuth && (
+                {(props.isAuth && isOpen) && (
                     <CreatePostModal
                         isOpen={isOpen}
                         openModal={openModal}

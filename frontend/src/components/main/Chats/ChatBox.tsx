@@ -6,6 +6,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { displayTime } from "~/helpers/utils";
+import useDidMount from "~/hooks/useDidMount";
 import { closeChat, getMessagesSuccess, minimizeChat, newMessageArrived } from "~/redux/action/chatActions";
 import { getUserMessages, sendMessage } from "~/services/api";
 import socket from "~/socket/socket";
@@ -22,12 +23,11 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     const [error, setError] = useState<IError | null>(null);
     const [isLoading, setLoading] = useState(false);
     const [isSending, setSending] = useState(false);
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount(true);
     let dummyEl = useRef<HTMLSpanElement | null>(null);
 
     useEffect(() => {
         if (target.chats.length === 0) fetchMessages();
-        if (isMountedRef) isMountedRef.current = true;
 
         socket.on('newMessage', (message: IMessage) => {
             dispatch(newMessageArrived(target.username, message));
@@ -39,10 +39,6 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
         if (dummyEl.current) {
             dummyEl.current.scrollIntoView();
-        }
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -62,7 +58,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
             dispatch(getMessagesSuccess(target.username, messages.reverse()));
 
-            if (isMountedRef.current) {
+            if (didMount) {
                 setText('');
                 setLoading(false);
                 setError(null);
@@ -73,7 +69,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 dummyEl.current?.scrollIntoView();
             }
         } catch (e) {
-            if (isMountedRef.current) {
+            if (didMount) {
                 setLoading(false);
                 setError(e);
             }
@@ -87,13 +83,13 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
                 await sendMessage(text, target.id);
 
-                if (isMountedRef.current) {
+                if (didMount) {
                     setSending(false);
                     setText('');
                     setError(null);
                 }
             } catch (e) {
-                if (isMountedRef.current) {
+                if (didMount) {
                     setSending(false);
                     setError(e);
                 }

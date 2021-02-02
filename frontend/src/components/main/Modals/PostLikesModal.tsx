@@ -2,6 +2,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import Loader from '~/components/shared/Loader';
+import useDidMount from '~/hooks/useDidMount';
 import { getPostLikes } from '~/services/api';
 import { IError, IUser } from '~/types/types';
 import UserCard from '../UserCard';
@@ -23,6 +24,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState<IError | null>(null);
+    const didMount = useDidMount(true);
 
     useEffect(() => {
         if (props.isOpen) {
@@ -36,12 +38,16 @@ const PostLikesModal: React.FC<IProps> = (props) => {
             setIsLoading(true);
             const result = await getPostLikes(props.postID, { offset: initOffset });
 
-            setOffset(offset + 1);
-            setLikes(result);
-            setIsLoading(false);
+            if (didMount) {
+                setOffset(offset + 1);
+                setLikes(result);
+                setIsLoading(false);
+            }
         } catch (e) {
-            setIsLoading(false);
-            setError(e);
+            if (didMount) {
+                setIsLoading(false);
+                setError(e);
+            }
         }
     };
 

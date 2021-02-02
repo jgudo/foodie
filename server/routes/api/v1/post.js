@@ -71,10 +71,13 @@ router.post(
             // Notify followers that new post has been made 
             const io = req.app.get('io');
             followers.forEach((user) => {
-                io.to(user._id.toString()).emit('newFeed', post);
+                io.to(user._id.toString()).emit('newFeed', {
+                    ...post.toObject(),
+                    isOwnPost: false
+                });
             });
 
-            return res.status(200).send(makeResponseJson(post));
+            return res.status(200).send(makeResponseJson({ ...post.toObject(), isOwnPost: true }));
         } catch (e) {
             console.log(e);
             return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You\'re not authorized to make a post.' }))

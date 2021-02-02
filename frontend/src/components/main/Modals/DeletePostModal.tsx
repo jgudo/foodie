@@ -2,6 +2,7 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
+import useDidMount from '~/hooks/useDidMount';
 import { deletePost } from '~/services/api';
 import { IError } from '~/types/types';
 
@@ -19,21 +20,27 @@ Modal.setAppElement('#root');
 const DeletePostModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
+    const didMount = useDidMount();
 
     const handleDeletePost = async () => {
         try {
             setIsDeleting(true);
             await deletePost(props.postID);
 
-            setIsDeleting(false);
+            if (didMount) {
+                setIsDeleting(false);
+            }
+
             props.closeModal();
             props.deleteSuccessCallback(props.postID);
             toast.dark('Post successfully deleted.', {
                 progressStyle: { backgroundColor: '#4caf50' }
             });
         } catch (e) {
-            setIsDeleting(false);
-            setError(e);
+            if (didMount) {
+                setIsDeleting(false);
+                setError(e);
+            }
         }
     };
 

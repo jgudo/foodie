@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from "~/components/main/UserCard";
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
+import useDidMount from "~/hooks/useDidMount";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import { getFollowers } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
@@ -21,18 +22,12 @@ const Followers: React.FC<IProps> = ({ username }) => {
     const [followers, setFollowers] = useState<IFollowerState[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount(true);
     const [error, setError] = useState<IError | null>(null);
 
     useDocumentTitle(`Followers - ${username} | Foodie`);
     useEffect(() => {
         fetchFollowers();
-
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -41,7 +36,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
             setIsLoading(true);
             const fetchedFollowers = await getFollowers(username, { offset });
 
-            if (isMountedRef.current) {
+            if (didMount) {
                 setFollowers([...followers, ...fetchedFollowers]);
                 setIsLoading(false);
                 setOffset(offset + 1);
@@ -49,7 +44,7 @@ const Followers: React.FC<IProps> = ({ username }) => {
                 setError(null);
             }
         } catch (e) {
-            if (isMountedRef.current) {
+            if (didMount) {
                 setIsLoading(false);
                 setError(e)
             }

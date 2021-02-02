@@ -4,6 +4,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import UserCard from "~/components/main/UserCard";
 import Loader from "~/components/shared/Loader";
 import { UserLoader } from "~/components/shared/Loaders";
+import useDidMount from "~/hooks/useDidMount";
 import { getSuggestedPeople } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
 
@@ -12,6 +13,7 @@ const SuggestedPeople = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const [offset, setOffset] = useState(0);
+    const didMount = useDidMount(true);
 
     useEffect(() => {
         fetchSuggested();
@@ -23,12 +25,16 @@ const SuggestedPeople = () => {
             setIsLoading(true);
             const users = await getSuggestedPeople({ offset });
 
-            setPeople([...people, ...users]);
-            setOffset(offset + 1);
-            setIsLoading(false);
+            if (didMount) {
+                setPeople([...people, ...users]);
+                setOffset(offset + 1);
+                setIsLoading(false);
+            }
         } catch (e) {
-            setIsLoading(false);
-            setError(e);
+            if (didMount) {
+                setIsLoading(false);
+                setError(e);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 import { CheckOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import useDidMount from "~/hooks/useDidMount";
 import { followUser, unfollowUser } from "~/services/api";
 
 interface IProps {
@@ -11,6 +12,7 @@ interface IProps {
 const FollowButton: React.FC<IProps> = (props) => {
     const [isFollowing, setIsFollowing] = useState(props.isFollowing);
     const [isLoading, setLoading] = useState(false);
+    const didMount = useDidMount();
 
     useEffect(() => {
         setIsFollowing(props.isFollowing);
@@ -21,15 +23,15 @@ const FollowButton: React.FC<IProps> = (props) => {
             setLoading(true);
             if (isFollowing) {
                 const result = await unfollowUser(props.userID);
-                setIsFollowing(result.state);
+                didMount && setIsFollowing(result.state);
             } else {
                 const result = await followUser(props.userID);
-                setIsFollowing(result.state);
+                didMount && setIsFollowing(result.state);
             }
 
-            setLoading(false);
+            didMount && setLoading(false);
         } catch (e) {
-            setLoading(false);
+            didMount && setLoading(false);
             console.log(e);
         }
     };

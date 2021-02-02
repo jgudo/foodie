@@ -1,5 +1,6 @@
 import { LikeOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
+import useDidMount from '~/hooks/useDidMount';
 import { likePost } from '~/services/api';
 import { IPost } from '~/types/types';
 
@@ -12,6 +13,7 @@ interface IProps {
 const LikeButton: React.FC<IProps> = (props) => {
     const [isLiked, setIsLiked] = useState(props.isLiked);
     const [isLoading, setLoading] = useState(false);
+    const didMount = useDidMount();
 
     useEffect(() => {
         setIsLiked(props.isLiked);
@@ -24,11 +26,14 @@ const LikeButton: React.FC<IProps> = (props) => {
             setLoading(true);
 
             const { post, state } = await likePost(props.postID);
-            setLoading(false);
-            setIsLiked(state);
+            if (didMount) {
+                setLoading(false);
+                setIsLiked(state);
+            }
+
             props.likeCallback(post);
         } catch (e) {
-            setLoading(false);
+            didMount && setLoading(false);
             console.log(e);
         }
     }

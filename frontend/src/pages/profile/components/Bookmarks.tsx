@@ -1,12 +1,13 @@
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { Link, Redirect } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import BookmarkButton from "~/components/main/BookmarkButton";
 import Loader from '~/components/shared/Loader';
+import useDidMount from '~/hooks/useDidMount';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { getBookmarks } from "~/services/api";
 import { IBookmark, IError } from "~/types/types";
@@ -31,17 +32,11 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const [offset, setOffset] = useState(0);
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount(true);
 
     useDocumentTitle(`Bookmarks - ${username} | Foodie`);
     useEffect(() => {
         fetchBookmarks();
-
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -51,7 +46,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
 
             const { bookmarks: result, total } = await getBookmarks({ offset });
 
-            if (isMountedRef.current) {
+            if (didMount) {
                 setBookmarks({
                     items: [...bookmarks.items, ...result],
                     total
@@ -62,7 +57,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
             }
         } catch (e) {
             console.log(e);
-            if (isMountedRef.current) {
+            if (didMount) {
                 setIsLoading(false);
                 setError(e);
             }

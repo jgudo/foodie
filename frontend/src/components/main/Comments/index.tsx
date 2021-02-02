@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import Avatar from '~/components/shared/Avatar';
 import Boundary from '~/components/shared/Boundary';
 import Loader from '~/components/shared/Loader';
+import useDidMount from '~/hooks/useDidMount';
 import useModal from '~/hooks/useModal';
 import { commentOnPost, getComments, updateComment } from "~/services/api";
 import { IComment, IFetchParams, IRootReducer } from "~/types/types";
@@ -49,16 +50,10 @@ const Comments: React.FC<IProps> = (props) => {
     const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
     const deleteModal = useModal();
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount();
 
     useEffect(() => {
         fetchComment({ offset: 0, limit: 1, sort: 'desc' });
-
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -72,13 +67,13 @@ const Comments: React.FC<IProps> = (props) => {
             setIsLoading(true);
             const { comments: fetchedComments, commentsCount } = await getComments(postID, params);
 
-            if (isMountedRef.current) {
+            if (didMount) {
                 setOffset(offset + 1);
                 setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
                 setIsLoading(false);
             }
         } catch (e) {
-            if (isMountedRef.current) {
+            if (didMount) {
                 setIsLoading(false);
                 setError(e.error?.message || 'Something went wrong.');
             }
@@ -96,7 +91,7 @@ const Comments: React.FC<IProps> = (props) => {
                 setIsCommenting(true);
                 const comment = isUpdating ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
 
-                if (isMountedRef.current) {
+                if (didMount) {
                     if (isUpdating) {
                         handleUpdateCommentState(comment);
                     } else {
@@ -109,7 +104,7 @@ const Comments: React.FC<IProps> = (props) => {
                     setIsCommenting(false);
                 }
             } catch (e) {
-                if (isMountedRef.current) {
+                if (didMount) {
                     setIsCommenting(false);
                     setError(e.error.message);
                 }
@@ -145,7 +140,7 @@ const Comments: React.FC<IProps> = (props) => {
         // eslint-disable-next-line array-callback-return
         const filteredComments = comments.items.filter((comment) => comment.id !== commentID);
 
-        if (isMountedRef.current) {
+        if (didMount) {
             setTargetID('');
             setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
         }
@@ -247,13 +242,15 @@ const Comments: React.FC<IProps> = (props) => {
                     </div>
                 )}
             </div>
-            <DeleteCommentModal
-                isOpen={deleteModal.isOpen}
-                openModal={deleteModal.openModal}
-                closeModal={deleteModal.closeModal}
-                commentID={targetID}
-                deleteSuccessCallback={deleteSuccessCallback}
-            />
+            {deleteModal.isOpen && (
+                <DeleteCommentModal
+                    isOpen={deleteModal.isOpen}
+                    openModal={deleteModal.openModal}
+                    closeModal={deleteModal.closeModal}
+                    commentID={targetID}
+                    deleteSuccessCallback={deleteSuccessCallback}
+                />
+            )}
         </Boundary>
     );
 };

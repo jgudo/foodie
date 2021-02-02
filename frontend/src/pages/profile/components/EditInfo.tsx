@@ -1,8 +1,9 @@
 import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Redirect, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
+import useDidMount from '~/hooks/useDidMount';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { updateProfileInfo } from '~/redux/action/profileActions';
 import { updateUser } from '~/services/api';
@@ -25,17 +26,9 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const [bioLength, setBioLength] = useState(200 - field.bio.length);
     const history = useHistory();
     const dispatch = useDispatch();
-    let isMountedRef = useRef<boolean | null>(null);
+    const didMount = useDidMount();
 
     useDocumentTitle(`Edit Info - ${profile.username} | Foodie`);
-    useEffect(() => {
-        if (isMountedRef) isMountedRef.current = true;
-
-        return () => {
-            if (isMountedRef) isMountedRef.current = false;
-        }
-    }, []);
-
     useEffect(() => {
         setField({
             firstname: profile.firstname,
@@ -53,15 +46,14 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
 
             dispatch(updateProfileInfo(user));
 
-            if (isMountedRef.current) {
-                console.log(user);
+            if (didMount) {
                 setIsUpdating(false);
 
                 history.push(`/user/${profile.username}/info`);
                 toast.dark('Profile updated successfully.')
             }
         } catch (e) {
-            if (isMountedRef.current) {
+            if (didMount) {
                 setIsUpdating(false);
             }
 

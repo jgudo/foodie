@@ -186,12 +186,14 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                     )}
                 </div>
             )}
-            <ComposeMessageModal
-                isOpen={composeModal.isOpen}
-                openModal={composeModal.openModal}
-                closeModal={composeModal.closeModal}
-                userID={id}
-            />
+            {composeModal.isOpen && (
+                <ComposeMessageModal
+                    isOpen={composeModal.isOpen}
+                    openModal={composeModal.openModal}
+                    closeModal={composeModal.closeModal}
+                    userID={id}
+                />
+            )}
         </div>
     );
 };
