@@ -87,11 +87,15 @@ router.get(
     async (req, res, next) => {
         try {
             const { username } = req.params;
-            const { privacy, sortBy, sortOrder } = req.query;
+            const { sortBy, sortOrder } = req.query;
 
             const offset = parseInt(req.query.offset) || 0;
 
             const user = await User.findOne({ username });
+            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
+
+
             if (!user) return res.sendStatus(404);
 
             const limit = POST_LIMIT;
@@ -105,8 +109,10 @@ router.get(
                 [sortBy || 'createdAt']: sortOrder === 'asc' ? 1 : -1
             };
 
-            if (username === req.user.username && privacy) {
-                query.privacy.$in = ['public', privacy];
+            if (username === req.user.username) {
+                query.privacy.$in = ['public', 'private', 'follower'];
+            } else if (following.includes(user._id.toString())) {
+                query.privacy.$in = ['public', 'follower'];
             }
 
             const posts = await Post

@@ -32,7 +32,11 @@ router.get(
                     .skip(skip)
 
                 const filteredFeed = feeds
-                    .filter(feed => feed.post) // filter out null posts (users that have been deleted but posts still in db)
+                    .filter(feed => {
+                        if (feed.post) {
+                            return feed.post.privacy === 'follower' || feed.post.privacy === 'public';
+                        }
+                    }) // filter out null posts (users that have been deleted but posts still in db)
                     .map((feed) => {
                         const isPostLiked = feed.post.isPostLiked(req.user._id);
                         const isBookmarked = req.user.isBookmarked(feed.post.id);
