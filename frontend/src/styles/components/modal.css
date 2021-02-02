@@ -1,6 +1,6 @@
 .modal {
     position: absolute;
-    background: #fff;
+    background: var(--modalBackground);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -19,7 +19,7 @@
     right: 0;
     bottom: 0;
     z-index: 999;
-    background-color: rgba(0,0,0, .3);
+    background-color: var(--modalOverlayBackground);
   }
 
   

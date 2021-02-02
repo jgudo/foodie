@@ -6,9 +6,9 @@ const SocialAuthFailed = () => {
 
     return (
         <div className="contain pt-14 h-full">
-            <h1 className="mt-8 text-2xl laptop:text-4xl">Failed to authenticate</h1>
+            <h1 className="mt-8 text-2xl laptop:text-4xl dark:text-white">Failed to authenticate</h1>
             <br />
-            <h4 className="text-gray-600">Possible cause(s):</h4>
+            <h4 className="text-gray-600 dark:text-gray-400">Possible cause(s):</h4>
             <ul className="text-gray-500">
                 <li className="list-disc ml-8">Same email/username has been already linked to other social login eg: Google</li>
             </ul>

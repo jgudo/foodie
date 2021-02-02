@@ -112,9 +112,9 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     }
 
     return (
-        <div className={`bg-white p-3 relative w-full h-full laptop:w-20rem laptop:shadow-lg laptop:rounded-t-xl laptop:bottom-0 laptop:right-24 laptop:border laptop:border-gray-400`}>
-            <div className="flex justify-between pb-3 border-b border-gray-200">
-                <Link to={`/user/${target.username}`}>
+        <div className={`bg-white dark:bg-indigo-1100 p-3 relative w-full h-full laptop:w-20rem laptop:shadow-lg laptop:rounded-t-xl laptop:bottom-0 laptop:right-24 laptop:border laptop:border-gray-400 dark:border-gray-800`}>
+            <div className="flex justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
+                <Link className="dark:text-indigo-400" to={`/user/${target.username}`}>
                     <div className="flex items-center">
                         <Avatar url={target.profilePicture} className="mr-2" />
                         <h5>{target.username}</h5>
@@ -122,13 +122,15 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </Link>
                 <div className="hidden laptop:flex laptop:items-center">
                     <div
-                        className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                        className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1000"
+                        title="Minimize Chat"
                         onClick={onMinimize}
                     >
                         <LineOutlined className="flex items-center justify-center" />
                     </div>
                     <div
-                        className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                        className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1000"
+                        title="Close Chat"
                         onClick={onCloseChat}
                     >
                         <CloseOutlined className="flex items-center justify-center" />
@@ -136,7 +138,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 overflow-y-scroll pb-14">
+            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 dark:bg-indigo-1000 overflow-y-scroll pb-14 scrollbar">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center min-h-18rem py-2">
                         <Loader />
@@ -212,9 +214,9 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     </TransitionGroup>
                 )}
             </div>
-            <div className="absolute bottom-0 left-0 bg-white w-full flex px-2 py-3 border-t border-gray-200">
+            <div className="absolute bottom-0 left-0 bg-white dark:bg-indigo-1100 w-full flex px-2 py-3 border-t border-gray-200 dark:border-gray-800">
                 <input
-                    className="flex-grow !border-gray-400 !rounded-r-none !py-0"
+                    className="flex-grow !border-gray-400 !rounded-r-none !py-0 dark:bg-indigo-1000 dark:text-white dark:!border-gray-800"
                     type="text"
                     onChange={handleTextChange}
                     onKeyDown={handleTextKeyDown}

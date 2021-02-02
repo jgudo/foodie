@@ -58,7 +58,7 @@ const PostItem: React.FC<IProps> = (props) => {
     }
 
     return (
-        <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg">
+        <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg dark:bg-indigo-1000">
             {/* --- AVATAR AND OPTIONS */}
             <div className="flex justify-between items-center w-full">
                 <div className="flex">
@@ -67,7 +67,7 @@ const PostItem: React.FC<IProps> = (props) => {
                         className="mr-3"
                     />
                     <div className="flex flex-col">
-                        <Link to={`/user/${post.author.username}`}>
+                        <Link className="dark:text-indigo-400" to={`/user/${post.author.username}`}>
                             <h5 className="font-bold">{post.author.username}</h5>
                         </Link>
                         <div className="flex space-x-1">
@@ -92,7 +92,7 @@ const PostItem: React.FC<IProps> = (props) => {
             </div>
             {/* --- DESCRIPTION */}
             <div className="mb-3 mt-2">
-                <p className="text-gray-700">{post.description}</p>
+                <p className="text-gray-700 dark:text-gray-300">{post.description}</p>
             </div>
             {/* --- IMAGE GRID ----- */}
             {post.photos.length !== 0 && <ImageGrid images={post.photos} />}
@@ -100,7 +100,7 @@ const PostItem: React.FC<IProps> = (props) => {
             <div className="flex justify-between px-2 my-2">
                 <div onClick={() => isAuth && likesModal.openModal()}>
                     {post.likesCount > 0 && (
-                        <span className="text-gray-700 text-sm cursor-pointer hover:underline">
+                        <span className="text-gray-700 text-sm cursor-pointer hover:underline dark:text-gray-500 dark:hover:text-white">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
                         </span>
                     )}
@@ -109,7 +109,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 <div>
                     {post.commentsCount > 0 && (
                         <span
-                            className="text-gray-700 cursor-pointer text-sm hover:underline"
+                            className="text-gray-700 cursor-pointer text-sm hover:underline dark:text-gray-500 dark:hover:text-white"
                             onClick={handleToggleComment}
                         >
                             {post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}
@@ -119,10 +119,10 @@ const PostItem: React.FC<IProps> = (props) => {
             </div>
             {/* --- LIKE/COMMENT BUTTON */}
             {isAuth ? (
-                <div className="flex items-center justify-around py-2 border-t border-gray-200">
+                <div className="flex items-center justify-around py-2 border-t border-gray-200 dark:border-gray-800">
                     <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
                     <span
-                        className="py-2 rounded-md flex items-center justify-center text-gray-700 hover:text-gray-800 cursor-pointer hover:bg-gray-100 text-l w-2/4"
+                        className="py-2 rounded-md flex items-center justify-center text-gray-700 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white dark:hover:bg-indigo-1100 cursor-pointer hover:bg-gray-100 text-l w-2/4"
                         onClick={handleToggleComment}
                     >
                         <CommentOutlined />&nbsp;Comment
@@ -131,7 +131,7 @@ const PostItem: React.FC<IProps> = (props) => {
             ) : (
                     <div className="text-center py-2">
                         <span className="text-gray-400 text-sm">
-                            <Link className="font-medium underline" to={LOGIN}>Login</Link> to like or comment on post.
+                            <Link className="font-medium underline dark:text-indigo-400" to={LOGIN}>Login</Link> to like or comment on post.
                         </span>
                     </div>
                 )}

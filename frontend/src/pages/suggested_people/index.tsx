@@ -40,9 +40,9 @@ const SuggestedPeople = () => {
     });
 
     return (
-        <div className="contain min-h-screen w-full py-20">
+        <div className="contain min-h-screen w-full py-24">
             <div className="mb-8">
-                <h2>Suggested People</h2>
+                <h2 className="dark:text-white">Suggested People</h2>
                 <p className="text-gray-400 text-sm">Follow people to see their updates</p>
             </div>
             {(isLoading && people.length === 0) && (
@@ -71,7 +71,7 @@ const SuggestedPeople = () => {
                             classNames="fade"
                             key={user.id}
                         >
-                            <div className="bg-white rounded-md mb-4 shadow-md" key={user.id}>
+                            <div className="bg-white dark:bg-indigo-1000 rounded-md mb-4 shadow-md dark:shadow-none" key={user.id}>
                                 <UserCard
                                     profile={user}
                                     isFollowing={user.isFollowing}

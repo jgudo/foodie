@@ -50,10 +50,10 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
         >
             <div className="relative">
                 <div
-                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
                     onClick={props.closeModal}
                 >
-                    <CloseOutlined className="p-2  outline-none text-gray-500" />
+                    <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 {error && (
                     <span className="p-4 bg-red-100 text-red-500 w-full">
@@ -61,14 +61,14 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <div className="p-4 laptop:px-8">
-                    <h2>
+                    <h2 className="dark:text-white">
                         <ExclamationCircleOutlined className="inline-flex items-center justify-center text-red-500 mr-2 pt-2" />
                         Delete Comment
                     </h2>
-                    <p className="text-gray-600 my-4">Are you sure you want to delete this comment?</p>
+                    <p className="text-gray-600 my-4 dark:text-white">Are you sure you want to delete this comment?</p>
                     <div className="flex justify-between">
                         <button
-                            className="button--muted !rounded-full"
+                            className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
                             onClick={props.closeModal}
                         >
                             Cancel

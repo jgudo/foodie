@@ -33,10 +33,10 @@ const LogoutModal: React.FC<IProps> = (props) => {
         >
             <div className="relative">
                 <div
-                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
                     onClick={onCloseModal}
                 >
-                    <CloseOutlined className="p-2  outline-none text-gray-500" />
+                    <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 {props.error && (
                     <span className="p-4 bg-red-100 text-red-500 block">
@@ -44,11 +44,11 @@ const LogoutModal: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 <div className="p-4 laptop:px-8">
-                    <h2>Confirm Logout</h2>
-                    <p className="text-gray-600 my-4">Are you sure you want to logout?</p>
+                    <h2 className="dark:text-white">Confirm Logout</h2>
+                    <p className="text-gray-600 my-4 dark:text-gray-400">Are you sure you want to logout?</p>
                     <div className="flex justify-between">
                         <button
-                            className="button--muted !rounded-full"
+                            className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100 dark:hover:text-white"
                             onClick={props.closeModal}
                             disabled={props.isLoggingOut}
                         >

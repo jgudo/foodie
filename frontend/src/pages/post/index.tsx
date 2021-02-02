@@ -4,12 +4,13 @@ import PostItem from '~/components/main/PostItem';
 import Loader from '~/components/shared/Loader';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { getSinglePost } from '~/services/api';
-import { IPost } from '~/types/types';
+import { IError, IPost } from '~/types/types';
+import PageNotFound from '../error/PageNotFound';
 
 const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, match }) => {
     const [post, setPost] = useState<IPost | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<IError | null>(null);
     const { post_id } = match.params;
 
     useDocumentTitle(`${post?.description} - Foodie` || 'View Post');
@@ -41,7 +42,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
         } catch (e) {
             console.log(e);
             setIsLoading(false);
-            setError(e.error.message || 'Unable to process request.')
+            setError(e);
         }
     };
 
@@ -63,9 +64,17 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
                 </div>
             )}
             {(!isLoading && error) && (
-                <div className="flex items-center justify-center min-h-screen">
-                    <h4 className="text-xl italic">{error}</h4>
-                </div>
+                <>
+                    {error.status_code === 404 ? (
+                        <PageNotFound />
+                    ) : (
+                            <div className="flex items-center justify-center min-h-screen">
+                                <h4 className="text-xl italic dark:text-white">
+                                    {error?.error?.message || 'Something went wrong :('}
+                                </h4>
+                            </div>
+                        )}
+                </>
             )}
         </>
     )

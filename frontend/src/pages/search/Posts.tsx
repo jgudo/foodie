@@ -20,7 +20,7 @@ const boldString = (str: string, substr: string) => {
         return str;
     }
     const len = sub.length;
-    return str.substr(0, x) + '<b><span style="color: #4f46e5">' + str.substr(x, len) + '</span></b>' + str.substr(x + len);
+    return str.substr(0, x) + '<b><span style="color: #818cf8">' + str.substr(x, len) + '</span></b>' + str.substr(x + len);
 }
 
 const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
@@ -40,7 +40,7 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
         <div className="space-y-4">
             {posts.map((post) => post.author && (
                 <div
-                    className="h-28 laptop:h-24 flex justify-start bg-white rounded-md shadow-lg overflow-hidden cursor-pointer border border-transparent hover:border-indigo-700"
+                    className="h-28 laptop:h-24 flex justify-start bg-white dark:bg-indigo-1100 rounded-md shadow-lg overflow-hidden cursor-pointer border border-transparent hover:border-indigo-700"
                     key={post.id}
                     onClick={(e) => onClickPost(post.id)}
                 >
@@ -52,17 +52,17 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                     />
                     <div className="flex-grow p-2 pb-4 max-w-sm">
                         <h4
-                            className="break-all overflow-hidden overflow-ellipsis h-12 font-normal"
+                            className="break-all overflow-hidden overflow-ellipsis h-12 font-normal dark:text-white"
                             dangerouslySetInnerHTML={{ __html: boldString(post.description, searchQuery) }}
                         >
                         </h4>
-                        <div className="flex flex-col laptop:flex-row space-y-2 self-end">
+                        <div className="flex flex-col laptop:flex-row space-y-2 laptop:space-y-0 self-end">
                             <div className="flex">
                                 <h6 className="text-xs text-gray-400 laptop:mr-4">
                                     Posted by
                                     &nbsp;
                                     <span
-                                        className="underline text-indigo-700 cursor-pointer hover:text-indigo-400"
+                                        className="underline text-indigo-700 dark:text-indigo-400 cursor-pointer hover:text-indigo-400"
                                         onClick={(e) => onClickAuthor(e, post.author.username)}
                                     >
                                         {post.author.username}

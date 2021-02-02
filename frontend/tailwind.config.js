@@ -2,7 +2,7 @@ const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
     screens: {
       'mobile': '420px',
@@ -16,6 +16,10 @@ module.exports = {
     extend: {
       fontSize: {
         '1xs': '11px'
+      },
+      colors: {
+        'indigo-1000': '#100f17',
+        'indigo-1100': '#08070f'
       },
       height: {
         '60px': '60px',
@@ -65,7 +69,7 @@ module.exports = {
   },
   variants: {
     cursor: ['hover', 'focus'],
-    backgroundColor: ['hover', 'focus', 'important', 'responsive'],
+    backgroundColor: ['hover', 'focus', 'important', 'responsive', 'dark'],
     backgroundSize: ['important', 'responsive'],
     backgroundRepeat: ['important', 'responsive'],
     backgroundPosition: ['important', 'responsive'],
@@ -73,10 +77,10 @@ module.exports = {
     display: ['responsive'],
     padding: ['important', 'responsive'],
     borderRadius: ['important', 'responsive'],
-    textColor: ['important', 'hover'],
-    borderColor: ['important', 'focus', 'hover'],
+    textColor: ['important', 'hover', 'dark'],
+    borderColor: ['important', 'focus', 'hover', 'dark'],
     outlineOffset: ['hover'],
-    boxShadow: ['responsive'],
+    boxShadow: ['responsive', 'dark'],
     border: ['hover', 'responsive'],
     extend: {
       cursor: ['disabled'],

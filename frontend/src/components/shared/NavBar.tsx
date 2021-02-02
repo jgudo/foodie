@@ -7,15 +7,22 @@ import logo from '~/images/logo.svg';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
 import withAuth from "../hoc/withAuth";
+import withTheme from "../hoc/withTheme";
 import Messages from '../main/Messages';
 import LogoutModal from "../main/Modals/LogoutModal";
 import Notification from '../main/Notification';
 import Avatar from "./Avatar";
 import SearchInput from './SearchInput';
+import ThemeToggler from "./ThemeToggler";
 
 const NavBarMobile = lazy(() => import('./NavBarMobile'));
 
-const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
+interface IProps {
+    isAuth: boolean;
+    theme: string;
+}
+
+const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
     const dispatch = useDispatch();
     const { isLoadingAuth, auth, error } = useSelector((state: IRootReducer) => ({
         isLoadingAuth: state.loading.isLoadingAuth,
@@ -37,7 +44,7 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         : (
             <>
                 {isLaptop ? (
-                    <nav className="contain flex justify-between z-9999 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm">
+                    <nav className="contain flex justify-between items-center z-9999 border-b border-transparent dark:border-gray-900 align-center w-100 bg-white text-gray-700 h-60px py-2 fixed w-full shadow-md laptop:shadow-sm dark:bg-indigo-1000">
                         <div className="flex items-center space-x-8">
                             {/* ---- LOGO -------- */}
                             <Link
@@ -46,20 +53,25 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                                     state: { from: pathname }
                                 }}
                             >
-                                <img src={logo} alt="" className="w-24" />
+                                <img
+                                    src={logo}
+                                    alt=""
+                                    className="w-24"
+                                    style={{ filter: `brightness(${theme === 'dark' ? 3.5 : 1})` }}
+                                />
                             </Link>
                             {/* -------- SEARCH BAR ------- */}
                             <SearchInput />
                         </div>
-                        <div className="hidden laptop:flex laptop:items-center">
+                        <div className="hidden laptop:flex laptop:items-center space-x-2">
                             {isAuth ? (
                                 <>
                                     {/* ----- FOLLOW/MESSAGE/NOTIF ICONS ------ */}
                                     <ul className="flex items-center space-x-8 mr-8">
-                                        <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
+                                        <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-indigo-1100">
                                             <Messages isAuth={isAuth} />
                                         </li>
-                                        <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200">
+                                        <li className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-indigo-1100">
                                             <Notification isAuth={isAuth} />
                                         </li>
                                     </ul>
@@ -68,12 +80,12 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                                         <Link to={`/user/${auth.username}`} className="cursor-pointer">
                                             <div className="flex items-center">
                                                 <Avatar url={auth.profilePicture} className="mr-2" />
-                                                <h6 className="text-sm mr-10">@{auth.username}</h6>
+                                                <h6 className="text-sm mr-10 dark:text-indigo-400">@{auth.username}</h6>
                                             </div>
                                         </Link>
                                         {/* ----- LOGOUT BUTTON ------ */}
                                         <button
-                                            className="button--muted"
+                                            className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-900 dark:hover:text-white dark:active:bg-indigo-1100"
                                             onClick={logoutModal.openModal}
                                             disabled={isLoadingAuth}
                                         >
@@ -94,12 +106,14 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                                     </ul>
                                 )
                             }
+                            <ThemeToggler />
                         </div>
                     </nav>
                 ) : (
                         <Suspense fallback={<nav className="bg-white h-60px fixed top-0 left-0 w-full shadow-md"></nav>}>
                             <NavBarMobile
                                 isAuth={isAuth}
+                                theme={theme}
                                 auth={auth}
                                 openModal={logoutModal.openModal}
                             />
@@ -117,4 +131,4 @@ const NavBar: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         )
 };
 
-export default withAuth(NavBar);
+export default withTheme(withAuth(NavBar));

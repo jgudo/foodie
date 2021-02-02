@@ -28,10 +28,10 @@ const SuggestedPeople: React.FC = () => {
     }, []);
 
     return (
-        <div className="w-full py-4 bg-white rounded-md shadow-lg overflow-hidden">
+        <div className="w-full py-4 bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden">
             <div className="px-4 flex justify-between mb-4">
-                <h4>Suggested People</h4>
-                <Link to={SUGGESTED_PEOPLE} className="text-xs underline">See all</Link>
+                <h4 className="dark:text-white">Suggested People</h4>
+                <Link to={SUGGESTED_PEOPLE} className="text-xs underline dark:text-indigo-500">See all</Link>
             </div>
             {isLoading && (
                 <div className="min-h-10rem px-4">
@@ -54,10 +54,10 @@ const SuggestedPeople: React.FC = () => {
                         <Link to={`/user/${user.username}`}>
                             <div className="flex items-center">
                                 <Avatar url={user.profilePicture} className="mr-2" />
-                                <h6 className="mr-10 text-sm overflow-ellipsis overflow-hidden">{user.username}</h6>
+                                <h6 className="mr-10 text-sm overflow-ellipsis overflow-hidden dark:text-white">{user.username}</h6>
                             </div>
                         </Link>
-                        <div className="absolute px-4 bg-white right-0 top-0 bottom-0 my-auto flex items-center">
+                        <div className="absolute px-4 bg-white dark:bg-indigo-1000 right-0 top-0 bottom-0 my-auto flex items-center">
                             <FollowButton
                                 userID={user.id || user._id}
                                 isFollowing={user.isFollowing}

@@ -42,17 +42,17 @@ const ComposeMessageModal: React.FC<IProps> = (props) => {
         >
             <div className="relative transition-all pb-8 min-h-18rem">
                 <div
-                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
                     onClick={props.closeModal}
                 >
-                    <CloseOutlined className="p-2  outline-none text-gray-500" />
+                    <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
-                <h3 className="py-4 px-8 flex">
+                <h3 className="py-4 px-8 flex dark:text-white">
                     <FormOutlined className="flex items-center justify-center mr-2" />
                     Compose Message
                 </h3>
                 <div className="flex justify-start px-8 mt-4">
-                    <h4 className="mr-2 pt-2">To: </h4>
+                    <h4 className="mr-2 pt-2 dark:text-white">To: </h4>
                     <SearchInput
                         floatingResult={false}
                         clickItemCallback={clickSearchResultCallback}

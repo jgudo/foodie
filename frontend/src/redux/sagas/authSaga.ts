@@ -29,6 +29,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
                 yield put(isAuthenticating(true));
                 const { auth } = yield call(login, payload.email, payload.password);
                 socket.emit('userConnect', auth.id);
+                yield put(clearNewsFeed());
                 yield put(loginSuccess(auth));
                 yield put(isAuthenticating(false));
             } catch (e) {
