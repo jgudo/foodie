@@ -2,7 +2,6 @@ import { CommentOutlined, GlobalOutlined, LockOutlined, UserOutlined } from '@an
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import withAuth from '~/components/hoc/withAuth';
 import DeletePostModal from '~/components/main/Modals/DeletePostModal';
@@ -10,7 +9,7 @@ import Avatar from '~/components/shared/Avatar';
 import ImageGrid from '~/components/shared/ImageGrid';
 import { LOGIN } from '~/constants/routes';
 import useModal from '~/hooks/useModal';
-import { IPost, IRootReducer } from "~/types/types";
+import { IPost } from "~/types/types";
 import Comments from '../Comments';
 import LikeButton from '../LikeButton';
 import EditPostModal from '../Modals/EditPostModal';
@@ -29,7 +28,6 @@ interface IProps {
 
 const PostItem: React.FC<IProps> = (props) => {
     const { post, likeCallback, updateSuccessCallback, deleteSuccessCallback, isAuth } = props;
-    const userID = useSelector((state: IRootReducer) => state.auth.id);
     const [isCommentVisible, setCommentVisible] = useState(false);
     const deleteModal = useModal();
     const updateModal = useModal();
