@@ -105,7 +105,7 @@ const Home: React.FC<IProps> = (props) => {
                                 className="dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                                 type="text"
                                 placeholder="Create a post."
-                                onClick={() => (!state.isLoadingCreatePost && !state.isLoadingFeed && !state.error) && openModal()}
+                                onClick={() => (!state.isLoadingCreatePost && !state.isLoadingFeed) && openModal()}
                                 readOnly={state.isLoadingFeed || state.isLoadingCreatePost}
                             />
                         </div>
