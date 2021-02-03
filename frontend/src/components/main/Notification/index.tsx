@@ -7,8 +7,8 @@ import Loader from '~/components/shared/Loader';
 import {
     getNotifications,
     getUnreadNotifications,
-
-    markAllAsUnreadNotifications, readNotification
+    markAllAsUnreadNotifications,
+    readNotification
 } from "~/services/api";
 import socket from "~/socket/socket";
 import { IError, INotification, IRootReducer } from "~/types/types";
@@ -162,16 +162,24 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
                             Mark all as read
                         </span>
                     </div>
+                    {/* ---- LOADER --- */}
                     {(isLoading && !error && notifications.items.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
                         </div>
                     )}
+                    {/* --- ERROR MESSAGE --- */}
                     {(notifications.items.length === 0 && error) && (
                         <div className="flex justify-center py-6">
-                            <p className="text-gray-400 italic">{error?.error?.message || 'No new notifications.'}</p>
+                            <p className="text-gray-400 italic">
+                                {error.status_code === 404
+                                    ? 'You don\'t notification.'
+                                    : (error?.error?.message || 'Something went wrong :(')
+                                }
+                            </p>
                         </div>
                     )}
+                    {/* --- NOTIF LIST ---- */}
                     {(notifications.items.length !== 0) && (
                         <div>
                             <NotificationList

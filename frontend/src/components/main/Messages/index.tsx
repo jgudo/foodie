@@ -162,16 +162,24 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                             Compose
                         </span>
                     </div>
+                    {/* --- LOADER FIRST FETCH */}
                     {(isLoading && !error && messages.length === 0) && (
                         <div className="flex items-center justify-center py-8">
                             <Loader />
                         </div>
                     )}
+                    {/* --- ERROR MESSAGE ---- */}
                     {(messages.length === 0 && error) && (
                         <div className="flex justify-center py-6">
-                            <p className="text-gray-400 italic">{error?.error?.message || 'You have no messages.'}</p>
+                            <p className="text-gray-400 italic">
+                                {error.status_code === 404
+                                    ? 'You have no messages.'
+                                    : (error?.error?.message || 'Something went wrong :(')
+                                }
+                            </p>
                         </div>
                     )}
+                    {/* --- MSG LIST --- */}
                     {(messages.length !== 0) && (
                         <MessagesList
                             messages={messages}
@@ -179,6 +187,7 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                             infiniteScrollRef={infiniteRef}
                         />
                     )}
+                    {/* ---- LOADER FETCHING MORE --- */}
                     {(isLoading && !error && messages.length !== 0) && (
                         <div className="flex items-center justify-center py-4">
                             <Loader />

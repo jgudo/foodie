@@ -2,7 +2,7 @@ import { CoffeeOutlined, UndoOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import withAuth from "~/components/hoc/withAuth";
 import CreatePostModal from "~/components/main/Modals/CreatePostModal";
@@ -11,6 +11,7 @@ import SuggestedPeople from "~/components/main/SuggestedPeople";
 import Avatar from "~/components/shared/Avatar";
 import Loader from "~/components/shared/Loader";
 import { PostLoader } from "~/components/shared/Loaders";
+import { SUGGESTED_PEOPLE } from "~/constants/routes";
 import useDocumentTitle from "~/hooks/useDocumentTitle";
 import useModal from "~/hooks/useModal";
 import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
@@ -104,7 +105,7 @@ const Home: React.FC<IProps> = (props) => {
                                 className="dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                                 type="text"
                                 placeholder="Create a post."
-                                onClick={() => (!state.isLoadingCreatePost && !state.isLoadingFeed) && openModal()}
+                                onClick={() => (!state.isLoadingCreatePost && !state.isLoadingFeed && !state.error) && openModal()}
                                 readOnly={state.isLoadingFeed || state.isLoadingCreatePost}
                             />
                         </div>
@@ -130,12 +131,16 @@ const Home: React.FC<IProps> = (props) => {
                     />
                 )}
                 {(state.error && state.newsFeed.items.length === 0) && (
-                    <div className="flex flex-col w-full min-h-24rem items-center justify-center">
+                    <div className="flex flex-col w-full min-h-24rem px-8 items-center justify-center text-center">
                         {state.error.status_code === 404 ? (
                             <>
                                 <CoffeeOutlined className="text-8xl text-gray-300 mb-4 dark:text-gray-800" />
                                 <h5 className="text-gray-500">News feed is empty</h5>
                                 <p className="text-gray-400">Start following people or create your first post.</p>
+                                <br />
+                                <Link className="underline dark:text-indigo-400" to={SUGGESTED_PEOPLE}>
+                                    See Suggested People
+                                </Link>
                             </>
                         ) : (
                                 <h5 className="text-gray-500 italic">

@@ -85,7 +85,7 @@ const SearchInput: React.FC<IProps> = (props) => {
         if (e.key === 'Enter' && searchInput && !props.preventDefault) {
             history.push({
                 pathname: '/search',
-                search: `q=${searchInput.trim()}`
+                search: `q=${searchInput.trim()}&type=users`
             });
             setVisibleSuggestion(false);
         }

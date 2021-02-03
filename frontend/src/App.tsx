@@ -74,7 +74,7 @@ function App() {
           <Switch>
             <PublicRoute path={ROUTE.REGISTER} component={Register} />
             <PublicRoute path={ROUTE.LOGIN} component={Login} />
-            <ProtectedRoute path={ROUTE.SEARCH} exact component={Search} />
+            <ProtectedRoute path={ROUTE.SEARCH} component={Search} />
             <Route path={ROUTE.HOME} exact render={(props: any) => <Home key={Date.now()} {...props} />} />
             <ProtectedRoute path={ROUTE.POST} component={Post} />
             <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />

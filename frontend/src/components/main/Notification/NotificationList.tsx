@@ -45,18 +45,18 @@ const NotificationList: React.FC<IProps> = (props) => {
                                             onClick={() => handleNotificationClick(notif.link, notif.id)}
                                         >
                                             <div className="relative">
-                                                <div className="flex items-center">
+                                                <div className="flex items-start">
                                                     <Avatar
                                                         url={notif.initiator.profilePicture}
                                                         size="lg"
-                                                        className="mr-2"
+                                                        className="mr-2 flex-shrink-0"
                                                     />
                                                     <div>
-                                                        <span className="text-indigo-700 dark:text-indigo-400 font-medium">
+                                                        <span className="text-indigo-700 dark:text-indigo-400 font-medium break-all">
                                                             {notif.initiator.username}
                                                         </span>
                                                     &nbsp;
-                                                <span className="text-gray-600 dark:text-gray-400">
+                                                <span className="text-gray-600 dark:text-gray-400 break-all">
                                                             {
                                                                 notif.type === 'like' ? 'likes your post.'
                                                                     : notif.type === 'comment' ? 'commented on your post.'
@@ -65,7 +65,9 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                             }
                                                         </span>
                                                         <br />
-                                                        <span className="text-gray-500 text-1xs block">{displayTime(notif.createdAt)}</span>
+                                                        <span className="text-gray-500 text-1xs block">
+                                                            {displayTime(notif.createdAt)}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 {notif.type === 'like' ? (

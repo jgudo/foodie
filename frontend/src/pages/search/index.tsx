@@ -28,6 +28,10 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     const searchType = query.get('type');
 
     useEffect(() => {
+        console.log('mounted')
+    }, []);
+
+    useEffect(() => {
         if (searchType === 'posts') {
             dispatchSearchPosts();
         } else {
@@ -79,7 +83,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const onClickUserTab = () => {
-        history.push(`/search?q=${searchQuery}`)
+        history.push(`/search?q=${searchQuery}&type=users`)
     }
 
     const onClickPostTab = () => {
