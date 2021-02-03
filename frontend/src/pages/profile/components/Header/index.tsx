@@ -126,6 +126,10 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             fullname: profile.fullname || '',
             profilePicture: profile.profilePicture || ''
         }));
+
+        if (window.screen.width < 1024) {
+            history.push(`/chat/${profile.username}`);
+        }
     }
 
     return (
