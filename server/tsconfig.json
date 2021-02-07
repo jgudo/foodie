@@ -9,7 +9,6 @@
       "./node_modules/@types",
       "./src/types"
     ],
-    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -26,10 +25,10 @@
   },
   "include": [
     "./src/**/*",
-    ".env",
-    "app.ts"
+    ".env"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "build"
   ]
 }
