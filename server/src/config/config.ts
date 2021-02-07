@@ -38,7 +38,7 @@ export default {
     })
   },
   cors: {
-    origin: 'https://foodie.jgudo.vercel.app',
+    origin: process.env.CLIENT_URL,
     credentials: true,
     preflightContinue: true
   },

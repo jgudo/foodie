@@ -33,7 +33,12 @@ class Express {
 
   private initializeMiddlewares() {
     this.app.disable('x-powered-by');
-    this.app.use(cors(config.cors));
+    // this.app.use(cors(config.cors));
+    this.app.use(cors({
+      origin: 'https://foodie.jgudo.vercel.app',
+      credentials: true,
+      preflightContinue: true
+    }));
     this.app.set('trust proxy', 1);
     this.app.use(logger('dev'));
     this.app.use(express.json());
@@ -41,13 +46,13 @@ class Express {
     this.app.use(helmet());
     this.app.use(hpp());
 
-    this.app.use(
-      helmet({
-        referrerPolicy: {
-          policy: 'origin-when-cross-origin',
-        },
-      })
-    )
+    // this.app.use(
+    //   helmet({
+    //     referrerPolicy: {
+    //       policy: 'origin-when-cross-origin',
+    //     },
+    //   })
+    // )
 
     this.app.use(session(config.session as SessionOptions));
     this.app.use(passport.initialize());
