@@ -1,7 +1,7 @@
 import connectMongo from 'connect-mongo';
 import session from 'express-session';
 import mongoose from 'mongoose';
-const path = require('path');
+import path from 'path';
 
 const MongoStore = connectMongo(session);
 const env = process.env.NODE_ENV || 'dev';

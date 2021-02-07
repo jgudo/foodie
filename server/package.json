@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "serve": "node ./build/server.js",
     "start": "nodemon --exec ts-node --files src/server.ts",
     "build": "tsc",
     "postinstall": "tsc"
