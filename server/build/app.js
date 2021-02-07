@@ -21,7 +21,6 @@ const db_1 = __importDefault(require("./db/db"));
 const error_middleware_1 = __importDefault(require("./middlewares/error.middleware"));
 const createRouter_1 = __importDefault(require("./routes/createRouter"));
 const debug = debug_1.default('server:server');
-console.log(config_1.default.session);
 class Express {
     constructor() {
         this.app = express_1.default();

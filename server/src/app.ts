@@ -41,14 +41,6 @@ class Express {
     this.app.use(helmet());
     this.app.use(hpp());
 
-    this.app.use(
-      helmet({
-        referrerPolicy: {
-          policy: 'origin-when-cross-origin',
-        },
-      })
-    )
-
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: false }))
     this.app.use(session(config.session as SessionOptions));

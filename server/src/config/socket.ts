@@ -4,13 +4,14 @@ import config from '../config/config';
 import User from '../schemas/UserSchema';
 
 export default function (app: Application, server: Server) {
-    const io = require("socket.io")(server, {
+    const io = require('socket.io')(server, {
         cors: {
             origin: config.cors.origin || 'http://localhost:3000',
-            methods: ["GET", "POST"],
+            methods: ["GET", "POST", "PATCH"],
             credentials: true
         }
     });
+
     app.set('io', io);
 
     io.on("connection", (socket: SocketIO.Socket) => {
