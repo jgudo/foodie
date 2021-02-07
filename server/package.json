@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon --exec ts-node --files src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "tsc"
   },
   "engines": {
     "node": "12.18.1"

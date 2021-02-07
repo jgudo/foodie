@@ -18,8 +18,6 @@ import routers from './routes/createRouter';
 
 const debug = createDebug('server:server');
 
-console.log(config.session)
-
 class Express {
   public app: express.Application;
   public server: Server;
