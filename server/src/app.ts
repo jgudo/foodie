@@ -49,8 +49,6 @@ class Express {
       })
     )
 
-    this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: false }))
     this.app.use(session(config.session as SessionOptions));
     this.app.use(passport.initialize());
     this.app.use(passport.session());
