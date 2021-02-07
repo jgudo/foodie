@@ -1,11 +1,12 @@
 import { Application } from "express";
 import { Server } from "http";
+import config from '../config/config';
 import User from '../schemas/UserSchema';
 
 export default function (app: Application, server: Server) {
     const io = require("socket.io")(server, {
         cors: {
-            origin: process.env.CLIENT_URL || 'http://localhost:3000',
+            origin: config.cors.origin || 'http://localhost:3000',
             methods: ["GET", "POST"],
             credentials: true
         }
