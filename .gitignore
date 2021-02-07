@@ -7,4 +7,5 @@ frontend/.env
 server/.env-dev
 server/.env-prod
 server/.env
+server/build
 yarn-error.log
