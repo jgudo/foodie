@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import glob from 'glob';
+import config from '../config/config';
 
 const routers = glob
-    .sync(`**/*.${process.env.NODE_ENV === 'dev' ? 'ts' : 'js'}`, { cwd: `${__dirname}/` })
+    .sync(`**/*.${config.server.env === 'dev' ? 'ts' : 'js'}`, { cwd: `${__dirname}/` })
     .map((filename: string) => require(`./${filename}`))
     .filter((router: any) => {
         return router.default && Object.getPrototypeOf(router.default) === Router

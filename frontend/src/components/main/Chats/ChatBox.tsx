@@ -24,6 +24,8 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     const [isLoading, setLoading] = useState(false);
     const [isSending, setSending] = useState(false);
     const didMount = useDidMount(true);
+    const [isTyping, setIsTyping] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     let dummyEl = useRef<HTMLSpanElement | null>(null);
 
     useEffect(() => {
@@ -35,6 +37,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
             if (dummyEl.current) {
                 dummyEl.current.scrollIntoView();
             }
+        });
+
+        socket.on('typing', (state: boolean) => {
+            setIsTyping(state);
         });
 
         if (dummyEl.current) {
@@ -102,8 +108,15 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
     }
 
     const handleTextKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && text) {
-            dispatchSendMessage();
+        if (e.key === 'Enter') {
+            if (text) dispatchSendMessage();
+        } else {
+            socket.emit('user-typing', { user: target, state: true });
+
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => {
+                socket.emit('user-typing', { user: target, state: false })
+            }, 2000);
         }
     }
 
@@ -172,49 +185,56 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     </>
                 )}
                 {(target.chats.length !== 0) && (
-                    <TransitionGroup component={null}>
-                        {target.chats.map((msg, i) => (
-                            <CSSTransition
-                                timeout={500}
-                                classNames="fade"
-                                key={msg.id}
-                            >
-                                <div className="flex flex-col">
-                                    <div
-                                        className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
-                                        key={`${msg.id}_${msg.from.id}`}
-                                    >
-                                        <div className="flex">
-                                            {/* -- AVATAR --- */}
-                                            <Avatar
-                                                url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
-                                                size="xs"
-                                                className={`self-end flex-shrink-0 !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
-                                            />
-                                            {/*  -- MESSAGE-- */}
-                                            <span
-                                                className={`py-2 px-3 break-all text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
-                                                {msg.text}
+                    <>
+                        <TransitionGroup component={null}>
+                            {target.chats.map((msg, i) => (
+                                <CSSTransition
+                                    timeout={500}
+                                    classNames="fade"
+                                    key={msg.id}
+                                >
+                                    <div className="flex flex-col">
+                                        <div
+                                            className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                                            key={`${msg.id}_${msg.from.id}`}
+                                        >
+                                            <div className="flex">
+                                                {/* -- AVATAR --- */}
+                                                <Avatar
+                                                    url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
+                                                    size="xs"
+                                                    className={`self-end flex-shrink-0 !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
+                                                />
+                                                {/*  -- MESSAGE-- */}
+                                                <span
+                                                    className={`py-2 px-3 break-all text-sm rounded-xl ${msg.isOwnMessage ? 'bg-indigo-700 text-white order-1' : 'bg-gray-300 order-2'}`}>
+                                                    {msg.text}
+                                                </span>
+                                                <span ref={dummyEl}></span>
+                                            </div>
+                                        </div>
+                                        <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
+                                            {/* ---DATE ---- */}
+                                            <span className={`text-gray-400 text-1xs ${msg.isOwnMessage ? 'order-2' : 'order-1'}`}>
+                                                {displayTime(msg.createdAt, true)}
                                             </span>
-                                            <span ref={dummyEl}></span>
+                                            {/* ---- SEEN ---- */}
+                                            {(msg.isOwnMessage && msg.seen && i === target.chats.length - 1) && (
+                                                <span className={`text-gray-400 mx-2 text-1xs italic flex-grow ${msg.isOwnMessage ? 'order-1' : 'order-2'}`}>
+                                                    &nbsp;Seen
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
-                                    <div className={`flex pb-2 ${msg.isOwnMessage ? 'justify-end mr-8' : 'justify-start ml-8'}`}>
-                                        {/* ---DATE ---- */}
-                                        <span className={`text-gray-400 text-1xs ${msg.isOwnMessage ? 'order-2' : 'order-1'}`}>
-                                            {displayTime(msg.createdAt, true)}
-                                        </span>
-                                        {/* ---- SEEN ---- */}
-                                        {(msg.isOwnMessage && msg.seen && i === target.chats.length - 1) && (
-                                            <span className={`text-gray-400 mx-2 text-1xs italic flex-grow ${msg.isOwnMessage ? 'order-1' : 'order-2'}`}>
-                                                &nbsp;Seen
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </CSSTransition>
-                        ))}
-                    </TransitionGroup>
+                                </CSSTransition>
+                            ))}
+                        </TransitionGroup>
+                        {isTyping && (
+                            <div className="flex justify-center py-2">
+                                <span className="text-xs text-gray-400">{target.username} is typing...</span>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
             <div className="absolute bottom-0 left-0 bg-white dark:bg-indigo-1100 w-full flex px-2 py-3 border-t border-gray-200 dark:border-gray-800">
