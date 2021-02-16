@@ -38,6 +38,10 @@ export default function (app: Application, server: Server) {
             console.log(data);
         });
 
+        socket.on("user-typing", ({ user, state }) => {
+            io.to(user.id).emit("typing", state)
+        })
+
         socket.on("disconnect", () => {
             console.log('Client disconnected');
         });
