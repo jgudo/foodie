@@ -41,7 +41,8 @@ module.exports = {
       minHeight: {
         '10rem': '10rem',
         '18rem': '18rem',
-        '24rem': '24rem'
+        '24rem': '24rem',
+        '80%': '80%',
       },
       width: {
         '20rem': '20rem',

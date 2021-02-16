@@ -109,7 +109,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
 
     const handleTextKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            if (text) dispatchSendMessage();
+            if (text) {
+                dispatchSendMessage();
+                socket.emit('user-typing', { user: target, state: false });
+            }
         } else {
             socket.emit('user-typing', { user: target, state: true });
 
@@ -147,7 +150,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                 </div>
             </div>
             {/* --- MESSAGES BODY ---- */}
-            <div className="min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 dark:bg-indigo-1000 overflow-y-scroll pb-14 scrollbar">
+            <div className="min-h-80% laptop:min-h-24rem max-h-85% laptop:max-h-80 bg-gray-100 dark:bg-indigo-1000 overflow-y-scroll pb-4 scrollbar relative">
                 {(isLoading && target.chats.length === 0 && !error) && (
                     <div className="flex justify-center min-h-18rem py-2">
                         <Loader />
@@ -195,7 +198,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                 >
                                     <div className="flex flex-col">
                                         <div
-                                            className={`flex mb-1 p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                                            className={`flex p-2  ${msg.isOwnMessage ? 'justify-end' : 'justify-start'}`}
                                             key={`${msg.id}_${msg.from.id}`}
                                         >
                                             <div className="flex">
@@ -237,7 +240,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                     </>
                 )}
             </div>
-            <div className="absolute bottom-0 left-0 bg-white dark:bg-indigo-1100 w-full flex px-2 py-3 border-t border-gray-200 dark:border-gray-800">
+            <div className="relative bottom-0 left-0 bg-white dark:bg-indigo-1100 w-full flex p-2 border-t border-gray-200 dark:border-gray-800">
                 <input
                     className="flex-grow !border-gray-400 !rounded-r-none !py-0 dark:bg-indigo-1000 dark:text-white dark:!border-gray-800"
                     type="text"
