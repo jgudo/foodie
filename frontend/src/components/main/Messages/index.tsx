@@ -38,19 +38,8 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         }
 
         socket.on('newMessage', (newMessage: IMessage) => {
-            const updated = messages
-                .filter((msg) => {
-                    const arr = [msg.from.username, msg.to.username];
-
-                    if (arr.includes(newMessage.from.username) && arr.includes(newMessage.to.username)) {
-                        return newMessage;
-                    }
-                    return msg;
-                });
-            const sorted = updated.sort((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1);
-
-            setMessages(sorted);
-            setCount(newMessage.isOwnMessage ? 0 : count + 1);
+            setMessages((prevMessages) => updateNewMessages(prevMessages, newMessage));
+            setCount((prevCount) => newMessage.isOwnMessage ? 0 : prevCount + 1);
         });
 
         document.addEventListener('click', handleClickOutside);
@@ -67,6 +56,24 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const updateNewMessages = (prevMessages: IMessage[], newMessage: IMessage) => {
+        let messageOnList = false;
+        const updated = prevMessages
+            .map((msg) => {
+                const arr = [msg.from.username, msg.to.username];
+
+                if (arr.includes(newMessage.from.username) && arr.includes(newMessage.to.username)) {
+                    messageOnList = true;
+                    return newMessage;
+                }
+
+                return msg;
+            });
+        const sorted = updated.sort((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? -1 : 1);
+
+        return messageOnList ? sorted : [newMessage, ...sorted];
+    }
 
     const handleClickOutside = (e: Event) => {
         const toggle = (e.target as HTMLElement).closest('.messages-toggle');
