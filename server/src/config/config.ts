@@ -28,8 +28,8 @@ export default {
     saveUninitialized: true,
     cookie: {
       expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      secure: false,
-      sameSite: 'none',
+      // secure: false,
+      // sameSite: 'none',
       httpOnly: true
     }, //14 days expiration
     store: new MongoStore({
