@@ -29,7 +29,7 @@ export default {
     cookie: {
       expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
       secure: true,
-      sameSite: env === 'dev' ? 'strict' : 'none',
+      sameSite: 'none',
       httpOnly: env !== 'dev'
     }, //14 days expiration
     store: new MongoStore({
