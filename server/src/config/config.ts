@@ -28,7 +28,7 @@ export default {
     saveUninitialized: true,
     cookie: {
       expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      secure: env !== 'dev',
+      secure: true,
       sameSite: env === 'dev' ? 'strict' : 'none',
       httpOnly: env !== 'dev'
     }, //14 days expiration
