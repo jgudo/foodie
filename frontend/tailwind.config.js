@@ -18,6 +18,7 @@ module.exports = {
         '1xs': '11px'
       },
       colors: {
+        'indigo-950': '#1b1925',
         'indigo-1000': '#100f17',
         'indigo-1100': '#08070f'
       },
