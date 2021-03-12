@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import useDocumentTitle from '~/hooks/useDocumentTitle';
+import { useDocumentTitle } from '~/hooks';
 import { IRootReducer } from "~/types/types";
 
 const Info = () => {
@@ -31,32 +31,32 @@ const Info = () => {
                     {profile.fullname ? (
                         <span className="text-gray-600 dark:text-gray-400 col-span-2">{profile.fullname}</span>
                     ) : (
-                            <span className="text-gray-300 italic">Name not set.</span>
-                        )}
+                        <span className="text-gray-300 italic">Name not set.</span>
+                    )}
                 </div>
                 <div className="grid grid-cols-3 py-4">
                     <h5 className="dark:text-white">Gender</h5>
                     {profile.info.gender ? (
                         <span className="text-gray-600 dark:text-gray-400 col-span-2 capitalize">{profile.info.gender}</span>
                     ) : (
-                            <span className="text-gray-300 italic">Gender not set.</span>
-                        )}
+                        <span className="text-gray-300 italic">Gender not set.</span>
+                    )}
                 </div>
                 <div className="grid grid-cols-3 py-4">
                     <h5 className="dark:text-white">Birthday</h5>
                     {profile.info.birthday ? (
                         <span className="text-gray-600 dark:text-gray-400 col-span-2">{dayjs(profile.info.birthday).format('MMM.DD, YYYY')}</span>
                     ) : (
-                            <span className="text-gray-300 italic">Birthday not set.</span>
-                        )}
+                        <span className="text-gray-300 italic">Birthday not set.</span>
+                    )}
                 </div>
                 <div className="grid grid-cols-3 py-4">
                     <h5 className="dark:text-white">Bio</h5>
                     {profile.info.bio ? (
                         <span className="text-gray-600 dark:text-gray-400 col-span-2">{profile.info.bio}</span>
                     ) : (
-                            <span className="text-gray-300 italic">Bio not set.</span>
-                        )}
+                        <span className="text-gray-300 italic">Bio not set.</span>
+                    )}
                 </div>
                 <div className="grid grid-cols-3 py-4">
                     <h5 className="dark:text-white">Date Joined</h5>

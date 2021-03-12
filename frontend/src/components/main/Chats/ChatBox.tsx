@@ -3,10 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import Avatar from "~/components/shared/Avatar";
-import Loader from "~/components/shared/Loader";
+import { Avatar, Loader } from "~/components/shared";
 import { displayTime } from "~/helpers/utils";
-import useDidMount from "~/hooks/useDidMount";
+import { useDidMount } from "~/hooks";
 import { closeChat, getMessagesSuccess, minimizeChat, newMessageArrived } from "~/redux/action/chatActions";
 import { getUserMessages, sendMessage } from "~/services/api";
 import socket from "~/socket/socket";
@@ -165,10 +164,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                 <span className="text-gray-400 text-sm">Send a message to {target.username}</span>
                             </>
                         ) : (
-                                <span className="text-gray-400 mb-4">
-                                    {error?.error?.message || 'Unable to process your request.'}
-                                </span>
-                            )}
+                            <span className="text-gray-400 mb-4">
+                                {error?.error?.message || 'Unable to process your request.'}
+                            </span>
+                        )}
                     </div>
                 )}
                 {(!error && target.chats.length >= 10) && (
@@ -181,10 +180,10 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                 <span className="text-indigo-700 text-xs">Older messages</span>
                             </div>
                         ) : (
-                                <div className="flex justify-center py-2 mb-4">
-                                    <Loader />
-                                </div>
-                            )}
+                            <div className="flex justify-center py-2 mb-4">
+                                <Loader />
+                            </div>
+                        )}
                     </>
                 )}
                 {(target.chats.length !== 0) && (

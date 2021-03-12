@@ -1,20 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, RouteComponentProps, Switch } from "react-router-dom";
-import Boundary from "~/components/shared/Boundary";
-import { ProfileLoader } from "~/components/shared/Loaders";
+import { Boundary, ProfileLoader } from "~/components/shared";
 import * as ROUTE from "~/constants/routes";
+import { PageNotFound } from "~/pages";
 import { getUserStart } from "~/redux/action/profileActions";
 import { IRootReducer } from "~/types/types";
-import PageNotFound from "../error/PageNotFound";
-import Sidebar from './components/Bio';
-import Bookmarks from "./components/Bookmarks";
-import EditInfo from "./components/EditInfo";
-import Followers from "./components/Followers";
-import Following from "./components/Following";
-import Header from './components/Header/';
-import Info from "./components/Info";
-import Posts from "./components/Posts";
+import Header from './Header';
+import * as Tab from './Tabs';
 
 interface MatchParams {
     username: string;
@@ -57,7 +50,7 @@ const Profile: React.FC<IProps> = (props) => {
                     />
                     <div className="laptop:px-6% relative flex min-h-10rem  items-start transform laptop:-translate-y-24">
                         <div className="hidden laptop:block laptop:w-1/4 laptop:mr-4 laptop:sticky laptop:top-44">
-                            <Sidebar
+                            <Tab.Bio
                                 bio={state.profile.info.bio}
                                 dateJoined={state.profile.dateJoined}
                             />
@@ -65,26 +58,26 @@ const Profile: React.FC<IProps> = (props) => {
                         <div className="w-full laptop:w-2/4 mb-14">
                             <Switch>
                                 <Route exact path={ROUTE.PROFILE}>
-                                    <Posts
+                                    <Tab.Posts
                                         username={username}
                                         isOwnProfile={state.profile.isOwnProfile}
                                         auth={state.auth}
                                     />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_FOLLOWERS}>
-                                    <Followers username={username} />
+                                    <Tab.Followers username={username} />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_FOLLOWING}>
-                                    <Following username={username} />
+                                    <Tab.Following username={username} />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_BOOKMARKS}>
-                                    <Bookmarks username={username} isOwnProfile={state.profile.isOwnProfile} />
+                                    <Tab.Bookmarks username={username} isOwnProfile={state.profile.isOwnProfile} />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_INFO}>
-                                    <Info />
+                                    <Tab.Info />
                                 </Route>
                                 <Route path={ROUTE.PROFILE_EDIT_INFO}>
-                                    <EditInfo isOwnProfile={state.profile.isOwnProfile} profile={state.profile} />
+                                    <Tab.EditInfo isOwnProfile={state.profile.isOwnProfile} profile={state.profile} />
                                 </Route>
                             </Switch>
                         </div>

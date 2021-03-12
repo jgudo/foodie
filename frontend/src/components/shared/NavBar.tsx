@@ -1,19 +1,14 @@
 import { lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { withAuth, withTheme } from "~/components/hoc";
+import { LogoutModal, Messages, Notification } from '~/components/main';
+import { Avatar, SearchInput, ThemeToggler } from "~/components/shared";
 import { LOGIN, REGISTER } from '~/constants/routes';
-import useModal from "~/hooks/useModal";
+import { useModal } from "~/hooks";
 import logo from '~/images/logo.svg';
 import { logoutStart } from "~/redux/action/authActions";
 import { IRootReducer } from "~/types/types";
-import withAuth from "../hoc/withAuth";
-import withTheme from "../hoc/withTheme";
-import Messages from '../main/Messages';
-import LogoutModal from "../main/Modals/LogoutModal";
-import Notification from '../main/Notification';
-import Avatar from "./Avatar";
-import SearchInput from './SearchInput';
-import ThemeToggler from "./ThemeToggler";
 
 const NavBarMobile = lazy(() => import('./NavBarMobile'));
 
@@ -94,33 +89,33 @@ const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
                                     </div>
                                 </>
                             ) : (
-                                    <ul className="flex items-center">
-                                        <li className="group inline-block mx-3">
-                                            <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500 dark:hover:text-white" activeClassName="nav-active">
-                                                Login
+                                <ul className="flex items-center">
+                                    <li className="group inline-block mx-3">
+                                        <NavLink to="/login" className="group-hover:text-indigo-600 text-gray-500 dark:hover:text-white" activeClassName="nav-active">
+                                            Login
                                             </NavLink>
-                                        </li>
-                                        <li className="group inline-block mx-3">
-                                            <NavLink to="/register" className="button py-1 group-hover:text-indigo-600" activeClassName="nav-active">
-                                                Register
+                                    </li>
+                                    <li className="group inline-block mx-3">
+                                        <NavLink to="/register" className="button py-1 group-hover:text-indigo-600" activeClassName="nav-active">
+                                            Register
                                     </NavLink>
-                                        </li>
-                                    </ul>
-                                )
+                                    </li>
+                                </ul>
+                            )
                             }
                             <ThemeToggler />
                         </div>
                     </nav>
                 ) : (
-                        <Suspense fallback={<nav className="bg-white h-60px fixed top-0 left-0 w-full shadow-md"></nav>}>
-                            <NavBarMobile
-                                isAuth={isAuth}
-                                theme={theme}
-                                auth={auth}
-                                openModal={logoutModal.openModal}
-                            />
-                        </Suspense>
-                    )
+                    <Suspense fallback={<nav className="bg-white h-60px fixed top-0 left-0 w-full shadow-md"></nav>}>
+                        <NavBarMobile
+                            isAuth={isAuth}
+                            theme={theme}
+                            auth={auth}
+                            openModal={logoutModal.openModal}
+                        />
+                    </Suspense>
+                )
                 }
                 {logoutModal.isOpen && (
                     <LogoutModal

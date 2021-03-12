@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { toast } from "react-toastify";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import CreatePostModal from "~/components/main/Modals/CreatePostModal";
-import PostItem from '~/components/main/PostItem';
-import Avatar from "~/components/shared/Avatar";
-import Loader from "~/components/shared/Loader";
+import { CreatePostModal, PostItem } from "~/components/main";
+import { Avatar, Loader } from "~/components/shared";
 import { PostLoader } from "~/components/shared/Loaders";
-import useDidMount from "~/hooks/useDidMount";
-import useDocumentTitle from "~/hooks/useDocumentTitle";
-import useModal from "~/hooks/useModal";
+import { useDidMount, useDocumentTitle, useModal } from "~/hooks";
 import { createPost, getPosts } from "~/services/api";
 import { IError, IPost, IUser } from "~/types/types";
 

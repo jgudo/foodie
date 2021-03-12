@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import PostItem from '~/components/main/PostItem';
-import Loader from '~/components/shared/Loader';
-import useDocumentTitle from '~/hooks/useDocumentTitle';
+import { PostItem } from '~/components/main';
+import { Loader } from '~/components/shared';
+import { useDocumentTitle } from '~/hooks';
+import { PageNotFound } from '~/pages';
 import { getSinglePost } from '~/services/api';
 import { IError, IPost } from '~/types/types';
-import PageNotFound from '../error/PageNotFound';
 
 const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, match }) => {
     const [post, setPost] = useState<IPost | null>(null);
@@ -68,12 +68,12 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
                     {error.status_code === 404 ? (
                         <PageNotFound />
                     ) : (
-                            <div className="flex items-center justify-center min-h-screen">
-                                <h4 className="text-xl italic dark:text-white">
-                                    {error?.error?.message || 'Something went wrong :('}
-                                </h4>
-                            </div>
-                        )}
+                        <div className="flex items-center justify-center min-h-screen">
+                            <h4 className="text-xl italic dark:text-white">
+                                {error?.error?.message || 'Something went wrong :('}
+                            </h4>
+                        </div>
+                    )}
                 </>
             )}
         </>

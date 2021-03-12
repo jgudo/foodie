@@ -1,6 +1,6 @@
 import { StarOutlined, TeamOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import Avatar from "~/components/shared/Avatar";
+import { Avatar } from "~/components/shared";
 
 interface IProps {
     username: string;

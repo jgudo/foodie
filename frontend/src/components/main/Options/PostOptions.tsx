@@ -6,8 +6,8 @@ import {
     StarOutlined
 } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
+import { BookmarkButton } from '~/components/main';
 import { IPost } from '~/types/types';
-import BookmarkButton from '../BookmarkButton';
 
 interface IProps {
     openDeleteModal: () => void;
@@ -71,22 +71,22 @@ const PostOptions: React.FC<IProps> = (props) => {
                         </h4>
                         </>
                     ) : (
-                            <BookmarkButton postID={props.post.id} initBookmarkState={props.post.isBookmarked}>
-                                {({ dispatchBookmark, isBookmarked }) => (
-                                    <h4
-                                        className="p-4 flex items-center cursor-pointer dark:text-white"
-                                        onClick={dispatchBookmark}
-                                    >
-                                        {isBookmarked ? (
-                                            <StarFilled className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
-                                        ) : (
-                                                <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
-                                            )}
-                                        <span>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
-                                    </h4>
-                                )}
-                            </BookmarkButton>
-                        )}
+                        <BookmarkButton postID={props.post.id} initBookmarkState={props.post.isBookmarked}>
+                            {({ dispatchBookmark, isBookmarked }) => (
+                                <h4
+                                    className="p-4 flex items-center cursor-pointer dark:text-white"
+                                    onClick={dispatchBookmark}
+                                >
+                                    {isBookmarked ? (
+                                        <StarFilled className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                    ) : (
+                                        <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                    )}
+                                    <span>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
+                                </h4>
+                            )}
+                        </BookmarkButton>
+                    )}
                 </div>
             )}
         </div>

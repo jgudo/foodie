@@ -1,6 +1,6 @@
 import { CheckOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import useDidMount from "~/hooks/useDidMount";
+import { useDidMount } from "~/hooks";
 import { followUser, unfollowUser } from "~/services/api";
 
 interface IProps {

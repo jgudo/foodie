@@ -4,17 +4,15 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import withAuth from '~/components/hoc/withAuth';
-import DeletePostModal from '~/components/main/Modals/DeletePostModal';
-import Avatar from '~/components/shared/Avatar';
-import ImageGrid from '~/components/shared/ImageGrid';
+import {
+    Comments,
+    DeletePostModal, EditPostModal, LikeButton,
+    PostLikesModal, PostOptions
+} from '~/components/main';
+import { Avatar, ImageGrid } from '~/components/shared';
 import { LOGIN } from '~/constants/routes';
-import useModal from '~/hooks/useModal';
+import { useModal } from '~/hooks';
 import { IPost } from "~/types/types";
-import Comments from '../Comments';
-import LikeButton from '../LikeButton';
-import EditPostModal from '../Modals/EditPostModal';
-import PostLikesModal from '../Modals/PostLikesModal';
-import PostOptions from '../Options/PostOptions';
 
 dayjs.extend(relativeTime);
 
@@ -132,12 +130,12 @@ const PostItem: React.FC<IProps> = (props) => {
                         </span>
                 </div>
             ) : (
-                    <div className="text-center py-2">
-                        <span className="text-gray-400 text-sm">
-                            <Link className="font-medium underline dark:text-indigo-400" to={LOGIN}>Login</Link> to like or comment on post.
+                <div className="text-center py-2">
+                    <span className="text-gray-400 text-sm">
+                        <Link className="font-medium underline dark:text-indigo-400" to={LOGIN}>Login</Link> to like or comment on post.
                         </span>
-                    </div>
-                )}
+                </div>
+            )}
             {isAuth && (
                 <>
                     <Comments

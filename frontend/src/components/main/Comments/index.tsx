@@ -4,15 +4,11 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import Avatar from '~/components/shared/Avatar';
-import Boundary from '~/components/shared/Boundary';
-import Loader from '~/components/shared/Loader';
-import useDidMount from '~/hooks/useDidMount';
-import useModal from '~/hooks/useModal';
+import { CommentOptions, DeleteCommentModal } from '~/components/main';
+import { Avatar, Boundary, Loader } from '~/components/shared';
+import { useDidMount, useModal } from '~/hooks';
 import { commentOnPost, getComments, updateComment } from "~/services/api";
 import { IComment, IFetchParams, IRootReducer } from "~/types/types";
-import DeleteCommentModal from '../Modals/DeleteCommentModal';
-import CommentOptions from '../Options/CommentOptions';
 
 dayjs.extend(relativeTime);
 

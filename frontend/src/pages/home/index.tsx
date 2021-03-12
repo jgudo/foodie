@@ -4,16 +4,11 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import withAuth from "~/components/hoc/withAuth";
-import CreatePostModal from "~/components/main/Modals/CreatePostModal";
-import PostItem from "~/components/main/PostItem";
-import SuggestedPeople from "~/components/main/SuggestedPeople";
-import Avatar from "~/components/shared/Avatar";
-import Loader from "~/components/shared/Loader";
-import { PostLoader } from "~/components/shared/Loaders";
+import { withAuth } from "~/components/hoc";
+import { CreatePostModal, PostItem, SuggestedPeople } from "~/components/main";
+import { Avatar, Loader, PostLoader } from "~/components/shared";
 import { SUGGESTED_PEOPLE } from "~/constants/routes";
-import useDocumentTitle from "~/hooks/useDocumentTitle";
-import useModal from "~/hooks/useModal";
+import { useDocumentTitle, useModal } from "~/hooks";
 import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
 import socket from "~/socket/socket";
 import { IPost, IRootReducer } from "~/types/types";
@@ -143,10 +138,10 @@ const Home: React.FC<IProps> = (props) => {
                                 </Link>
                             </>
                         ) : (
-                                <h5 className="text-gray-500 italic">
-                                    {state.error?.error?.message || 'Something went wrong :('}
-                                </h5>
-                            )}
+                            <h5 className="text-gray-500 italic">
+                                {state.error?.error?.message || 'Something went wrong :('}
+                            </h5>
+                        )}
                     </div>
                 )}
                 {/* ---- LOADING INDICATOR ----- */}

@@ -1,8 +1,8 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import Loader from '~/components/shared/Loader';
-import useDidMount from '~/hooks/useDidMount';
+import { Loader } from '~/components/shared';
+import { useDidMount } from '~/hooks';
 import { getPostLikes } from '~/services/api';
 import { IError, IUser } from '~/types/types';
 import UserCard from '../UserCard';

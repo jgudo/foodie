@@ -5,10 +5,9 @@ import React, { useEffect, useState } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { Link, Redirect } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import BookmarkButton from "~/components/main/BookmarkButton";
-import Loader from '~/components/shared/Loader';
-import useDidMount from '~/hooks/useDidMount';
-import useDocumentTitle from '~/hooks/useDocumentTitle';
+import { BookmarkButton } from "~/components/main";
+import { Loader } from '~/components/shared';
+import { useDidMount, useDocumentTitle } from '~/hooks';
 import { getBookmarks } from "~/services/api";
 import { IBookmark, IError } from "~/types/types";
 
@@ -107,8 +106,8 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                                     {isBookmarked ? (
                                                         <StarFilled className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
                                                     ) : (
-                                                            <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
-                                                        )}
+                                                        <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                                    )}
                                                 </h4>
                                             )}
                                         </BookmarkButton>

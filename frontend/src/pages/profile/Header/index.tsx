@@ -3,19 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import FollowButton from '~/components/main/FollowButton';
-import CropProfileModal from '~/components/main/Modals/CropProfileModal';
-import Loader from '~/components/shared/Loader';
-import useFileHandler from '~/hooks/useFileHandler';
-import useModal from '~/hooks/useModal';
+import { CropProfileModal, FollowButton } from '~/components/main';
+import { Loader } from '~/components/shared';
+import { useFileHandler, useModal } from '~/hooks';
 import avatar_placeholder from '~/images/avatar_placeholder.png';
 import { updateAuthPicture } from '~/redux/action/authActions';
 import { initiateChat } from '~/redux/action/chatActions';
 import { updateCoverPhoto, updateProfilePicture } from '~/redux/action/profileActions';
 import { uploadPhoto } from '~/services/api';
 import { IImage, IProfile, IUser } from "~/types/types";
-import Tabs from '../Tabs';
 import CoverPhotoOverlay from './CoverPhotoOverlay';
+import Tabs from './Tabs';
 
 interface IProps {
     profile: IProfile,
@@ -219,14 +217,14 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                                 </button>
                             </div>
                         ) : (
-                                <button
-                                    className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-2 flex items-center justify-center dark:bg-indigo-1100 dark:text-white dark:hover:text-white dark:hover:bg-indigo-900 dark:!border-gray-800"
-                                    onClick={() => history.push(`/user/${profile.username}/edit`)}
-                                >
-                                    <EditOutlined className="text-xl mr-4" />
+                            <button
+                                className="button--muted !rounded-full !border !border-gray-400 !focus:bg-gray-200 !py-2 flex items-center justify-center dark:bg-indigo-1100 dark:text-white dark:hover:text-white dark:hover:bg-indigo-900 dark:!border-gray-800"
+                                onClick={() => history.push(`/user/${profile.username}/edit`)}
+                            >
+                                <EditOutlined className="text-xl mr-4" />
                                     Edit Profile
-                                </button>
-                            )}
+                            </button>
+                        )}
                     </div>
                     {/* ---- PROFILE NAVS ----- */}
                     <Tabs

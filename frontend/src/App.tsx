@@ -1,26 +1,15 @@
 import { createBrowserHistory } from 'history';
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Router, Switch } from "react-router-dom";
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Chats } from '~/components/main';
+import { NavBar, Preloader } from "~/components/shared";
 import * as ROUTE from "~/constants/routes";
-import Chats from './components/main/Chats';
-import NavBar from "./components/shared/NavBar";
-import Preloader from "./components/shared/Preloader";
-import Chat from './pages/chat';
-import PageNotFound from "./pages/error/PageNotFound";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Post from "./pages/post";
-import Profile from "./pages/profile";
-import SocialAuthFailed from './pages/redirects/SocialAuthFailed';
-import Register from "./pages/register";
-import Search from "./pages/search";
-import SuggestedPeople from './pages/suggested_people';
+import * as pages from '~/pages';
+import { ProtectedRoute, PublicRoute } from "~/routers";
 import { loginSuccess } from "./redux/action/authActions";
-import ProtectedRoute from "./routers/ProtectedRoute";
-import PublicRoute from "./routers/PublicRoute";
 import { checkAuthSession } from "./services/api";
 import socket from './socket/socket';
 
@@ -60,33 +49,33 @@ function App() {
   return isCheckingSession ? (
     <Preloader />
   ) : (
-      <Router history={history}>
-        <main className="relative min-h-screen">
-          <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            transition={Slide}
-            draggable={false}
-            hideProgressBar={true}
-            bodyStyle={{ paddingLeft: '15px' }}
-          />
-          <NavBar />
-          <Switch>
-            <PublicRoute path={ROUTE.REGISTER} component={Register} />
-            <PublicRoute path={ROUTE.LOGIN} component={Login} />
-            <ProtectedRoute path={ROUTE.SEARCH} component={Search} />
-            <Route path={ROUTE.HOME} exact render={(props: any) => <Home key={Date.now()} {...props} />} />
-            <ProtectedRoute path={ROUTE.POST} component={Post} />
-            <ProtectedRoute path={ROUTE.PROFILE} component={Profile} />
-            <ProtectedRoute path={ROUTE.CHAT} component={Chat} />
-            <ProtectedRoute path={ROUTE.SUGGESTED_PEOPLE} component={SuggestedPeople} />
-            <Route path={ROUTE.SOCIAL_AUTH_FAILED} component={SocialAuthFailed} />
-            <Route component={PageNotFound} />
-          </Switch>
-          {isNotMobile && <Chats />}
-        </main>
-      </Router>
-    );
+    <Router history={history}>
+      <main className="relative min-h-screen">
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          transition={Slide}
+          draggable={false}
+          hideProgressBar={true}
+          bodyStyle={{ paddingLeft: '15px' }}
+        />
+        <NavBar />
+        <Switch>
+          <PublicRoute path={ROUTE.REGISTER} component={pages.Register} />
+          <PublicRoute path={ROUTE.LOGIN} component={pages.Login} />
+          <ProtectedRoute path={ROUTE.SEARCH} component={pages.Search} />
+          <Route path={ROUTE.HOME} exact render={(props: any) => <pages.Home key={Date.now()} {...props} />} />
+          <ProtectedRoute path={ROUTE.POST} component={pages.Post} />
+          <ProtectedRoute path={ROUTE.PROFILE} component={pages.Profile} />
+          <ProtectedRoute path={ROUTE.CHAT} component={pages.Chat} />
+          <ProtectedRoute path={ROUTE.SUGGESTED_PEOPLE} component={pages.SuggestedPeople} />
+          <Route path={ROUTE.SOCIAL_AUTH_FAILED} component={pages.SocialAuthFailed} />
+          <Route component={pages.PageNotFound} />
+        </Switch>
+        {isNotMobile && <Chats />}
+      </main>
+    </Router>
+  );
 }
 
 export default App;

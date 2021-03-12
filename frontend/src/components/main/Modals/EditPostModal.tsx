@@ -2,7 +2,7 @@ import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-import useDidMount from '~/hooks/useDidMount';
+import { useDidMount } from '~/hooks';
 import { updatePost } from '~/services/api';
 import { IError, IPost } from '~/types/types';
 

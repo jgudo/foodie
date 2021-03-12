@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
-import ChatBox from "~/components/main/Chats/ChatBox";
+import { ChatBox } from "~/components/main";
+import { PageNotFound } from "~/pages";
 import { IRootReducer } from "~/types/types";
-import PageNotFound from "../error/PageNotFound";
 
 const Chat: React.FC<RouteComponentProps<{ username: string }>> = ({ match }) => {
     const { username } = match.params;

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { Redirect, RouteComponentProps, useLocation } from "react-router-dom";
-import Loader from "~/components/shared/Loader";
-import { UserLoader } from "~/components/shared/Loaders";
-import useDidMount from "~/hooks/useDidMount";
+import { Loader, UserLoader } from "~/components/shared";
+import { useDidMount } from "~/hooks";
 import { search } from "~/services/api";
 import { IError, IPost, IProfile } from "~/types/types";
 import Posts from "./Posts";
@@ -155,31 +154,31 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                             )}
                         </div>
                     ) : (
-                            <div ref={infiniteUserRef as React.RefObject<HTMLDivElement>}>
-                                {(isLoadingUser && users.length === 0) && (
-                                    <div className="min-h-10rem">
-                                        <UserLoader backgroundColor="#dadada" />
-                                        <UserLoader backgroundColor="#dadada" />
-                                        <UserLoader backgroundColor="#dadada" />
-                                        <UserLoader backgroundColor="#dadada" />
-                                        <UserLoader backgroundColor="#dadada" />
-                                    </div>
-                                )}
-                                {(!isLoadingUser && users.length === 0 && error) && (
-                                    <div className="p-4 flex items-center justify-center">
-                                        <span className="text-gray-400 italic font-medium">
-                                            {error?.error?.message || 'Something went wrong :('}
-                                        </span>
-                                    </div>
-                                )}
-                                {(users.length !== 0) && <Users users={users} />}
-                                {(isLoadingUser && users.length >= 10 && !error) && (
-                                    <div className="px-4 py-14 flex items-center justify-center">
-                                        <Loader />
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                        <div ref={infiniteUserRef as React.RefObject<HTMLDivElement>}>
+                            {(isLoadingUser && users.length === 0) && (
+                                <div className="min-h-10rem">
+                                    <UserLoader backgroundColor="#dadada" />
+                                    <UserLoader backgroundColor="#dadada" />
+                                    <UserLoader backgroundColor="#dadada" />
+                                    <UserLoader backgroundColor="#dadada" />
+                                    <UserLoader backgroundColor="#dadada" />
+                                </div>
+                            )}
+                            {(!isLoadingUser && users.length === 0 && error) && (
+                                <div className="p-4 flex items-center justify-center">
+                                    <span className="text-gray-400 italic font-medium">
+                                        {error?.error?.message || 'Something went wrong :('}
+                                    </span>
+                                </div>
+                            )}
+                            {(users.length !== 0) && <Users users={users} />}
+                            {(isLoadingUser && users.length >= 10 && !error) && (
+                                <div className="px-4 py-14 flex items-center justify-center">
+                                    <Loader />
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

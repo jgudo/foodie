@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import UserCard from '~/components/main/UserCard';
-import Loader from "~/components/shared/Loader";
-import { UserLoader } from "~/components/shared/Loaders";
-import useDidMount from "~/hooks/useDidMount";
-import useDocumentTitle from "~/hooks/useDocumentTitle";
+import { UserCard } from '~/components/main';
+import { Loader, UserLoader } from "~/components/shared";
+import { useDidMount, useDocumentTitle } from "~/hooks";
 import { getFollowing } from "~/services/api";
 import { IError, IProfile } from "~/types/types";
 

@@ -2,8 +2,7 @@ import { BellOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { useSelector } from "react-redux";
-import Badge from '~/components/shared/Badge';
-import Loader from '~/components/shared/Loader';
+import { Badge, Loader } from '~/components/shared';
 import {
     getNotifications,
     getUnreadNotifications,

@@ -5,7 +5,7 @@ interface IProps {
     dateJoined: string | Date;
 }
 
-const Sidebar: React.FC<IProps> = ({ bio, dateJoined }) => {
+const Bio: React.FC<IProps> = ({ bio, dateJoined }) => {
     return (
         <aside className="p-4 bg-white dark:bg-indigo-1000 shadow-lg rounded-md space-y-4">
             <div>
@@ -14,8 +14,8 @@ const Sidebar: React.FC<IProps> = ({ bio, dateJoined }) => {
                     bio ? (
                         <p className="text-gray-600 dark:text-gray-400">{bio}</p>
                     ) : (
-                            <p className="text-gray-400 italic">No bio set.</p>
-                        )
+                        <p className="text-gray-400 italic">No bio set.</p>
+                    )
                 }
             </div>
             <div>
@@ -26,4 +26,4 @@ const Sidebar: React.FC<IProps> = ({ bio, dateJoined }) => {
     );
 };
 
-export default Sidebar;
+export default Bio;

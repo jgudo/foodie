@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import Modal from 'react-modal';
-import Loader from '~/components/shared/Loader';
+import { Loader } from '~/components/shared';
 import getCroppedImg from '~/helpers/cropImage';
 import { IImage } from '~/types/types';
 

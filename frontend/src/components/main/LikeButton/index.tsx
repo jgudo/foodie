@@ -1,6 +1,6 @@
 import { LikeOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import useDidMount from '~/hooks/useDidMount';
+import { useDidMount } from '~/hooks';
 import { likePost } from '~/services/api';
 import { IPost } from '~/types/types';
 

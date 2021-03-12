@@ -2,7 +2,7 @@ import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-import useDidMount from '~/hooks/useDidMount';
+import { useDidMount } from '~/hooks';
 import { deletePost } from '~/services/api';
 import { IError } from '~/types/types';
 

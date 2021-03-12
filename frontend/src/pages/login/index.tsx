@@ -2,9 +2,9 @@ import { EyeInvisibleOutlined, EyeOutlined, LockFilled } from '@ant-design/icons
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import SocialLogin from '~/components/shared/SocialLogin';
+import { SocialLogin } from '~/components/shared';
 import { REGISTER } from '~/constants/routes';
-import useDocumentTitle from '~/hooks/useDocumentTitle';
+import { useDocumentTitle } from '~/hooks';
 import bg from '~/images/friends_meal.jpg';
 import logo from '~/images/logo-white.svg';
 import logo_dark from '~/images/logo.svg';
@@ -137,11 +137,11 @@ const Login: React.FC = () => {
                                             onClick={() => setPasswordVisible(false)}
                                         />
                                     ) : (
-                                            <EyeOutlined
-                                                className="h-full w-full flex items-center justify-center outline-none"
-                                                onClick={() => setPasswordVisible(true)}
-                                            />
-                                        )}
+                                        <EyeOutlined
+                                            className="h-full w-full flex items-center justify-center outline-none"
+                                            onClick={() => setPasswordVisible(true)}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
