@@ -29,7 +29,7 @@ const errorResponseJSON = ({ statusCode, title, type, message, errors = null }: 
 const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
     const { statusCode = 500, message = 'Internal Server Error' } = err;
 
-    if (err.name === 'MongoError' || err.code === 11000) { // Mongo error
+    if (err.name === 'MongoError' && err.code === 11000) { // Mongo error
         const field = Object.keys(err.keyValue);
 
         return res.status(409).json(errorResponseJSON({

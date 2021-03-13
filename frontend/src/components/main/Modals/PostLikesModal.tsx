@@ -88,11 +88,19 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                                 </div>
                             ))}
                         </div>
-                        {(!isLoading && likes.length >= 10) && (
-                            <div className="flex items-center justify-center pt-2 border-t border-gray-100">
-                                <span className="text-indigo-700 dark:text-indigo-400 text-sm font-medium cursor-pointer">
+                        {(!isLoading && likes.length >= 10 && !error) && (
+                            <div className="flex items-center justify-center pt-2 border-t border-gray-100 dark:border-gray-800">
+                                <span
+                                    className="text-indigo-700 dark:text-indigo-400 text-sm font-medium cursor-pointer"
+                                    onClick={() => fetchLikes(offset)}
+                                >
                                     Load more
                                 </span>
+                            </div>
+                        )}
+                        {(isLoading && !error) && (
+                            <div className="flex w-full items-center justify-center py-8">
+                                <Loader />
                             </div>
                         )}
                         {error && (

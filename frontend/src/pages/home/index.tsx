@@ -77,7 +77,7 @@ const Home: React.FC<IProps> = (props) => {
 
     const infiniteRef = useInfiniteScroll({
         loading: state.isLoadingFeed,
-        hasNextPage: !state.error && state.newsFeed.items.length >= 10,
+        hasNextPage: !state.error && state.newsFeed.offset > 0,
         onLoadMore: fetchNewsFeed,
         scrollContainer: 'window',
     });
