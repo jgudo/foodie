@@ -1,4 +1,5 @@
 import { IUser } from "@/schemas/UserSchema";
+import Filter from 'bad-words';
 
 interface IResponseStatus {
     status_code: number;
@@ -33,5 +34,10 @@ const makeResponseJson = (data: any, success = true) => {
     };
 }
 
-export { sessionizeUser, makeResponseJson };
+const newBadWords = ['gago', 'puta', 'animal', 'porn', 'amputa', 'tangina', 'pota', 'puta'];
+
+const filterWords = new Filter();
+filterWords.addWords(...newBadWords);
+
+export { sessionizeUser, makeResponseJson, filterWords };
 

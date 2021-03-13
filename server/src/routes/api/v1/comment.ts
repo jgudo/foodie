@@ -1,5 +1,5 @@
 import { COMMENTS_LIMIT } from '@/constants/constants';
-import { makeResponseJson } from '@/helpers/utils';
+import { filterWords, makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
 import { Comment, Notification, Post } from '@/schemas';
 import { schemas, validateBody } from '@/validations/validations';
@@ -26,7 +26,7 @@ router.post(
             const comment = new Comment({
                 _post_id: post_id,
                 _author_id: userID,
-                body,
+                body: filterWords.clean(body),
                 createdAt: Date.now()
             });
 
@@ -195,7 +195,7 @@ router.patch(
             if (userID.toString() === comment._author_id.toString()) {
                 const updatedComment = await Comment.findByIdAndUpdate(Types.ObjectId(comment_id), {
                     $set: {
-                        body,
+                        body: filterWords.clean(body),
                         updatedAt: Date.now(),
                         isEdited: true
                     }

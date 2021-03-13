@@ -1,5 +1,5 @@
 import { LIKES_LIMIT, POST_LIMIT } from '@/constants/constants';
-import { makeResponseJson } from '@/helpers/utils';
+import { filterWords, makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
 import { Bookmark, Comment, Follow, NewsFeed, Notification, Post, User } from '@/schemas';
 import { ENotificationType } from '@/schemas/NotificationSchema';
@@ -31,7 +31,7 @@ router.post(
             const post = new Post({
                 _author_id: req.user._id,
                 // author: req.user._id,
-                description,
+                description: filterWords.clean(description),
                 photos,
                 privacy: privacy || 'public',
                 createdAt: Date.now()
