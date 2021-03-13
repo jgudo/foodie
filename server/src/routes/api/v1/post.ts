@@ -253,7 +253,7 @@ router.patch(
 
             if (!description && !privacy) return next(new ErrorHandler(400));
 
-            if (description) obj.description = description.trim();
+            if (description) obj.description = filterWords.clean(description.trim());
             if (privacy) obj.privacy = privacy;
 
             const post = await Post.findById(post_id);
@@ -272,7 +272,7 @@ router.patch(
                     })
                     .execPopulate();
 
-                res.status(200).send(makeResponseJson(updatedPost));
+                res.status(200).send(makeResponseJson({ ...updatedPost.toObject(), isOwnPost: true }));
             } else {
                 return next(new ErrorHandler(401));
             }

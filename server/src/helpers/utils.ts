@@ -34,7 +34,9 @@ const makeResponseJson = (data: any, success = true) => {
     };
 }
 
-const newBadWords = ['gago', 'puta', 'animal', 'porn', 'amputa', 'tangina', 'pota', 'puta'];
+const newBadWords = [
+    'gago', 'puta', 'animal', 'porn', 'amputa', 'tangina', 'pota', 'puta', 'putangina'
+];
 
 const filterWords = new Filter();
 filterWords.addWords(...newBadWords);
