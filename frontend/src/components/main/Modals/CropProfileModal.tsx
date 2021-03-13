@@ -67,7 +67,7 @@ const CropProfileModal: React.FC<IProps> = (props) => {
                 onRequestClose={props.closeModal}
                 contentLabel="Example Modal"
                 className="modal"
-                shouldCloseOnOverlayClick={!isCropping}
+                shouldCloseOnOverlayClick={false}
                 overlayClassName="modal-overlay"
             >
                 <div className="w-full laptop:w-30rem rounded-md">

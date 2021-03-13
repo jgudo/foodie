@@ -84,6 +84,14 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
         setBioLength(200 - val.length);
     }
 
+    const handleTextOnlyInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const key = e.nativeEvent.key;
+        const regex = /[a-zA-Z\s]/ig;
+        if (!regex.test(key)) {
+            e.preventDefault();
+        }
+    }
+
     const handleBack = () => {
         history.push(`/user/${profile.username}/info`)
     };
@@ -107,6 +115,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         type="text"
                         maxLength={50}
                         onChange={handleFirstnameChange}
+                        onKeyDown={handleTextOnlyInput}
                         value={field.firstname}
                     />
                 </div>
@@ -120,6 +129,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         type="text"
                         maxLength={50}
                         onChange={handleLastnameChange}
+                        onKeyDown={handleTextOnlyInput}
                         value={field.lastname}
                     />
                 </div>
