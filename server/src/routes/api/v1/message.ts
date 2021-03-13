@@ -1,13 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { MESSAGES_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
+import { Chat, Message, User } from '@/schemas';
+import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { MESSAGES_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated, validateObjectID } from '../../../middlewares/middlewares';
-import Chat from '../../../schemas/ChatSchema';
-import Message from '../../../schemas/MessageSchema';
-import User from '../../../schemas/UserSchema';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.post(
     '/v1/message/:user_id',
@@ -18,11 +16,11 @@ router.post(
             const { user_id } = req.params;
             const { text } = req.body;
             const user = await User.findById(user_id);
-            if (!user) return res.status(404).send(makeErrorJson({ message: 'Receiver not found.' }));
-            if (!text) return res.status(400).send(makeErrorJson({ status_code: 400, message: 'Text is required.' }))
+            if (!user) return next(new ErrorHandler(400, 'Receiver not found.'));
+            if (!text) return next(new ErrorHandler(400, 'Text is required.'));
 
             if (req.user._id.toString() === user_id) {
-                return res.status(400).send(makeErrorJson({ status_code: 400, message: 'You cant send message to yourself.' }))
+                return next(new ErrorHandler(400, 'You can\t send message to yourself.'));
             }
 
             const message = new Message({
@@ -73,7 +71,7 @@ router.post(
             res.status(200).send(makeResponseJson(message));
         } catch (e) {
             console.log('CANT SEND MESSAGE: ', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 )
@@ -169,7 +167,7 @@ router.get(
             ]);
 
             if (agg.length === 0 || typeof agg[0] === 'undefined') {
-                return res.status(404).send(makeErrorJson({ message: 'You have no messages.' }));
+                return next(new ErrorHandler(404, 'You have no messages.'));
             }
 
             const sorted = agg.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf());
@@ -177,7 +175,7 @@ router.get(
             res.status(200).send(makeResponseJson(sorted));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -222,7 +220,7 @@ router.get(
             res.status(200).send(makeResponseJson({ count: totalUnseen }));
         } catch (e) {
             console.log('CANT GET MESSAGES', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -247,7 +245,7 @@ router.patch(
             res.status(200).send(makeResponseJson({ state: true }));
         } catch (e) {
             console.log('CANT READ MESSAGES');
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -283,13 +281,13 @@ router.get(
             });
 
             if (messages.length === 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No messages.' }));
+                return next(new ErrorHandler(404, 'No messages.'));
             }
 
             res.status(200).send(makeResponseJson(mapped));
         } catch (e) {
             console.log('CANT GET MESSAGES FROM USER', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );

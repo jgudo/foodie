@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-import config from '../config/config';
+import config from '@/config/config';
 const mongoUri = config.mongodb.uri || 'mongodb://localhost:27017';
 const dbName = config.mongodb.dbName || 'foodie';
 

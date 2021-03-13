@@ -42,7 +42,7 @@ const Profile: React.FC<IProps> = (props) => {
             {(state.isLoadingGetUser) && (
                 <div className="pt-14"><ProfileLoader /></div>
             )}
-            {(!state.error && !state.isLoadingGetUser) && (
+            {(!state.error && !state.isLoadingGetUser && state.profile.id) && (
                 <div className="pt-14">
                     <Header
                         auth={state.auth}

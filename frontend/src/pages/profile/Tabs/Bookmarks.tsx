@@ -71,7 +71,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
         threshold: 200
     });
 
-    return (!isOwnProfile && username) ? <Redirect to={`/${username}`} /> : (
+    return (!isOwnProfile && username) ? <Redirect to={`/user/${username}`} /> : (
         <div className="flex flex-col items-start justify-start w-full min-h-10rem">
             {(isLoading && bookmarks.items.length === 0) && (
                 <div className="flex w-full items-center justify-center min-h-10rem">

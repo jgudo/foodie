@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { FEED_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import NewsFeed from '../../../schemas/NewsFeedSchema';
-import Post, { EPrivacy } from '../../../schemas/PostSchema';
+import { FEED_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler } from '@/middlewares';
+import { NewsFeed, Post } from '@/schemas';
+import { EPrivacy } from '@/schemas/PostSchema';
+import { NextFunction, Request, Response, Router } from 'express';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.get(
     '/v1/feed',
@@ -46,7 +47,7 @@ router.get(
                     });
 
                 if (filteredFeed.length === 0) {
-                    return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more feed.' }));
+                    return next(new ErrorHandler(404, 'No more feed.'));
                 }
 
                 result = filteredFeed;
@@ -62,16 +63,15 @@ router.get(
                     .skip(skip);
 
                 if (feeds.length === 0) {
-                    return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more feed.' }));
+                    return next(new ErrorHandler(404, 'No more feed.'));
                 }
 
                 result = feeds;
             }
-
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET FEED', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );

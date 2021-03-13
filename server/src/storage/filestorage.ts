@@ -1,7 +1,7 @@
+import config from '@/config/config';
 import { Storage } from '@google-cloud/storage';
 import Multer from 'multer';
 import { format } from 'util';
-import config from '../config/config';
 
 const storage = new Storage(config.gCloudStorage);
 

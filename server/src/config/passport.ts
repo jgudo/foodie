@@ -1,7 +1,7 @@
+import User, { IUser } from '@/schemas/UserSchema';
 import FacebookStrategy from 'passport-facebook';
 import GitHubStrategy from 'passport-github';
 import LocalStrategy from 'passport-local';
-import User, { IUser } from '../schemas/UserSchema';
 
 
 export default function (passport) {

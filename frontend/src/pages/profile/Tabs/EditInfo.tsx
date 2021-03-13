@@ -93,7 +93,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
         handleUpdateUser();
     }
 
-    return (!isOwnProfile && profile.username) ? <Redirect to={`/${profile.username}`} /> : (
+    return (!isOwnProfile && profile.username) ? <Redirect to={`/user/${profile.username}`} /> : (
         <div className="p-4 pb-8 bg-white dark:bg-indigo-1000 rounded-md min-h-10rem shadow-lg">
             <h3 className="text-gray-500 dark:text-white">Edit Info</h3>
             <form className="mt-8 space-y-4 divide-y divide-gray-100 dark:divide-gray-800" onSubmit={handleSubmit}>

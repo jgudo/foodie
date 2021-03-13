@@ -1,6 +1,6 @@
+import config from '@/config/config';
 import { Router } from 'express';
 import glob from 'glob';
-import config from '../config/config';
 
 const routers = glob
     .sync(`**/*.${config.server.env === 'dev' ? 'ts' : 'js'}`, { cwd: `${__dirname}/` })

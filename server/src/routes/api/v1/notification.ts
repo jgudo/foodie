@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
-import { NOTIFICATIONS_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated } from '../../../middlewares/middlewares';
-import Notification from '../../../schemas/NotificationSchema';
+import { NOTIFICATIONS_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated } from '@/middlewares';
+import { Notification } from '@/schemas';
+import { NextFunction, Request, Response, Router } from 'express';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.get(
     '/v1/notifications',
@@ -27,15 +27,15 @@ router.get(
             const result = { notifications, unreadCount: unreadCount.length, count: count.length };
 
             if (notifications.length === 0 && offset === 0) {
-                return res.status(404).send(makeErrorJson({ message: 'You have no notifications.' }));
+                return next(new ErrorHandler(404, 'You have no notifications.'));
             } else if (notifications.length === 0 && offset >= 1) {
-                return res.status(404).send(makeErrorJson({ message: 'No more notifications.' }));
+                return next(new ErrorHandler(404, 'No more notifications.'));
             }
 
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log(e);
-            res.status(500).send(e);
+            next(e);
         }
     }
 );
@@ -50,7 +50,7 @@ router.get(
             res.status(200).send(makeResponseJson({ count: notif.length }));
         } catch (e) {
             console.log('CANT GET UNREAD NOTIFICATIONS', e);
-            res.status(400).send(e);
+            next(e);
         }
     }
 );
@@ -71,7 +71,7 @@ router.patch(
             res.status(200).send(makeResponseJson({ state: false }));
         } catch (e) {
             console.log('CANT MARK ALL AS UNREAD', e);
-            res.status(400).send(e);
+            next(e);
         }
     }
 );
@@ -94,7 +94,7 @@ router.patch(
 
             res.status(200).send(makeResponseJson({ state: false })) // state = false EQ unread = false
         } catch (e) {
-
+            next(e);
         }
     }
 );

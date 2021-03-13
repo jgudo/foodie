@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "node ./build/server.js",
-    "start": "nodemon --exec ts-node --files src/server.ts",
-    "build": "rimraf ./build && tsc",
-    "postinstall": "rimraf ./build && tsc"
+    "start": "nodemon --exec ts-node --files -r tsconfig-paths/register src/server.ts",
+    "build": "rimraf ./build && tsc && ef-tspm",
+    "postinstall": "rimraf ./build && tsc && ef-tspm"
   },
   "engines": {
     "node": "12.18.1"
@@ -41,6 +41,7 @@
     "socket.io": "^3.0.4"
   },
   "devDependencies": {
+    "@ef-carbon/tspm": "^2.2.5",
     "@types/bcrypt": "^3.0.0",
     "@types/connect-mongo": "^3.1.3",
     "@types/csurf": "^1.11.0",
@@ -62,6 +63,7 @@
     "nodemon": "^2.0.6",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.1.3"
   }
 }

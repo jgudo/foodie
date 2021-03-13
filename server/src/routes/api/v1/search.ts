@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler } from '@/middlewares';
+import { Follow, Post, User } from '@/schemas';
+import { EPrivacy } from '@/schemas/PostSchema';
+import { NextFunction, Request, Response, Router } from 'express';
 import omit from 'lodash.omit';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import Follow from '../../../schemas/FollowSchema';
-import Post, { EPrivacy } from '../../../schemas/PostSchema';
-import User from '../../../schemas/UserSchema';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.get(
     '/v1/search',
@@ -16,7 +16,8 @@ router.get(
             const limit = parseInt(req.query.limit as string) || 10;
             const skip = offset * limit;
 
-            if (!q) return res.status(400).send(makeErrorJson());
+            if (!q) return next(new ErrorHandler(400, 'Search query is required.'));
+
             let result = [];
 
             if (type === 'posts') {
@@ -34,7 +35,7 @@ router.get(
                     .skip(skip);
 
                 if (posts.length === 0) {
-                    return res.status(404).send(makeErrorJson({ message: 'No posts found.' }));
+                    return next(new ErrorHandler(404, 'No posts found.'));
                 }
 
                 const postsMerged = posts.map((post) => {
@@ -60,7 +61,7 @@ router.get(
                     .skip(skip);
 
                 if (users.length === 0) {
-                    return res.status(404).send(makeErrorJson({ message: 'No users found.' }));
+                    return next(new ErrorHandler(404, 'No users found.'));
                 }
 
                 if (req.isAuthenticated()) {
@@ -83,7 +84,7 @@ router.get(
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT PERFORM SEARCH: ', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
 
     }

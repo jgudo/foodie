@@ -190,7 +190,9 @@ const Home: React.FC<IProps> = (props) => {
                         )}
                         {state.error && (
                             <div className="flex justify-center py-6">
-                                <p className="text-gray-400 italic">{state.error.error.message}</p>
+                                <p className="text-gray-400 italic">
+                                    {state.error.error?.message || 'Something went wrong.'}
+                                </p>
                             </div>
                         )}
                     </>

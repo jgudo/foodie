@@ -1,15 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { USERS_LIMIT } from '@/constants/constants';
+import { makeResponseJson, sessionizeUser } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
+import { Follow, NewsFeed, Notification, Post, User } from '@/schemas';
+import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { USERS_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson, sessionizeUser } from '../../../helpers/utils';
-import { isAuthenticated, validateObjectID } from '../../../middlewares/middlewares';
-import Follow from '../../../schemas/FollowSchema';
-import NewsFeed from '../../../schemas/NewsFeedSchema';
-import Notification from '../../../schemas/NotificationSchema';
-import Post from '../../../schemas/PostSchema';
-import User from '../../../schemas/UserSchema';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.post(
     '/v1/follow/:follow_id',
@@ -20,8 +16,10 @@ router.post(
             const { follow_id } = req.params;
 
             const user = User.findById(follow_id);
-            if (!user) return res.sendStatus(404); // CHECK IF FOLLOWING USER EXIST
-            if (follow_id === req.user._id.toString()) return res.sendStatus(400); // CHECK IF FOLLOWING IS NOT YOURSELF
+            // CHECK IF FOLLOWING USER EXIST
+            if (!user) return next(new ErrorHandler(400, 'The person you\'re trying to follow doesn\'t exist.'));
+            // CHECK IF FOLLOWING IS NOT YOURSELF
+            if (follow_id === req.user._id.toString()) return next(new ErrorHandler(400, 'You can\'t follow yourself.'));
 
             //  CHECK IF ALREADY FOLLOWING
             const isFollowing = await Follow
@@ -31,7 +29,8 @@ router.post(
                         $in: [Types.ObjectId(follow_id)]
                     }
                 });
-            if (isFollowing) return res.status(400).send(makeErrorJson({ status_code: 400, message: 'Already following.' }));
+
+            if (isFollowing) return next(new ErrorHandler(400, 'Already following.'));
 
             const bulk = Follow.collection.initializeUnorderedBulkOp();
 
@@ -92,7 +91,7 @@ router.post(
             res.status(200).send(makeResponseJson({ state: true }));
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -106,8 +105,8 @@ router.post(
             const { follow_id } = req.params;
 
             const user = User.findById(follow_id);
-            if (!user) return res.sendStatus(404);
-            if (follow_id === req.user._id.toString()) return res.sendStatus(400);
+            if (!user) return next(new ErrorHandler(400, 'The person you\'re trying to unfollow doesn\'t exist.'));
+            if (follow_id === req.user._id.toString()) return next(new ErrorHandler(400));
 
             const bulk = Follow.collection.initializeUnorderedBulkOp();
 
@@ -142,7 +141,7 @@ router.post(
             });
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -150,7 +149,7 @@ router.post(
 router.get(
     '/v1/:username/following',
     isAuthenticated,
-    async (req, res) => {
+    async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { username } = req.params;
             const offset = parseInt(req.query.offset) || 0;
@@ -161,9 +160,7 @@ router.get(
             const follow = await Follow.findOne({ _user_id: req.user._id });
             const myFollowing = follow ? follow.following : [];
             const user = await User.findOne({ username });
-            if (!user) return res.sendStatus(404);
-
-            console.log(myFollowing)
+            if (!user) return next(new ErrorHandler(400));
 
             const doc = await Follow.aggregate([
                 {
@@ -220,19 +217,19 @@ router.get(
             const finalResult = following ? following : [];
 
             if (finalResult.length === 0) {
-                return res.status(404).send(makeErrorJson({ message: `${username} isn't following anyone.` }))
+                return next(new ErrorHandler(404, `${username} isn't following anyone.`));
             }
 
             res.status(200).send(makeResponseJson(finalResult));
         } catch (e) {
-
+            next(e);
         }
     });
 
 router.get(
     '/v1/:username/followers',
     isAuthenticated,
-    async (req, res) => {
+    async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { username } = req.params;
             const offset = parseInt(req.query.offset) || 0;
@@ -243,7 +240,7 @@ router.get(
             const selfFollowing = follow ? follow.following : [];
 
             const user = await User.findOne({ username });
-            if (!user) return res.sendStatus(404);
+            if (!user) return next(new ErrorHandler(400, `No ${username} user found.`));
 
             const doc = await Follow.aggregate([
                 {
@@ -299,13 +296,13 @@ router.get(
             const finalResult = followers ? followers : [];
 
             if (finalResult.length === 0) {
-                return res.status(404).send(makeErrorJson({ message: `${username} has no followers.` }))
+                return next(new ErrorHandler(404, `${username} has no followers.`));
             }
 
             res.status(200).send(makeResponseJson(finalResult))
         } catch (e) {
             console.log('CANT GET FOLLOWERS', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     });
 
@@ -353,7 +350,7 @@ router.get(
                 }
             ]);
 
-            if (people.length === 0) return res.status(404).send(makeErrorJson({ message: 'No suggested people.' }))
+            if (people.length === 0) return next(new ErrorHandler(404, 'No suggested people.'));
 
             // I want my own account to be on top :) 
             // Just remove this xD
@@ -371,7 +368,7 @@ router.get(
             res.status(200).send(makeResponseJson(people));
         } catch (e) {
             console.log('CANT GET SUGGESTED PEOPLE', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 )

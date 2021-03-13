@@ -1,19 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
+import { LIKES_LIMIT, POST_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
+import { Bookmark, Comment, Follow, NewsFeed, Notification, Post, User } from '@/schemas';
+import { ENotificationType } from '@/schemas/NotificationSchema';
+import { EPrivacy } from '@/schemas/PostSchema';
+import { deleteImageFromStorage, multer, uploadImageToStorage } from '@/storage/filestorage';
+import { schemas, validateBody } from '@/validations/validations';
+import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { LIKES_LIMIT, POST_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated, validateObjectID } from '../../../middlewares/middlewares';
-import Bookmark from '../../../schemas/BookmarkSchema';
-import Comment from '../../../schemas/CommentSchema';
-import Follow from '../../../schemas/FollowSchema';
-import NewsFeed from '../../../schemas/NewsFeedSchema';
-import Notification, { ENotificationType } from '../../../schemas/NotificationSchema';
-import Post, { EPrivacy } from '../../../schemas/PostSchema';
-import User from '../../../schemas/UserSchema';
-import { deleteImageFromStorage, multer, uploadImageToStorage } from '../../../storage/filestorage';
-import { schemas, validateBody } from '../../../validations/validations';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.post(
     '/v1/post',
@@ -86,7 +82,7 @@ router.post(
             return res.status(200).send(makeResponseJson({ ...post.toObject(), isOwnPost: true }));
         } catch (e) {
             console.log(e);
-            return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You\'re not authorized to make a post.' }))
+            next(e);
         }
     });
 
@@ -137,9 +133,9 @@ router.get(
                 .limit(limit);
 
             if (posts.length <= 0 && offset === 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: `${username} hasn't posted anything yet.` }));
+                return next(new ErrorHandler(404, `${username} hasn't posted anything yet.`));
             } else if (posts.length <= 0 && offset >= 1) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more posts.' }));
+                return next(new ErrorHandler(404, 'No more posts.'));
             }
 
             const uPosts = posts.map((post) => { // POST WITH isLiked merged
@@ -158,7 +154,7 @@ router.get(
             res.status(200).send(makeResponseJson(uPosts));
         } catch (e) {
             console.log(e);
-            res.status(400).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -173,7 +169,7 @@ router.post(
 
             const post = await Post.findById(post_id);
 
-            if (!post) return res.sendStatus(404); // SEND 404 IF NO POST FOUND
+            if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
             const isPostLiked = post.isPostLiked(req.user._id);
             let query = {};
@@ -232,7 +228,7 @@ router.post(
             res.status(200).send(makeResponseJson({ post: result, state: isPostLiked }));
         } catch (e) {
             console.log(e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -255,13 +251,13 @@ router.patch(
             const { description, privacy } = req.body;
             const obj: IUpdate = { updatedAt: Date.now(), isEdited: true };
 
-            if (!description && !privacy) return res.sendStatus(400);
+            if (!description && !privacy) return next(new ErrorHandler(400));
 
             if (description) obj.description = description.trim();
             if (privacy) obj.privacy = privacy;
 
             const post = await Post.findById(post_id);
-            if (!post) return res.sendStatus(404);
+            if (!post) return next(new ErrorHandler(400));
 
             if (req.user._id.toString() === post._author_id.toString()) {
                 const updatedPost = await Post.findByIdAndUpdate(post_id, {
@@ -278,11 +274,11 @@ router.patch(
 
                 res.status(200).send(makeResponseJson(updatedPost));
             } else {
-                res.sendStatus(401);
+                return next(new ErrorHandler(401));
             }
         } catch (e) {
             console.log('CANT EDIT POST :', e);
-            res.sendStatus(500);
+            next(e);
         }
     }
 );
@@ -296,7 +292,7 @@ router.delete(
             const { post_id } = req.params;
 
             const post = await Post.findById(post_id);
-            if (!post) return res.sendStatus(404);
+            if (!post) return next(new ErrorHandler(400));
 
             if (req.user._id.toString() === post._author_id.toString()) {
                 if (post.photos && post.photos.length !== 0) await deleteImageFromStorage(...post.photos);
@@ -318,11 +314,11 @@ router.delete(
 
                 res.sendStatus(200);
             } else {
-                res.sendStatus(401);
+                return next(new ErrorHandler(401));
             }
         } catch (e) {
             console.log('CANT DELETE POST', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -335,11 +331,11 @@ router.get(
         try {
             const { post_id } = req.params;
             const post = await Post.findById(post_id);
-            if (!post) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'Post not found.' }));
-            }
+
+            if (!post) return next(new ErrorHandler(400, 'Post not found.'));
+
             if (post.privacy === 'private' && post._author_id.toString() !== req.user._id.toString()) {
-                return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You\'re not authorized to view this' }))
+                return next(new ErrorHandler(401));
             }
 
             await post
@@ -356,7 +352,7 @@ router.get(
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET POST', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -373,7 +369,7 @@ router.get(
             const skip = offset * limit;
 
             const exist = await Post.findById(Types.ObjectId(post_id));
-            if (!exist) return res.status(400).send(makeErrorJson());
+            if (!exist) return next(new ErrorHandler(400, 'Post not found.'));
 
             const post = await Post
                 .findById(Types.ObjectId(post_id))
@@ -387,7 +383,7 @@ router.get(
                 });
 
             if (post.likes.length === 0) {
-                return res.status(404).send(makeErrorJson({ message: 'No likes found.' }));
+                return next(new ErrorHandler(404, 'No likes found.'));
             }
 
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });
@@ -403,7 +399,7 @@ router.get(
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET POST LIKERS', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );

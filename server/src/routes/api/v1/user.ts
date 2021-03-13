@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated } from '../../../middlewares/middlewares';
-import Follow from '../../../schemas/FollowSchema';
-import User, { EGender, IUser } from '../../../schemas/UserSchema';
-import { multer, uploadImageToStorage } from '../../../storage/filestorage';
-import { schemas, validateBody } from '../../../validations/validations';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated } from '@/middlewares';
+import { Follow, User } from '@/schemas';
+import { EGender, IUser } from '@/schemas/UserSchema';
+import { multer, uploadImageToStorage } from '@/storage/filestorage';
+import { schemas, validateBody } from '@/validations/validations';
+import { NextFunction, Request, Response, Router } from 'express';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.get(
     '/v1/:username',
@@ -17,7 +17,7 @@ router.get(
             const { username } = req.params;
             const user = await User.findOne({ username });
 
-            if (!user) return res.sendStatus(404);
+            if (!user) return next(new ErrorHandler(404, 'User not found.'));
 
             const result = await Follow.aggregate([
                 {
@@ -66,7 +66,7 @@ router.get(
             res.status(200).send(makeResponseJson(toObjectUser));
         } catch (e) {
             console.log(e)
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 )
@@ -90,7 +90,7 @@ router.patch(
             const { username } = req.params;
             const { firstname, lastname, bio, birthday, gender } = req.body;
             const update: IUpdate = { info: {} };
-            if (username !== (req.user as IUser).username) return res.sendStatus(401);
+            if (username !== (req.user as IUser).username) return next(new ErrorHandler(401));
 
 
             if (typeof firstname !== 'undefined') update.firstname = firstname;
@@ -109,7 +109,7 @@ router.patch(
             res.status(200).send(makeResponseJson(newUser.toUserJSON()));
         } catch (e) {
             console.log(e);
-            res.status(401).send(makeErrorJson());
+            next(e);
         }
     }
 )
@@ -123,8 +123,8 @@ router.post(
             const { field } = req.params;
             const file = req.file;
 
-            if (!file) return res.status(400).send(makeErrorJson({ status_code: 400, message: 'File not provided.' }))
-            if (!['picture', 'cover'].includes(field)) return res.status(400).send(makeErrorJson({ message: 'Unexpected field.' + field }));
+            if (!file) return next(new ErrorHandler(400, 'File not provided.'));
+            if (!['picture', 'cover'].includes(field)) return next(new ErrorHandler(400, `Unexpected field ${field}`));
 
 
             const url = await uploadImageToStorage(file);
@@ -139,7 +139,7 @@ router.post(
             res.status(200).send(makeResponseJson(url));
         } catch (e) {
             console.log('CANT UPLOAD FILE: ', e);
-            res.status(500).send(makeErrorJson({ status_code: 400, message: e }));
+            next(e);
         }
     }
 );

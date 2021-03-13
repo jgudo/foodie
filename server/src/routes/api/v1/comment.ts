@@ -1,14 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { COMMENTS_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
+import { Comment, Notification, Post } from '@/schemas';
+import { schemas, validateBody } from '@/validations/validations';
+import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { COMMENTS_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated, validateObjectID } from '../../../middlewares/middlewares';
-import Comment from '../../../schemas/CommentSchema';
-import Notification from '../../../schemas/NotificationSchema';
-import Post from '../../../schemas/PostSchema';
-import { schemas, validateBody } from '../../../validations/validations';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.post(
     '/v1/comment/:post_id',
@@ -23,7 +21,7 @@ router.post(
 
             // check if the POST actually exists
             const post = await Post.findById(post_id);
-            if (!post) return res.status(404).send(makeErrorJson({ message: 'Unable to comment. Post not found.' }))
+            if (!post) return next(new ErrorHandler(404, 'Unable to comment. Post not found.'));
 
             const comment = new Comment({
                 _post_id: post_id,
@@ -73,7 +71,7 @@ router.post(
             res.status(200).send(makeResponseJson(comment));
         } catch (e) {
             console.log('CAN"T COMMENT', e)
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );
@@ -91,7 +89,7 @@ router.get(
             const skip = skipParams || offset * limit;
 
             const post = await Post.findById(Types.ObjectId(post_id));
-            if (!post) return res.status(404).send(makeErrorJson({ status_code: 404, message: 'Unable to fetch comments.' }));
+            if (!post) return next(new ErrorHandler(404, 'No comments found.'));
 
             const comments = await Comment
                 .find({ _post_id: post_id })
@@ -121,21 +119,21 @@ router.get(
             ]);
 
             if (commentsAgg.length === 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: null }))
+                return next(new ErrorHandler(404, 'No comments found.'));
             }
 
             const commentsCount = commentsAgg[0].count || 0;
             const result = { comments, commentsCount };
 
             if (commentsCount === 0 || result.comments.length === 0) {
-                return res.status(404).send(makeErrorJson({ status_code: 404, message: 'No more comments.' }))
+                return next(new ErrorHandler(404, 'No more comments.'));
             }
 
             console.log(result)
             res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log(e);
-            res.status(500).send(makeErrorJson({ status_code: 500, message: 'Something went wrong.' }));
+            next(e);
         }
     }
 );
@@ -149,7 +147,7 @@ router.delete(
             const { comment_id } = req.params;
             const userID = req.user._id.toString();
             const comment = await Comment.findById(comment_id);
-            if (!comment) return res.sendStatus(404);
+            if (!comment) return next(new ErrorHandler(400, 'Comment not found.'));
 
             // FIND THE POST TO GET AUTHOR ID
             const post = await Post.findById(comment._post_id);
@@ -174,7 +172,7 @@ router.delete(
             }
         } catch (e) {
             console.log(e);
-            res.status(500).send(makeErrorJson())
+            next(e);
         }
     }
 )
@@ -192,7 +190,7 @@ router.patch(
             if (!body) return res.sendStatus(400);
 
             const comment = await Comment.findById(comment_id);
-            if (!comment) return res.status(404).send(makeErrorJson());
+            if (!comment) return next(new ErrorHandler(400, 'Comment not found.'));
 
             if (userID.toString() === comment._author_id.toString()) {
                 const updatedComment = await Comment.findByIdAndUpdate(Types.ObjectId(comment_id), {
@@ -213,11 +211,11 @@ router.patch(
 
                 res.status(200).send(makeResponseJson(updatedComment));
             } else {
-                res.status(500).send(makeErrorJson());
+                return next(new ErrorHandler(401));
             }
 
         } catch (e) {
-
+            next(e);
         }
     }
 );

@@ -1,13 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { BOOKMARKS_LIMIT } from '@/constants/constants';
+import { makeResponseJson } from '@/helpers/utils';
+import { ErrorHandler } from '@/middlewares/error.middleware';
+import { isAuthenticated, validateObjectID } from '@/middlewares/middlewares';
+import { Bookmark, Post, User } from '@/schemas';
+import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { BOOKMARKS_LIMIT } from '../../../constants/constants';
-import { makeErrorJson, makeResponseJson } from '../../../helpers/utils';
-import { isAuthenticated, validateObjectID } from '../../../middlewares/middlewares';
-import Bookmark from '../../../schemas/BookmarkSchema';
-import Post from '../../../schemas/PostSchema';
-import User from '../../../schemas/UserSchema';
 
-const router = require('express').Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
 router.post(
     '/v1/bookmark/post/:post_id',
@@ -22,7 +21,7 @@ router.post(
             if (!post) return res.sendStatus(404);
 
             if (userID.toString() === post._author_id.toString()) {
-                return res.status(401).send(makeErrorJson({ status_code: 401, message: 'You can\'t bookmark your own post.' }))
+                return next(new ErrorHandler(400, 'You can\'t bookmark your own post.'));
             }
 
             const isPostBookmarked = await Bookmark
@@ -34,6 +33,7 @@ router.post(
             if (isPostBookmarked) {
                 await Bookmark.findOneAndDelete({ _author_id: userID, _post_id: Types.ObjectId(post_id) });
                 await User.findByIdAndUpdate(userID, { $pull: { bookmarks: Types.ObjectId(post_id) } });
+
                 res.status(200).send(makeResponseJson({ state: false }));
             } else {
                 const bookmark = new Bookmark({
@@ -47,7 +47,7 @@ router.post(
             }
         } catch (e) {
             console.log('CANT BOOKMARK POST ', e);
-            res.sendStatus(500);
+            next(e)
         }
     }
 );
@@ -78,7 +78,7 @@ router.get(
                 .sort({ createdAt: -1 });
 
             if (bookmarks.length === 0) {
-                return res.status(404).send(makeErrorJson({ message: "You don't have any bookmarks." }));
+                return next(new ErrorHandler(404, "You don't have any bookmarks."))
             }
 
             const result = bookmarks.map((item) => {
@@ -93,7 +93,7 @@ router.get(
             res.status(200).send(makeResponseJson({ bookmarks: result, total: countBookmarks.length }));
         } catch (e) {
             console.log('CANT GET BOOKMARKS ', e);
-            res.status(500).send(makeErrorJson());
+            next(e);
         }
     }
 );

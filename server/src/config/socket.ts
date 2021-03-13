@@ -1,7 +1,7 @@
+import config from '@/config/config';
+import User from '@/schemas/UserSchema';
 import { Application } from "express";
 import { Server } from "http";
-import config from '../config/config';
-import User from '../schemas/UserSchema';
 
 export default function (app: Application, server: Server) {
     const io = require('socket.io')(server, {

@@ -1,11 +1,12 @@
 //@ts-ignore
-import express, { NextFunction, Request, Response } from 'express';
+import { makeErrorJson, makeResponseJson, sessionizeUser } from '@/helpers/utils';
+import { ErrorHandler } from '@/middlewares/error.middleware';
+import { IUser } from '@/schemas/UserSchema';
+import { schemas, validateBody } from '@/validations/validations';
+import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
-import { EMAIL_TAKEN, INCORRECT_CREDENTIALS } from '../../../constants/error-types';
-import { makeErrorJson, makeResponseJson, sessionizeUser } from '../../../helpers/utils';
-import { IUser } from '../../../schemas/UserSchema';
-import { schemas, validateBody } from '../../../validations/validations';
-const router = express.Router({ mergeParams: true });
+
+const router = Router({ mergeParams: true });
 
 //@route POST /api/v1/register
 router.post(
@@ -27,9 +28,7 @@ router.post(
                     return res.status(200).send(makeResponseJson(userData));
                 });
             } else {
-                return res
-                    .status(401)
-                    .send(makeErrorJson({ type: EMAIL_TAKEN, message: info.message }));
+                next(new ErrorHandler(409, info.message));
             }
         })(req, res, next);
     }
@@ -47,9 +46,7 @@ router.post(
             }
 
             if (!user) {
-                return res
-                    .status(401)
-                    .send(makeErrorJson({ type: INCORRECT_CREDENTIALS, message: info.message }));
+                return next(new ErrorHandler(400, info.message))
             } else {
                 req.logIn(user, function (err) { // <-- Log user in
                     if (err) {
@@ -107,12 +104,12 @@ router.delete('/v1/logout', (req, res) => {
 
 //@route GET /api/v1/checkSession
 // Check if user session exists
-router.get('/v1/check-session', (req, res) => {
+router.get('/v1/check-session', (req, res, next) => {
     if (req.isAuthenticated()) {
         const user = sessionizeUser(req.user);
         res.status(200).send(makeResponseJson({ auth: user, user: (req.user as IUser).toUserJSON() }));
     } else {
-        res.status(404).send(makeErrorJson({ message: 'Session invalid/expired.' }));
+        next(new ErrorHandler(404, 'Session invalid/expired.'));
     }
 });
 
