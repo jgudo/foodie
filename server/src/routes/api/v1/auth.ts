@@ -91,6 +91,21 @@ router.get(
     })
 );
 
+//@route GET /api/v1/auth/github GITHUB AUTH
+router.get(
+    '/v1/auth/google',
+    passport.authenticate('google-auth', { scope: ['email', 'profile'] })
+);
+
+//@route GET /api/v1/auth/github/callback GITHUB AUTH
+router.get(
+    '/v1/auth/google/callback',
+    passport.authenticate('google-auth', {
+        failureRedirect: `${process.env.CLIENT_URL}/auth/google/failed`,
+        successRedirect: `${process.env.CLIENT_URL}`
+    })
+);
+
 //@route DELETE /api/v1/logout
 router.delete('/v1/logout', (req, res) => {
     try {

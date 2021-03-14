@@ -35,7 +35,7 @@ const MessagesList: React.FC<IProps> = (props) => {
                                     >
                                         {/* --- IMAGE--- */}
                                         <Avatar
-                                            url={!message.isOwnMessage ? message.from.profilePicture?.url : message.to.profilePicture}
+                                            url={!message.isOwnMessage ? message.from.profilePicture?.url : message.to.profilePicture?.url}
                                             size="lg"
                                             className="flex-shrink-0 mr-4"
                                         />

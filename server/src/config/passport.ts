@@ -1,6 +1,7 @@
 import User, { IUser } from '@/schemas/UserSchema';
 import FacebookStrategy from 'passport-facebook';
 import GitHubStrategy from 'passport-github';
+import GoogleStrategy from 'passport-google-oauth2';
 import LocalStrategy from 'passport-local';
 
 
@@ -103,7 +104,9 @@ export default function (passport) {
                         password: randomString,
                         firstname: fbProfile.first_name,
                         lastname: fbProfile.last_name,
-                        profilePicture: fbProfile.picture ? fbProfile.picture.data.url : '',
+                        profilePicture: {
+                            url: fbProfile.picture ? fbProfile.picture.data.url : ''
+                        },
                         provider_id: fbProfile.id,
                         provider: 'facebook',
                         provider_access_token: accessToken,
@@ -150,7 +153,9 @@ export default function (passport) {
                         password: randomString,
                         firstname: githubProfile.name.split(' ')[0],
                         lastname: githubProfile.name.split(' ')[1],
-                        profilePicture: githubProfile.avatar_url,
+                        profilePicture: {
+                            url: githubProfile.avatar_url
+                        },
                         provider_id: githubProfile.id,
                         provider: 'github',
                         'info.bio': githubProfile.bio,
@@ -175,4 +180,57 @@ export default function (passport) {
         }
         )
     );
+
+    passport.use(
+        'google-auth',
+        new GoogleStrategy.Strategy(
+            {
+                clientID: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                callbackURL: `/api/v1/auth/google/callback`
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                try {
+                    console.log(profile)
+                    const user = await User.findOne({ provider_id: profile.id });
+
+                    console.log(profile)
+
+                    if (user) {
+                        return done(null, user);
+                    } else {
+                        const randomString = Math.random().toString(36).substring(2);
+                        const randomNumber = Math.floor(Math.random() * 100);
+                        const photo = profile.picture ? { url: profile.picture } : {};
+
+                        const newUser = new User({
+                            username: `${profile.given_name}_${profile.family_name}${randomNumber}`,
+                            email: profile.email,
+                            password: randomString,
+                            firstname: profile.given_name,
+                            lastname: profile.family_name,
+                            profilePicture: photo,
+                            provider_id: profile.id,
+                            provider: 'google',
+                            provider_access_token: accessToken,
+                            provider_refresh_token: refreshToken
+                        });
+
+                        newUser.save(function (err) {
+                            if (err) {
+                                done(null, false, err);
+                            } else {
+                                console.log('SUCCESSFULL CREATED', newUser);
+                                done(null, newUser);
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.log(err);
+                    return done(err);
+                }
+            }
+        )
+    )
+
 };
