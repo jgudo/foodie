@@ -122,12 +122,12 @@ const UserSchema = new Schema({
         }
     },
     profilePicture: {
-        type: String,
-        default: null
+        type: Object, // switched to cloudinary so I have to set as Object
+        default: {}
     },
     coverPhoto: {
-        type: String,
-        default: null
+        type: Object,
+        default: {}
     },
     bookmarks: [{
         type: Schema.Types.ObjectId,
@@ -204,6 +204,8 @@ UserSchema.pre('save', function (this: IUser, next) {
     if (this.info.gender === null) this.info.gender = EGender.unspecified;
     if (this.firstname === null) this.firstname = '';
     if (this.lastname === null) this.lastname = '';
+    if (this.profilePicture === null) this.profilePicture = '';
+    if (this.coverPhoto === null) this.coverPhoto = '';
     if (this.info.birthday === null) this.info.birthday = '';
 
     if (this.isNew || this.isModified('password')) {
@@ -219,4 +221,4 @@ UserSchema.pre('save', function (this: IUser, next) {
 });
 
 const User = model<IUser>('User', UserSchema);
-export default User; 
+export default User;

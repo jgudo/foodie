@@ -11,7 +11,7 @@ export enum EPrivacy {
 export interface IPost extends Document {
     _author_id: IUser['_id'];
     privacy: EPrivacy;
-    photos?: string[];
+    photos?: Record<string, any>[];
     description: string;
     likes: Array<IUser['_id']>;
     comments: Array<IComment['_id']>;
@@ -36,7 +36,7 @@ const PostSchema = new Schema({
         default: 'public',
         enum: ['private', 'public', 'follower']
     },
-    photos: [String],
+    photos: [Object],
     description: {
         type: String,
         default: ''

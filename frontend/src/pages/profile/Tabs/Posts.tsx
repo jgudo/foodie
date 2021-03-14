@@ -118,7 +118,7 @@ const Posts: React.FC<IProps> = (props) => {
         <div className="w-full">
             {props.isOwnProfile && (
                 <div className="flex items-center justify-start mb-4 px-4 mt-4 laptop:mt-0 laptop:px-0">
-                    <Avatar url={props.auth.profilePicture} className="mr-2" />
+                    <Avatar url={props.auth.profilePicture?.url} className="mr-2" />
                     <div className="flex-grow">
                         <input
                             className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"

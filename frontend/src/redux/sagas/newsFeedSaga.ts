@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { call, put } from "redux-saga/effects";
 import { CREATE_POST_START, GET_FEED_START } from "~/constants/actionType";
 import { createPost, getNewsFeed } from "~/services/api";
+import { IPost } from "~/types/types";
 import { setNewsFeedErrorMessage } from "../action/errorActions";
 import { createPostSuccess, getNewsFeedSuccess } from "../action/feedActions";
 import { isCreatingPost, isGettingFeed } from "../action/loadingActions";
@@ -18,7 +19,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
                 yield put(isGettingFeed(true));
                 yield put(setNewsFeedErrorMessage(null));
 
-                const posts = yield call(getNewsFeed, payload);
+                const posts: IPost[] = yield call(getNewsFeed, payload);
 
                 yield put(isGettingFeed(false));
                 yield put(getNewsFeedSuccess(posts));
@@ -33,7 +34,7 @@ function* newsFeedSaga({ type, payload }: INewsFeedSaga) {
             try {
                 yield put(isCreatingPost(true));
 
-                const post = yield call(createPost, payload);
+                const post: IPost = yield call(createPost, payload);
 
                 yield put(createPostSuccess(post));
                 yield put(isCreatingPost(false));

@@ -2,7 +2,7 @@ import { makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated } from '@/middlewares';
 import { Follow, User } from '@/schemas';
 import { EGender, IUser } from '@/schemas/UserSchema';
-import { multer, uploadImageToStorage } from '@/storage/filestorage';
+import { multer, uploadImageToStorage } from '@/storage/cloudinary';
 import { schemas, validateBody } from '@/validations/validations';
 import { NextFunction, Request, Response, Router } from 'express';
 
@@ -127,16 +127,16 @@ router.post(
             if (!['picture', 'cover'].includes(field)) return next(new ErrorHandler(400, `Unexpected field ${field}`));
 
 
-            const url = await uploadImageToStorage(file);
+            const image = await uploadImageToStorage(file, `${req.user.username}/profile`);
             const fieldToUpdate = field === 'picture' ? 'profilePicture' : 'coverPhoto';
 
             await User.findByIdAndUpdate((req.user as IUser)._id, {
                 $set: {
-                    [fieldToUpdate]: url
+                    [fieldToUpdate]: image
                 }
             });
 
-            res.status(200).send(makeResponseJson(url));
+            res.status(200).send(makeResponseJson(image));
         } catch (e) {
             console.log('CANT UPLOAD FILE: ', e);
             next(e);

@@ -122,7 +122,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             username: profile.username,
             id: profile.id,
             fullname: profile.fullname || '',
-            profilePicture: profile.profilePicture || ''
+            profilePicture: profile.profilePicture?.url || ''
         }));
 
         if (window.screen.width < 1024) {
@@ -153,7 +153,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                 <img
                     alt=""
                     className="w-full h-full object-cover"
-                    src={coverPhoto.imageFile.url || profile.coverPhoto || `https://source.unsplash.com/oDhGIbegZNI/1400x900`}
+                    src={coverPhoto.imageFile.url || profile.coverPhoto?.url || `https://source.unsplash.com/oDhGIbegZNI/1400x900`}
                 />
             </div>
             <div className="laptop:px-6% w-full relative flex mt-2 laptop:transform laptop:-translate-y-2/4">
@@ -165,7 +165,7 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
 
                                 className="w-full h-full laptop:w-60 laptop:h-60 !bg-cover !bg-no-repeat rounded-full border-4 border-white dark:border-indigo-1000 overflow-hidden"
                                 style={{
-                                    background: `#f7f7f7 url(${profile.profilePicture || avatar_placeholder})`
+                                    background: `#f7f7f7 url(${profile.profilePicture?.url || avatar_placeholder})`
                                 }}
                             >
                                 {isUploadingProfileImage && (

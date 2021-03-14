@@ -172,7 +172,7 @@ const Comments: React.FC<IProps> = (props) => {
                                     key={comment.id}
                                 >
                                     <Link to={`/user/${comment.author.username}`} className="mr-2">
-                                        <Avatar url={comment.author.profilePicture} />
+                                        <Avatar url={comment.author.profilePicture?.url} />
                                     </Link>
                                     <div className="inline-flex items-start flex-col px-2 py-1 rounded-md bg-gray-100 dark:bg-indigo-950">
                                         <Link to={`/user/${comment.author.username}`}>
@@ -222,7 +222,7 @@ const Comments: React.FC<IProps> = (props) => {
                 {/*  ---- INPUT COMMENT ----- */}
                 {isCommentVisible && (
                     <div className={`flex items-center py-4 px-2 ${isUpdating && 'bg-yellow-100 dark:bg-indigo-1100 rounded-2xl'}`}>
-                        <Avatar url={user.profilePicture} className="mr-2" />
+                        <Avatar url={user.profilePicture?.url} className="mr-2" />
                         <div className="flex-grow">
                             <input
                                 className={`${isCommenting && 'opacity-50'} dark:bg-indigo-1100 dark:!border-gray-800 dark:text-white`}

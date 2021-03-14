@@ -16,7 +16,7 @@ const UserCard: React.FC<IProps> = ({ profile, isFollowing }) => {
         <div className="relative flex items-center justify-between px-4 py-2">
             <Link to={`/user/${profile.username}`}>
                 <div className="flex items-center">
-                    <Avatar url={profile.profilePicture} size="lg" className="mr-2" />
+                    <Avatar url={profile.profilePicture?.url} size="lg" className="mr-2" />
                     <h6 className="mr-10 max-w-md overflow-ellipsis overflow-hidden dark:text-indigo-400">@{profile.username}</h6>
                 </div>
             </Link>

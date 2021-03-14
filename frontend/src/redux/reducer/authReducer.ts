@@ -6,7 +6,7 @@ const initState: IUser = {
     id: '',
     username: '',
     fullname: '',
-    profilePicture: ''
+    profilePicture: {}
 }
 
 const authReducer = (state = initState, action: TAuthActionType) => {

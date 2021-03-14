@@ -1,18 +1,10 @@
 import config from '@/config/config';
 import { Storage } from '@google-cloud/storage';
-import Multer from 'multer';
 import { format } from 'util';
 
 const storage = new Storage(config.gCloudStorage);
 
 const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET_URL);
-
-const multer = Multer({
-    storage: Multer.memoryStorage(),
-    limits: {
-        fileSize: 2 * 1024 * 1024 // no larger than 2mb
-    }
-});
 
 const uploadImageToStorage = (file) => {
     return new Promise((resolve, reject) => {
@@ -66,5 +58,5 @@ const deleteImageFromStorage = (...images) => {
     });
 }
 
-export { uploadImageToStorage, deleteImageFromStorage, multer };
+export { uploadImageToStorage, deleteImageFromStorage };
 

@@ -87,14 +87,14 @@ const Home: React.FC<IProps> = (props) => {
             {/*  --- SIDE MENU --- */}
             <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2 dark:bg-indigo-1000">
                 {props.isAuth && (
-                    <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture} />
+                    <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture?.url} />
                 )}
             </div>
             <div className="w-full laptop:w-2/4 relative">
                 {/* --- CREATE POST INPUT ---- */}
                 {props.isAuth && (
                     <div className="flex items-center justify-start mb-4 px-4 laptop:px-0">
-                        <Avatar url={state.auth.profilePicture} className="mr-2" />
+                        <Avatar url={state.auth.profilePicture?.url} className="mr-2" />
                         <div className="flex-grow">
                             <input
                                 className="dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
