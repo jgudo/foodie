@@ -4,7 +4,7 @@ import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
 import { Bookmark, Comment, Follow, NewsFeed, Notification, Post, User } from '@/schemas';
 import { ENotificationType } from '@/schemas/NotificationSchema';
 import { EPrivacy } from '@/schemas/PostSchema';
-import { deleteImageFromStorage, multer, uploadImageToStorage } from '@/storage/filestorage';
+import { deleteImageFromStorage, multer, uploadImageToStorage } from '@/storage/cloudinary';
 import { schemas, validateBody } from '@/validations/validations';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
@@ -22,7 +22,7 @@ router.post(
 
             let photos = [];
             if (req.files) {
-                const photosToSave = req.files.map((file) => uploadImageToStorage(file));
+                const photosToSave = req.files.map((file) => uploadImageToStorage(file, `${req.user.username}/posts`));
                 photos = await Promise.all(photosToSave);
 
                 console.log(photos)
@@ -295,7 +295,12 @@ router.delete(
             if (!post) return next(new ErrorHandler(400));
 
             if (req.user._id.toString() === post._author_id.toString()) {
-                if (post.photos && post.photos.length !== 0) await deleteImageFromStorage(...post.photos);
+                const imageIDs = post.photos  // array of image public_ids
+                    .filter(img => img?.public_id)
+                    .map(img => img.public_id);
+
+
+                if (post.photos && post.photos.length !== 0) await deleteImageFromStorage(imageIDs);
 
                 await Post.findByIdAndDelete(post_id);
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });

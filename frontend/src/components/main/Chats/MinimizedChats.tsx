@@ -26,7 +26,7 @@ const MinimizedChats: React.FC<IProps> = ({ users }) => {
                             title={chat.username}
                         >
                             <Avatar
-                                url={chat.profilePicture}
+                                url={chat.profilePicture?.url}
                                 size="lg"
                                 className="cursor-pointer shadow-md hover:border-2 hover:border-indigo-500 hover:opacity-90  mr-2 my-4 border border-indigo-700"
                             />

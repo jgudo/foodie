@@ -47,7 +47,7 @@ const NotificationList: React.FC<IProps> = (props) => {
                                         <div className="relative">
                                             <div className="flex items-start">
                                                 <Avatar
-                                                    url={notif.initiator.profilePicture}
+                                                    url={notif.initiator.profilePicture?.url}
                                                     size="lg"
                                                     className="mr-2 flex-shrink-0"
                                                 />

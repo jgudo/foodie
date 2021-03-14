@@ -16,8 +16,8 @@ const initState: IProfile = {
         gender: 'unspecified',
     },
     isEmailValidated: false,
-    profilePicture: '',
-    coverPhoto: '',
+    profilePicture: {},
+    coverPhoto: {},
     followersCount: 0,
     followingCount: 0,
     dateJoined: ''

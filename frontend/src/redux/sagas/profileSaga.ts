@@ -1,6 +1,7 @@
 import { call, put } from "redux-saga/effects";
 import { GET_USER_START } from "~/constants/actionType";
 import { getUser } from "~/services/api";
+import { IProfile } from "~/types/types";
 import { setProfileErrorMessage } from "../action/errorActions";
 import { isGettingUser } from "../action/loadingActions";
 import { getUserSuccess } from "../action/profileActions";
@@ -15,7 +16,7 @@ function* profileSaga({ type, payload }: IProfileSaga) {
         case GET_USER_START:
             try {
                 yield put(isGettingUser(true));
-                const user = yield call(getUser, payload);
+                const user: IProfile = yield call(getUser, payload);
 
                 yield put(isGettingUser(false));
                 yield put(setProfileErrorMessage(null));

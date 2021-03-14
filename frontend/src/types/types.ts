@@ -35,13 +35,13 @@ export interface IUser {
     id: string;
     username: string;
     fullname?: string;
-    profilePicture?: string;
+    profilePicture?: Record<string, any>;
 }
 
 export interface IPost {
     id: string;
     privacy: 'public' | 'private' | 'follower';
-    photos: string[];
+    photos: Record<string, any>[];
     comments: any[];
     description: string;
     likes: any[];
@@ -68,7 +68,7 @@ export interface IChatItemsState {
     username: string;
     id: string;
     offset: number;
-    profilePicture?: string;
+    profilePicture?: Record<string, any>;
     minimized: boolean;
     chats: IMessage[]
 }
@@ -92,8 +92,8 @@ export interface IProfile {
         gender: string;
     },
     isEmailValidated: boolean;
-    profilePicture?: string;
-    coverPhoto?: string;
+    profilePicture?: Record<string, any>;
+    coverPhoto?: Record<string, any>;
     dateJoined: Date | string;
     followingCount: number;
     followersCount: number;

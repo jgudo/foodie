@@ -4,7 +4,7 @@ import { CHECK_SESSION, LOGIN_START, LOGOUT_START, REGISTER_START } from "~/cons
 import { LOGIN } from "~/constants/routes";
 import { checkAuthSession, login, logout, register } from "~/services/api";
 import socket from "~/socket/socket";
-import { IError } from "~/types/types";
+import { IError, IUser } from "~/types/types";
 import { loginSuccess, logoutSuccess, registerSuccess } from "../action/authActions";
 import { clearChat } from "../action/chatActions";
 import { setAuthErrorMessage } from "../action/errorActions";
@@ -72,7 +72,7 @@ function* authSaga({ type, payload }: IAuthSaga) {
             try {
                 yield put(isAuthenticating(true));
 
-                const user = yield call(register, payload);
+                const user: IUser = yield call(register, payload);
 
                 socket.emit('userConnect', user.id);
                 yield put(registerSuccess(user));

@@ -127,7 +127,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
             <div className="flex justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
                 <Link className="dark:text-indigo-400" to={`/user/${target.username}`}>
                     <div className="flex items-center">
-                        <Avatar url={target.profilePicture} className="mr-2" />
+                        <Avatar url={target.profilePicture?.url} className="mr-2" />
                         <h5>{target.username}</h5>
                     </div>
                 </Link>
@@ -203,7 +203,7 @@ const ChatBox: React.FC<IProps> = ({ user, target }) => {
                                             <div className="flex">
                                                 {/* -- AVATAR --- */}
                                                 <Avatar
-                                                    url={msg.isOwnMessage ? user.profilePicture : target.profilePicture}
+                                                    url={msg.isOwnMessage ? user.profilePicture?.url : target.profilePicture?.url}
                                                     size="xs"
                                                     className={`self-end flex-shrink-0 !bg-cover !bg-no-repeat rounded-full ${msg.isOwnMessage ? 'ml-1 order-2' : 'mr-1 order-1'}`}
                                                 />

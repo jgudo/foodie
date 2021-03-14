@@ -118,7 +118,7 @@ const SearchInput: React.FC<IProps> = (props) => {
                             onClick={() => onClickItem(user)}
                         >
                             <div className="flex items-center">
-                                <Avatar url={user.profilePicture} className="mr-2" />
+                                <Avatar url={user.profilePicture?.url} className="mr-2" />
                                 <h6 className="mr-10 text-sm max-w-md overflow-ellipsis overflow-hidden dark:text-white">{user.username}</h6>
                             </div>
                         </div>

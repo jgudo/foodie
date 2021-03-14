@@ -74,7 +74,7 @@ const NavBar: React.FC<IProps> = ({ isAuth, theme }) => {
                                         {/* ---- AVATAR WITH  USERNAME ----------- */}
                                         <Link to={`/user/${auth.username}`} className="cursor-pointer">
                                             <div className="flex items-center">
-                                                <Avatar url={auth.profilePicture} className="mr-2" />
+                                                <Avatar url={auth.profilePicture?.url} className="mr-2" />
                                                 <h6 className="text-sm mr-10 dark:text-indigo-400">@{auth.username}</h6>
                                             </div>
                                         </Link>

@@ -45,5 +45,10 @@ export default {
   gCloudStorage: {
     projectId: process.env.FIREBASE_PROJECT_ID,
     keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+  },
+  cloudinary: {
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
   }
 }

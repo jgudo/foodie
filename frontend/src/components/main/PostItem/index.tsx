@@ -59,7 +59,7 @@ const PostItem: React.FC<IProps> = (props) => {
             <div className="flex justify-between items-center w-full">
                 <div className="flex">
                     <Avatar
-                        url={post.author.profilePicture}
+                        url={post.author.profilePicture?.url}
                         className="mr-3"
                     />
                     <div className="flex flex-col">
@@ -96,7 +96,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 <p className="text-gray-700 dark:text-gray-300">{post.description}</p>
             </div>
             {/* --- IMAGE GRID ----- */}
-            {post.photos.length !== 0 && <ImageGrid images={post.photos} />}
+            {post.photos.length !== 0 && <ImageGrid images={post.photos.map(img => img.url)} />}
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
                 <div onClick={() => isAuth && likesModal.openModal()}>

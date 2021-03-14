@@ -115,7 +115,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                 onClick={onClickMenuItem}
                                 to={`/user/${auth.username}`}
                             >
-                                <Avatar url={auth.profilePicture} size="lg" className="mr-2" />
+                                <Avatar url={auth.profilePicture?.url} size="lg" className="mr-2" />
                                 <div className="flex flex-col">
                                     <span>{auth.username}</span>
                                     <span className="text-gray-400 text-xs">View Profile</span>
