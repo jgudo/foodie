@@ -77,12 +77,12 @@ const Login: React.FC = () => {
                     Photo: Credits to the photo owner
                 </a>
             </div>
-            <div className="animate-fade laptop:w-5/12 w-full flex items-center justify-start relative">
+            <div className="animate-fade laptop:w-5/12 w-full flex items-center flex-col justify-center pt-8 laptop:pt-0 relative">
                 <Link to="/">
                     <img
                         src={logo_dark}
                         alt="Foodie Logo"
-                        className="w-24 absolute left-0 right-0 mx-auto top-8 laptop:hidden"
+                        className="w-24 relative mx-auto laptop:hidden"
                     />
                 </Link>
                 {error && (
@@ -168,7 +168,7 @@ const Login: React.FC = () => {
                         </Link>
                     </div>
                     {/* --- COPYRIGHT -- */}
-                    <span className="text-gray-400 text-xs absolute bottom-8 left-0 right-0 mx-auto text-center">
+                    <span className="text-gray-400 text-xs mx-auto text-center block mt-4">
                         &copy;Copyright {new Date().getFullYear()} Foodie
                     </span>
                 </div>

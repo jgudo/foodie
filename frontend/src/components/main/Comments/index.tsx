@@ -174,7 +174,7 @@ const Comments: React.FC<IProps> = (props) => {
                                     <Link to={`/user/${comment.author.username}`} className="mr-2">
                                         <Avatar url={comment.author.profilePicture?.url} />
                                     </Link>
-                                    <div className="inline-flex items-start flex-col px-2 py-1 rounded-md bg-gray-100 dark:bg-indigo-950">
+                                    <div className="inline-flex items-start flex-col px-2 py-1 rounded-md bg-gray-100 dark:bg-indigo-950 w-full laptop:w-auto">
                                         <Link to={`/user/${comment.author.username}`}>
                                             <h5 className="dark:text-indigo-400">{comment.author.username}</h5>
                                         </Link>
