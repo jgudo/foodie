@@ -116,7 +116,7 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                                         className="group flex items-center justify-center w-10 h-10 border-2 border-dashed border-gray-400 hover:border-indigo-700"
                                         title="Upload photo"
                                     >
-                                        <FileImageOutlined className="text-xl flex items-center justify-center text-gray-400 hover:text-indigo-700" />
+                                        <FileImageOutlined className="text-xl text-gray-400 hover:text-indigo-700" />
                                     </div>
                                 </label>
                             </div>
@@ -136,7 +136,7 @@ const CreatePostModal: React.FC<IProps> = (props) => {
                                     }}
                                 >
                                     <CloseCircleOutlined
-                                        className="flex items-center justify-center p-2 absolute top-0 left-0 right-0 bottom-0 margin-auto text-3xl text-white hover:bg-red-600 cursor-pointer outline-none opacity-75 hover:opacity-100"
+                                        className="p-2 absolute top-0 left-0 right-0 bottom-0 margin-auto text-3xl text-white hover:bg-red-600 cursor-pointer outline-none opacity-75 hover:opacity-100"
                                         onClick={() => removeImage(image.id)}
                                     />
                                 </div>

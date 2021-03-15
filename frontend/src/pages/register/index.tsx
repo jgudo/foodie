@@ -155,12 +155,12 @@ const Register: React.FC = () => {
                                 <div className="absolute right-0 top-0 bottom-0 my-auto flex items-center justify-center w-12 h-12 hover:bg-gray-200 cursor-pointer rounded-tr-full rounded-br-full z-10">
                                     {isPasswordVisible ? (
                                         <EyeInvisibleOutlined
-                                            className="h-full w-full flex items-center justify-center outline-none text-gray-500"
+                                            className="h-full w-full outline-none text-gray-500"
                                             onClick={() => setPasswordVisible(false)}
                                         />
                                     ) : (
                                         <EyeOutlined
-                                            className="h-full w-full flex items-center justify-center outline-none"
+                                            className="h-full w-full outline-none"
                                             onClick={() => setPasswordVisible(true)}
                                         />
                                     )}

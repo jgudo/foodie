@@ -12,7 +12,7 @@ const SocialLogin: React.FC<{ isLoading: boolean; }> = ({ isLoading }) => {
                 href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/facebook`}
                 onClick={onClickSocialLogin}
             >
-                <FacebookFilled className="flex items-center justify-center m-0 laptop:mr-4 text-xl laptop:text-sm" />
+                <FacebookFilled className="m-0 laptop:mr-4 text-xl laptop:text-sm" />
                 <span className="hidden laptop:inline-block">Facebook</span>
             </a>
             <a
@@ -20,7 +20,7 @@ const SocialLogin: React.FC<{ isLoading: boolean; }> = ({ isLoading }) => {
                 href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/google`}
                 onClick={onClickSocialLogin}
             >
-                <GoogleOutlined className="flex items-center justify-center m-0 laptop:mr-4 text-xl laptop:text-sm" />
+                <GoogleOutlined className="m-0 laptop:mr-4 text-xl laptop:text-sm" />
                 <span className="hidden laptop:inline-block">Google</span>
             </a>
             <a
@@ -28,7 +28,7 @@ const SocialLogin: React.FC<{ isLoading: boolean; }> = ({ isLoading }) => {
                 href={`${process.env.REACT_APP_FOODIE_URL}/api/v1/auth/github`}
                 onClick={onClickSocialLogin}
             >
-                <GithubFilled className="flex items-center justify-center m-0 laptop:mr-4 text-xl laptop:text-sm" />
+                <GithubFilled className="m-0 laptop:mr-4 text-xl laptop:text-sm" />
                 <span className="hidden laptop:inline-block">GitHub</span>
             </a>
         </div>

@@ -159,21 +159,25 @@
 }
 
 body {
-    margin: 0;
-    font-family: 'SF Pro Display', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    line-height: 1.6;
-    background: var(--background);
-    
-  }
+  margin: 0;
+  font-family: 'SF Pro Display', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  line-height: 1.6;
+  background: var(--background);
+  
+}
 
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
-  }
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
 
-  .App {
-    min-height: 100vh;
-  }
+.App {
+  min-height: 100vh;
+}
+
+.anticon {
+  @apply inline-flex items-center justify-center;
+}

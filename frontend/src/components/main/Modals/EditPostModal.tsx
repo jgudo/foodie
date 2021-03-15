@@ -80,7 +80,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
                 )}
                 <div className="p-4 laptop:px-8 w-full laptop:w-40rem">
                     <h2 className="dark:text-white">
-                        <EditOutlined className="inline-flex items-center justify-center mr-2 pt-2" />
+                        <EditOutlined className="mr-2 pt-2" />
                         Edit Post
                     </h2>
                     <select

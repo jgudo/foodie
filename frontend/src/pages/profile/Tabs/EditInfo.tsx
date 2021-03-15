@@ -187,7 +187,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         onClick={handleBack}
                         className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
                     >
-                        <ArrowLeftOutlined className="text-xl flex items-center justify-center mr-4" />
+                        <ArrowLeftOutlined className="text-xl mr-4" />
                         Back to Info
                     </button>
                     <button
@@ -195,7 +195,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         type="submit"
                         disabled={isUpdating}
                     >
-                        <SaveOutlined className="text-xl flex items-center justify-center mr-4" />
+                        <SaveOutlined className="text-xl mr-4" />
                         {isUpdating ? 'Updating...' : 'Update'}
                     </button>
                 </div>

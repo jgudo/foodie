@@ -35,7 +35,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     className={`${linkStyleName} ${(activeNav === username || activeNav === '') && 'border-indigo-700 dark:border-indigo-400  border-b-4 text-gray-800 dark:text-white '}`}
                 >
                     <span className="hidden laptop:inline-block">Posts</span>
-                    <FormOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
+                    <FormOutlined className="laptop:hidden text-2xl" />
                 </Link>
             </li>
             <li>
@@ -44,7 +44,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                     className={`${linkStyleName} ${activeNav === 'info' && 'border-indigo-700 dark:border-indigo-400  border-b-4'}`}
                 >
                     <span className="hidden laptop:inline-block">Info</span>
-                    <InfoCircleOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
+                    <InfoCircleOutlined className="laptop:hidden text-2xl" />
                 </Link>
             </li>
             <li>
@@ -54,7 +54,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                 >
                     <span className="laptop:text-lg text-indigo-700 dark:text-indigo-400">{followersCount}</span>
                     <span className="hidden laptop:inline-block">{followersCount > 1 ? 'Followers' : 'Follower'}</span>
-                    <TeamOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
+                    <TeamOutlined className="laptop:hidden text-2xl" />
                 </Link>
             </li>
             <li>
@@ -64,7 +64,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                 >
                     <span className="laptop:text-lg text-indigo-700 dark:text-indigo-400">{followingCount}</span>
                     <span className="hidden laptop:inline-block">Following</span>
-                    <UserAddOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
+                    <UserAddOutlined className="laptop:hidden text-2xl" />
                 </Link>
             </li>
             {isOwnProfile && (
@@ -74,7 +74,7 @@ const Tabs: React.FC<IProps> = ({ username, isOwnProfile, followersCount, follow
                         className={`${linkStyleName} ${activeNav === 'bookmarks' && 'border-indigo-700 dark:border-indigo-400 border-b-4'}`}
                     >
                         <span className="hidden laptop:inline-block">Bookmarks</span>
-                        <StarOutlined className="laptop:hidden flex items-center justify-center text-2xl" />
+                        <StarOutlined className="laptop:hidden text-2xl" />
                     </Link>
                 </li>
             )}

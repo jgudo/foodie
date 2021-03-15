@@ -75,12 +75,12 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                                 <h6 className="text-sm text-gray-600 flex items-center">
                                     {post.likesCount}
                                     &nbsp;
-                                    <LikeOutlined className="flex items-center justify-center" />
+                                    <LikeOutlined />
                                 </h6>
                                 <h6 className="text-sm text-gray-600 flex items-center">
                                     {post.commentsCount}
                                     &nbsp;
-                                    <CommentOutlined className="flex items-center justify-center" />
+                                    <CommentOutlined />
                                 </h6>
                             </div>
                         </div>

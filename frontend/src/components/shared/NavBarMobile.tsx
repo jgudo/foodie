@@ -178,7 +178,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                 ) : (
                     <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                         <li className="px-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100 flex items-center justify-start">
-                            <ArrowRightOutlined className="flex items-center justify-center dark:text-white" />
+                            <ArrowRightOutlined className="dark:text-white" />
                             <Link
                                 className="p-4 font-medium dark:text-indigo-400 flex-grow"
                                 to={LOGIN}
@@ -187,7 +187,7 @@ const NavBarMobile: React.FC<IProps> = ({ theme, isAuth, auth, openModal }) => {
                                     </Link>
                         </li>
                         <li className="px-4 cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-1100 flex items-center justify-start">
-                            <ArrowRightOutlined className="flex items-center justify-center dark:text-white" />
+                            <ArrowRightOutlined className="dark:text-white" />
                             <Link
                                 className="p-4 font-medium dark:text-indigo-400 flex-grow"
                                 to={REGISTER}

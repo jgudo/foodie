@@ -174,34 +174,42 @@ const Comments: React.FC<IProps> = (props) => {
                                     <Link to={`/user/${comment.author.username}`} className="mr-2">
                                         <Avatar url={comment.author.profilePicture?.url} />
                                     </Link>
-                                    <div className="inline-flex items-start flex-col px-2 py-1 rounded-md bg-gray-100 dark:bg-indigo-950 w-full laptop:w-auto">
-                                        <Link to={`/user/${comment.author.username}`}>
-                                            <h5 className="dark:text-indigo-400">{comment.author.username}</h5>
-                                        </Link>
-                                        <p className="text-gray-800 min-w-full break-all dark:text-gray-200">{comment.body}</p>
-                                        <div className="mt-2">
-                                            <span className="text-xs text-gray-400">
+                                    <div className="inline-flex items-start flex-col w-full laptop:w-auto">
+                                        <div className="flex items-start">
+                                            {/* ------ USERNAME AND COMMENT TEXT ----- */}
+                                            <div className="bg-gray-100 dark:bg-indigo-950 px-2 py-1 rounded-md">
+                                                <Link to={`/user/${comment.author.username}`}>
+                                                    <h5 className="dark:text-indigo-400">{comment.author.username}</h5>
+                                                </Link>
+                                                <p className="text-gray-800 text-sm min-w-full break-all dark:text-gray-200">
+                                                    {comment.body}
+                                                </p>
+                                            </div>
+                                            {(user.id === comment.author.id || authorID === user.id) && (
+                                                <CommentOptions
+                                                    isOwnComment={user.id === comment.author.id}
+                                                    setCommentBody={setCommentBody}
+                                                    comment={comment}
+                                                    openDeleteModal={deleteModal.openModal}
+                                                    setTargetID={setTargetID}
+                                                    setIsUpdating={setIsUpdating}
+                                                    commentInputRef={commentInputRef}
+                                                    setInputCommentVisible={setInputCommentVisible}
+                                                />
+                                            )}
+                                        </div>
+                                        {/* ---- DATE AND LIKE BUTTON ----- */}
+                                        <div className="mt-1">
+                                            <span className="text-xs text-gray-400 dark:text-gray-500">
                                                 {dayjs(comment.createdAt).fromNow()}
                                             </span>
                                             {comment.isEdited && (
-                                                <span className="text-xs text-gray-400 ml-2">
+                                                <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
                                                     Edited
                                                 </span>
                                             )}
                                         </div>
                                     </div>
-                                    {(user.id === comment.author.id || authorID === user.id) && (
-                                        <CommentOptions
-                                            isOwnComment={user.id === comment.author.id}
-                                            setCommentBody={setCommentBody}
-                                            comment={comment}
-                                            openDeleteModal={deleteModal.openModal}
-                                            setTargetID={setTargetID}
-                                            setIsUpdating={setIsUpdating}
-                                            commentInputRef={commentInputRef}
-                                            setInputCommentVisible={setInputCommentVisible}
-                                        />
-                                    )}
                                 </div>
                             </CSSTransition>
                         ))}

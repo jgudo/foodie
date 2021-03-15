@@ -145,7 +145,7 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
         <div className="relative">
             <div onClick={toggleNotification}>
                 <Badge count={unreadCount}>
-                    <BellOutlined className="notification-toggle flex items-center justify-center text-xl focus:outline-none dark:text-white" />
+                    <BellOutlined className="notification-toggle text-xl focus:outline-none dark:text-white" />
                 </Badge>
             </div>
             {isNotificationOpen && (

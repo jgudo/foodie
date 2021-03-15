@@ -152,7 +152,7 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
         <div className="relative">
             <div onClick={toggleMessages}>
                 <Badge count={count}>
-                    <MessageOutlined className="messages-toggle flex items-center justify-center text-xl focus:outline-none dark:text-white" />
+                    <MessageOutlined className="messages-toggle text-xl focus:outline-none dark:text-white" />
                 </Badge>
             </div>
             {isMessagesOpen && (
@@ -164,7 +164,7 @@ const Messages: React.FC<{ isAuth: boolean; }> = ({ isAuth }) => {
                             className="text-sm flex p-2 text-white rounded-md hover:bg-indigo-500"
                             onClick={onClickCompose}
                         >
-                            <FormOutlined className="flex items-center justify-center mr-2" />
+                            <FormOutlined className="mr-2" />
                             Compose
                         </span>
                     </div>

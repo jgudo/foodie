@@ -104,9 +104,9 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                                     onClick={dispatchBookmark}
                                                 >
                                                     {isBookmarked ? (
-                                                        <StarFilled className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                                        <StarFilled className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
                                                     ) : (
-                                                        <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                                        <StarOutlined className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
                                                     )}
                                                 </h4>
                                             )}

@@ -125,7 +125,7 @@ const Home: React.FC<IProps> = (props) => {
                         dispatchCreatePost={dispatchCreatePost}
                     />
                 )}
-                {(state.error && state.newsFeed.items.length === 0) && (
+                {(state.error && state.newsFeed.items.length === 0 && !state.isLoadingCreatePost) && (
                     <div className="flex flex-col w-full min-h-24rem px-8 items-center justify-center text-center">
                         {state.error.status_code === 404 ? (
                             <>

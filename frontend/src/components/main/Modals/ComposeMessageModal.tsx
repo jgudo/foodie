@@ -48,7 +48,7 @@ const ComposeMessageModal: React.FC<IProps> = (props) => {
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 <h3 className="py-4 px-8 flex dark:text-white">
-                    <FormOutlined className="flex items-center justify-center mr-2" />
+                    <FormOutlined className="mr-2" />
                     Compose Message
                 </h3>
                 <div className="flex justify-start px-8 mt-4">

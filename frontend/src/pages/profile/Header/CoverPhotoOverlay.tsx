@@ -31,7 +31,7 @@ const CoverPhotoOverlay: React.FC<IProps> = (props) => {
                             {props.coverPhoto.imageFile.file ? (
                                 <div className="flex">
                                     <button className="button--danger !rounded-full" onClick={props.coverPhoto.clearFiles}>
-                                        <CloseOutlined className="text-xl flex items-center justify-center text-white" />
+                                        <CloseOutlined className="text-xl text-white" />
                                     </button>
                                             &nbsp;
                                     <label
@@ -44,16 +44,16 @@ const CoverPhotoOverlay: React.FC<IProps> = (props) => {
                                     <button onClick={props.handleSaveCoverPhoto}>Save</button>
                                 </div>
                             ) : (
-                                    <label
-                                        className="p-3 laptop:p-4 bg-indigo-700 absolute right-4 top-4  laptop:relative text-white font-medium rounded-full cursor-pointer hover:bg-indigo-800"
-                                        htmlFor="cover"
-                                    >
-                                        {window.screen.width > 800 ? 'Change Cover Photo' : (
-                                            <CameraOutlined className="text-xl flex items-center justify-center text-white" />
-                                        )}
-                                    </label>
+                                <label
+                                    className="p-3 laptop:p-4 bg-indigo-700 absolute right-4 top-4  laptop:relative text-white font-medium rounded-full cursor-pointer hover:bg-indigo-800"
+                                    htmlFor="cover"
+                                >
+                                    {window.screen.width > 800 ? 'Change Cover Photo' : (
+                                        <CameraOutlined className="text-xl text-white" />
+                                    )}
+                                </label>
 
-                                )}
+                            )}
                         </>
                     )}
                 </>

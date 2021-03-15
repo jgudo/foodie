@@ -71,11 +71,11 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                 </div>
                                             </div>
                                             {notif.type === 'like' ? (
-                                                <LikeOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                                <LikeOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
                                             ) : notif.type === 'comment' ? (
-                                                <CommentOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                                <CommentOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
                                             ) : (
-                                                <UserAddOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 flex items-center justify-center absolute right-4 top-0 bottom-0 my-auto" />
+                                                <UserAddOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
                                             )}
                                         </div>
                                     </div>

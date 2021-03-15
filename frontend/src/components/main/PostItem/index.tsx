@@ -74,10 +74,10 @@ const PostItem: React.FC<IProps> = (props) => {
                                 title={post.isOwnPost ? 'Change Privacy' : ''}
                             >
                                 {post.privacy === 'private'
-                                    ? <LockOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
+                                    ? <LockOutlined className="text-xs text-gray-500 dark:text-white" />
                                     : post.privacy === 'follower'
-                                        ? <UserOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
-                                        : <GlobalOutlined className="flex items-center justify-center text-xs text-gray-500 dark:text-white" />
+                                        ? <UserOutlined className="text-xs text-gray-500 dark:text-white" />
+                                        : <GlobalOutlined className="text-xs text-gray-500 dark:text-white" />
                                 }
                             </div>
                         </div>

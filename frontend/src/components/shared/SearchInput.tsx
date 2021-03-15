@@ -92,7 +92,7 @@ const SearchInput: React.FC<IProps> = (props) => {
 
     return (
         <div className={`input-wrapper relative flex flex-col items-center ${props.inputClassName}`}>
-            <SearchOutlined className="flex items-center justify-center text-gray-400 absolute left-3 top-3 z-50" />
+            <SearchOutlined className="text-gray-400 absolute left-3 top-3 z-50" />
             <input
                 className="!border-gray-100 !pl-10 !py-2 dark:bg-indigo-1000 dark:!border-gray-800 dark:text-white"
                 placeholder="Search..."
