@@ -57,7 +57,9 @@ export const schemas = {
                 'string.base': 'Comment body should be of type "string"',
                 'string.empty': `Comment body cannot be an empty field`,
                 'any.required': 'Comment body field is required'
-            })
+            }),
+        post_id: Joi.string().empty(''),
+        comment_id: Joi.string().empty('')
     }),
     editProfileSchema: Joi.object().keys({
         firstname: Joi.string().empty(''),

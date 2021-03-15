@@ -6,6 +6,8 @@ export interface IComment extends Document {
     _post_id: IPost['_id'];
     body: string;
     _author_id: IUser['_id'];
+    depth: number;
+    parent: IComment['id'];
     isEdited: boolean;
     createdAt: number | Date;
     updatedAt: number | Date;
@@ -16,6 +18,14 @@ const CommentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Post',
         required: true
+    },
+    parent: {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    },
+    depth: {
+        type: Number,
+        default: 1
     },
     body: String,
     _author_id: {

@@ -220,4 +220,70 @@ router.patch(
     }
 );
 
+router.post(
+    '/v1/reply',
+    isAuthenticated,
+    validateBody(schemas.commentSchema),
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { body, comment_id, post_id } = req.body;
+            const userID = req.user._id;
+
+            // check if the Comment actually exists
+            const comment = await Comment.findById(comment_id);
+            if (!comment) return next(new ErrorHandler(404, 'Unable to reply. Comment not found.'));
+
+            const reply = new Comment({
+                _post_id: comment._post_id,
+                _author_id: userID,
+                parent: comment._id,
+                depth: comment.depth + 1,
+                body: filterWords.clean(body),
+                createdAt: Date.now()
+            });
+
+            await reply.save();
+            await Post
+                .findByIdAndUpdate(post_id, {
+                    $push: {
+                        comments: reply._id
+                    }
+                });
+            await reply
+                .populate({
+                    path: 'author',
+                    select: 'username profilePicture fullname'
+                }).execPopulate();
+
+            // SEND NOTIFICATION
+            const io = req.app.get('io');
+            const notification = new Notification({
+                type: 'reply',
+                initiator: userID,
+                target: Types.ObjectId(comment._author_id),
+                link: `/post/${post_id}`,
+                createdAt: Date.now()
+            });
+
+            notification
+                .save()
+                .then(async (doc) => {
+                    await doc
+                        .populate({
+                            path: 'target initiator',
+                            select: 'fullname profilePicture username'
+                        })
+                        .execPopulate();
+
+                    io.to(comment._author_id.toString()).emit('newNotification', { notification: doc, count: 1 });
+                });
+
+            res.status(200).send(makeResponseJson(reply));
+        } catch (e) {
+            console.log('CAN"T COMMENT', e)
+            next(e);
+        }
+    }
+);
+
 export default router;
