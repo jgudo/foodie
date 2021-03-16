@@ -61,6 +61,12 @@ export interface IComment {
     createdAt: Date;
     updatedAt: Date;
     isEdited: boolean;
+    depth: number;
+    replyCount: number;
+    post_id: string;
+    isOwnComment: boolean;
+    isPostOwner: boolean;
+
     author: IUser;
 }
 

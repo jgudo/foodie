@@ -91,46 +91,101 @@ router.get(
             const post = await Post.findById(Types.ObjectId(post_id));
             if (!post) return next(new ErrorHandler(404, 'No comments found.'));
 
-            const comments = await Comment
-                .find({ _post_id: post_id })
-                .limit(limit)
-                .populate({
-                    path: 'author',
-                    select: 'fullname username profilePicture'
-                })
-                .skip(skip)
-                .sort({ createdAt: -1 })
-
-            // res.status(200).send(comments)
-            const commentsAgg = await Comment.aggregate([
+            const agg = await Comment.aggregate([
                 {
                     $match: {
-                        _post_id: Types.ObjectId(post_id)
+                        _post_id: Types.ObjectId(post_id),
+                        depth: 1
+                    }
+                },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_author_id',
+                        foreignField: '_id',
+                        as: 'author'
                     }
                 },
                 {
-                    $group: {
-                        _id: '$_post_id',
-                        count: {
-                            $sum: 1
+                    $unwind: '$author'
+                },
+                {
+                    $project: {
+                        author: {
+                            username: '$author.username',
+                            email: '$author.email',
+                            profilePicture: '$author.profilePicture',
+                            id: '$author._id'
+                        },
+                        depth: '$depth',
+                        parent: '$parent',
+                        body: '$body',
+                        isEdited: '$isEdit',
+                        post_id: '$_post_id',
+                        createdAt: '$createdAt',
+                        updatedAt: '$updatedAt',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ['$parent', '$$id'] },
+                                            { $eq: ['$depth', 2] }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        as: 'replyCount'
+                    }
+                },
+                {
+                    $addFields: {
+                        isOwnComment: {
+                            $eq: ['$author.id', req.user._id]
+                        },
+                        isPostOwner: post._author_id.toString() === req.user._id.toString()
+                    } //user.id === comment.author.id || authorID === user.id)
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        id: '$_id',
+                        depth: 1,
+                        parent: 1,
+                        author: 1,
+                        isEdited: 1,
+                        post_id: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        body: 1,
+                        isOwnComment: 1,
+                        isPostOwner: 1,
+                        replyCount: {
+                            $size: '$replyCount'
                         }
                     }
                 }
             ]);
 
-            if (commentsAgg.length === 0) {
+            if (agg.length === 0 && offset < 1) {
                 return next(new ErrorHandler(404, 'No comments found.'));
             }
 
-            const commentsCount = commentsAgg[0].count || 0;
-            const result = { comments, commentsCount };
-
-            if (commentsCount === 0 || result.comments.length === 0) {
+            if (agg.length === 0 && offset >= 1) {
                 return next(new ErrorHandler(404, 'No more comments.'));
             }
 
-            console.log(result)
-            res.status(200).send(makeResponseJson(result));
+            res.status(200).send(makeResponseJson({ comments: agg, count: 0 }));
         } catch (e) {
             console.log(e);
             next(e);
@@ -281,6 +336,124 @@ router.post(
             res.status(200).send(makeResponseJson(reply));
         } catch (e) {
             console.log('CAN"T COMMENT', e)
+            next(e);
+        }
+    }
+);
+
+router.get(
+    '/v1/reply',
+    isAuthenticated,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { comment_id, post_id } = req.query;
+            const skipParams = parseInt(req.query.skip as string);
+            const offset = parseInt(req.query.offset as string) || 0;
+            const limit = parseInt(req.query.limit as string) || COMMENTS_LIMIT;
+            const skip = skipParams || offset * limit;
+
+            const reply = await Comment.findById(Types.ObjectId(comment_id));
+            if (!reply) return next(new ErrorHandler(404, 'No reply found.'));
+            const post = await Post.findById(Types.ObjectId(post_id));
+            if (!post) return next(new ErrorHandler(404, 'No post found.'));
+
+            const agg = await Comment.aggregate([
+                {
+                    $match: {
+                        parent: Types.ObjectId(comment_id),
+                        depth: reply.depth + 1
+                    }
+                },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_author_id',
+                        foreignField: '_id',
+                        as: 'author'
+                    }
+                },
+                {
+                    $unwind: '$author'
+                },
+                {
+                    $project: {
+                        author: {
+                            username: '$author.username',
+                            email: '$author.email',
+                            profilePicture: '$author.profilePicture',
+                            id: '$author._id'
+                        },
+                        depth: '$depth',
+                        parent: '$parent',
+                        body: '$body',
+                        isEdited: '$isEdit',
+                        post_id: '$_post_id',
+                        createdAt: '$createdAt',
+                        updatedAt: '$updatedAt',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        let: { id: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ['$parent', '$$id'] },
+                                            { $eq: ['$depth', reply.depth + 2] }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        as: 'replyCount'
+                    }
+                },
+                {
+                    $addFields: {
+                        isOwnComment: {
+                            $eq: ['$author.id', req.user._id]
+                        },
+                        isPostOwner: post._author_id.toString() === req.user._id.toString()
+                    } //user.id === comment.author.id || authorID === user.id)
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        id: '$_id',
+                        depth: 1,
+                        parent: 1,
+                        author: 1,
+                        isEdited: 1,
+                        post_id: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        body: 1,
+                        isOwnComment: 1,
+                        isPostOwner: 1,
+                        replyCount: {
+                            $size: '$replyCount'
+                        }
+                    }
+                }
+            ]);
+
+            if (agg.length === 0 && offset < 1) {
+                return next(new ErrorHandler(404, 'No comments found.'));
+            }
+
+            if (agg.length === 0 && offset >= 1) {
+                return next(new ErrorHandler(404, 'No more comments.'));
+            }
+
+            res.status(200).send(makeResponseJson({ replies: agg, count: 0 }));
+        } catch (e) {
+            console.log(e);
             next(e);
         }
     }

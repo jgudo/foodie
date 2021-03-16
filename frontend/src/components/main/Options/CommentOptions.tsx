@@ -3,7 +3,6 @@ import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from
 import { IComment } from '~/types/types';
 
 interface IProps {
-    isOwnComment: boolean;
     openDeleteModal: () => void;
     setIsUpdating: Dispatch<SetStateAction<boolean>>;
     setCommentBody: Dispatch<SetStateAction<string>>;
@@ -12,9 +11,6 @@ interface IProps {
     commentInputRef: RefObject<HTMLInputElement>;
     comment: IComment;
 }
-
-// isOwnComment={user.id === comment.author.id}
-//                                         commentID={comment.id}
 
 const CommentOptions: React.FC<IProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +64,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
             </div>
             {isOpen && (
                 <div className=" w-56 flex flex-col bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden absolute top-8 right-3 border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
-                    {props.isOwnComment && (
+                    {props.comment.isOwnComment && (
                         <h4
                             className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer dark:text-white"
                             onClick={onClickEdit}

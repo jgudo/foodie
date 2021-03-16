@@ -21,7 +21,8 @@ const CommentSchema = new Schema({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'Comment'
+        ref: 'Comment',
+        default: null
     },
     depth: {
         type: Number,

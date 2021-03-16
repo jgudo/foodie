@@ -2,13 +2,13 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from 'react-router-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { CommentOptions, DeleteCommentModal } from '~/components/main';
-import { Avatar, Boundary, Loader } from '~/components/shared';
+import { DeleteCommentModal } from '~/components/main';
+import { Boundary, Loader } from '~/components/shared';
 import { useDidMount, useModal } from '~/hooks';
 import { commentOnPost, getComments, updateComment } from "~/services/api";
 import { IComment, IFetchParams, IRootReducer } from "~/types/types";
+import CommentInput from './CommentInput';
+import CommentList from './CommentList';
 
 dayjs.extend(relativeTime);
 
@@ -39,8 +39,8 @@ const Comments: React.FC<IProps> = (props) => {
     });
     const [offset, setOffset] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [isCommenting, setIsCommenting] = useState(false);
+    const [isUpdateMode, setUpdateMode] = useState(false);
+    const [isSubmitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [targetID, setTargetID] = useState('');
     const user = useSelector((state: IRootReducer) => state.auth);
@@ -77,18 +77,17 @@ const Comments: React.FC<IProps> = (props) => {
     };
 
     const handleCommentBodyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setCommentBody(val);
+        setCommentBody(e.target.value);
     };
 
     const handleSubmitComment = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && commentBody) {
             try {
-                setIsCommenting(true);
-                const comment = isUpdating ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
+                setSubmitting(true);
+                const comment = isUpdateMode ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
 
                 if (didMount) {
-                    if (isUpdating) {
+                    if (isUpdateMode) {
                         handleUpdateCommentState(comment);
                     } else {
                         setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
@@ -96,17 +95,17 @@ const Comments: React.FC<IProps> = (props) => {
 
                     setCommentBody('');
                     setTargetID('');
-                    setIsUpdating(false);
-                    setIsCommenting(false);
+                    setUpdateMode(false);
+                    setSubmitting(false);
                 }
             } catch (e) {
                 if (didMount) {
-                    setIsCommenting(false);
+                    setSubmitting(false);
                     setError(e.error.message);
                 }
             }
         } else if (e.key === 'Escape') {
-            if (isUpdating) handleCancelUpdate();
+            if (isUpdateMode) handleCancelUpdate();
             if (commentInputRef.current) commentInputRef.current.blur();
         }
 
@@ -115,7 +114,7 @@ const Comments: React.FC<IProps> = (props) => {
     const handleCancelUpdate = () => {
         setCommentBody('');
         setTargetID('');
-        setIsUpdating(false);
+        setUpdateMode(false);
     }
 
     const handleUpdateCommentState = (comment: IComment) => {
@@ -160,63 +159,10 @@ const Comments: React.FC<IProps> = (props) => {
                 )}
                 <div className="py-4 px-2 space-y-2 divide-y divide-gray-200 dark:divide-gray-800">
                     {/* ----- COMMENT LIST ---------- */}
-                    <TransitionGroup component={null}>
-                        {comments.items.map((comment: IComment) => (
-                            <CSSTransition
-                                timeout={500}
-                                classNames="fade"
-                                key={comment.id}
-                            >
-                                <div
-                                    className="flex py-2 items-start"
-                                    key={comment.id}
-                                >
-                                    <Link to={`/user/${comment.author.username}`} className="mr-2">
-                                        <Avatar url={comment.author.profilePicture?.url} />
-                                    </Link>
-                                    <div className="inline-flex items-start flex-col w-full laptop:w-auto">
-                                        <div className="flex items-start">
-                                            {/* ------ USERNAME AND COMMENT TEXT ----- */}
-                                            <div className="bg-gray-100 dark:bg-indigo-950 px-2 py-1 rounded-md">
-                                                <Link to={`/user/${comment.author.username}`}>
-                                                    <h5 className="dark:text-indigo-400">{comment.author.username}</h5>
-                                                </Link>
-                                                <p className="text-gray-800 text-sm min-w-full break-all dark:text-gray-200">
-                                                    {comment.body}
-                                                </p>
-                                            </div>
-                                            {(user.id === comment.author.id || authorID === user.id) && (
-                                                <CommentOptions
-                                                    isOwnComment={user.id === comment.author.id}
-                                                    setCommentBody={setCommentBody}
-                                                    comment={comment}
-                                                    openDeleteModal={deleteModal.openModal}
-                                                    setTargetID={setTargetID}
-                                                    setIsUpdating={setIsUpdating}
-                                                    commentInputRef={commentInputRef}
-                                                    setInputCommentVisible={setInputCommentVisible}
-                                                />
-                                            )}
-                                        </div>
-                                        {/* ---- DATE AND LIKE BUTTON ----- */}
-                                        <div className="mt-1">
-                                            <span className="text-xs text-gray-400 dark:text-gray-500">
-                                                {dayjs(comment.createdAt).fromNow()}
-                                            </span>
-                                            {comment.isEdited && (
-                                                <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
-                                                    Edited
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </CSSTransition>
-                        ))}
-                    </TransitionGroup>
+                    <CommentList comments={comments.items} />
                 </div>
                 {/* ---- IS UPDATING HINT ---- */}
-                {isUpdating && (
+                {isUpdateMode && (
                     <div className="flex items-center justify-between mt-4">
                         <span className="text-xs ml-14 text-gray-400">Updating Comment. Press Esc to cancel</span>
                         <span
@@ -229,21 +175,17 @@ const Comments: React.FC<IProps> = (props) => {
                 )}
                 {/*  ---- INPUT COMMENT ----- */}
                 {isCommentVisible && (
-                    <div className={`flex items-center py-4 px-2 ${isUpdating && 'bg-yellow-100 dark:bg-indigo-1100 rounded-2xl'}`}>
-                        <Avatar url={user.profilePicture?.url} className="mr-2" />
-                        <div className="flex-grow">
-                            <input
-                                className={`${isCommenting && 'opacity-50'} dark:bg-indigo-1100 dark:!border-gray-800 dark:text-white`}
-                                type="text"
-                                placeholder="Write a comment..."
-                                readOnly={isLoading || isCommenting}
-                                ref={commentInputRef}
-                                onChange={handleCommentBodyChange}
-                                onKeyDown={handleSubmitComment}
-                                value={commentBody}
-                            />
-                        </div>
-                    </div>
+                    <CommentInput
+                        ref={commentInputRef}
+                        onChange={handleCommentBodyChange}
+                        placeholder="Write a comment..."
+                        isSubmitting={isSubmitting}
+                        isLoading={isLoading}
+                        isUpdateMode={isUpdateMode}
+                        userPicture={user.profilePicture}
+                        onKeyDown={handleSubmitComment}
+                        value={commentBody}
+                    />
                 )}
             </div>
             {deleteModal.isOpen && (

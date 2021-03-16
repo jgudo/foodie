@@ -565,3 +565,39 @@ export const getUserMessages = async (targetID: string, params?: IFetchParams): 
         return Promise.reject(e?.response?.data || {});
     }
 }
+
+export const replyOnComment = async (body: string, comment_id: string, post_id: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/reply`,
+            data: {
+                body,
+                comment_id,
+                post_id
+            }
+        });
+
+        return Promise.resolve(req.data.data);
+    } catch (e) {
+        return Promise.reject(e?.response?.data || {});
+    }
+}
+
+export const getCommentReplies = async (params: IFetchParams & { comment_id: string; post_id: string }): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'GET',
+            url: `/reply`,
+            params: {
+                offset: params.offset,
+                comment_id: params.comment_id,
+                post_id: params.post_id
+            }
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e?.response?.data || {});
+    }
+}
