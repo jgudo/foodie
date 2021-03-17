@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { DeleteCommentModal } from '~/components/main';
+import { useDispatch, useSelector } from "react-redux";
 import { Boundary, Loader } from '~/components/shared';
-import { useDidMount, useModal } from '~/hooks';
-import { commentOnPost, getComments, updateComment } from "~/services/api";
+import { useDidMount } from '~/hooks';
+import { setTargetCommentID } from '~/redux/action/helperActions';
+import { commentOnPost, getComments } from "~/services/api";
 import { IComment, IFetchParams, IRootReducer } from "~/types/types";
 import CommentInput from './CommentInput';
 import CommentList from './CommentList';
@@ -42,13 +42,13 @@ const Comments: React.FC<IProps> = (props) => {
     const [isUpdateMode, setUpdateMode] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
-    const [targetID, setTargetID] = useState('');
     const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
-    const deleteModal = useModal();
     const didMount = useDidMount(true);
+    const dispatch = useDispatch();
 
     useEffect(() => {
+        console.log('MAIN MOUNTED')
         fetchComment({ offset: 0, limit: 1, sort: 'desc' });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -84,17 +84,12 @@ const Comments: React.FC<IProps> = (props) => {
         if (e.key === 'Enter' && commentBody) {
             try {
                 setSubmitting(true);
-                const comment = isUpdateMode ? await updateComment(targetID, commentBody) : await commentOnPost(postID, commentBody);
+                const comment = await commentOnPost(postID, commentBody);
 
                 if (didMount) {
-                    if (isUpdateMode) {
-                        handleUpdateCommentState(comment);
-                    } else {
-                        setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
-                    }
+                    setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
 
                     setCommentBody('');
-                    setTargetID('');
                     setUpdateMode(false);
                     setSubmitting(false);
                 }
@@ -113,32 +108,8 @@ const Comments: React.FC<IProps> = (props) => {
 
     const handleCancelUpdate = () => {
         setCommentBody('');
-        setTargetID('');
+        dispatch(setTargetCommentID(''));
         setUpdateMode(false);
-    }
-
-    const handleUpdateCommentState = (comment: IComment) => {
-        const filteredComments = comments.items.map((item) => {
-            if (item.id === comment.id) {
-                return {
-                    ...item,
-                    ...comment
-                }
-            }
-            return item;
-        });
-
-        setComments({ ...comments, items: filteredComments });
-    }
-
-    const deleteSuccessCallback = (commentID: string) => {
-        // eslint-disable-next-line array-callback-return
-        const filteredComments = comments.items.filter((comment) => comment.id !== commentID);
-
-        if (didMount) {
-            setTargetID('');
-            setComments({ commentsCount: filteredComments.length, items: (filteredComments as IComment[]) });
-        }
     }
 
     return !isCommentVisible ? null : (
@@ -188,15 +159,6 @@ const Comments: React.FC<IProps> = (props) => {
                     />
                 )}
             </div>
-            {deleteModal.isOpen && (
-                <DeleteCommentModal
-                    isOpen={deleteModal.isOpen}
-                    openModal={deleteModal.openModal}
-                    closeModal={deleteModal.closeModal}
-                    commentID={targetID}
-                    deleteSuccessCallback={deleteSuccessCallback}
-                />
-            )}
         </Boundary>
     );
 };

@@ -68,7 +68,14 @@ router.post(
                     });
             }
 
-            res.status(200).send(makeResponseJson(comment));
+            // append the isPostOwner and isOwnComment property
+            const result = {
+                ...comment.toObject(),
+                isOwnComment: true,
+                isPostOwner: post._author_id.toString() === req.user._id.toString()
+            }
+
+            res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CAN"T COMMENT', e)
             next(e);
@@ -89,7 +96,7 @@ router.get(
             const skip = skipParams || offset * limit;
 
             const post = await Post.findById(Types.ObjectId(post_id));
-            if (!post) return next(new ErrorHandler(404, 'No comments found.'));
+            if (!post) return next(new ErrorHandler(404, 'No post found.'));
 
             const agg = await Comment.aggregate([
                 {
@@ -211,6 +218,13 @@ router.delete(
 
             // IF POST OWNER OR COMMENTOR - DELETE COMMENT
             if (userID === commentAuthorID || userID === postAuthorID) {
+                // TODO ----------- DELETE ALL COMMENTS/REPLIES/THREAD 
+                // await Comment.deleteMany({
+                //     $or: [
+                //         { _id: { $eq: comment_id } },
+                //         { parent: { $eq: comment_id } }
+                //     ]
+                // });
                 await Comment.findByIdAndDelete(comment_id);
                 await Post.findOneAndUpdate({
                     comments: {
@@ -247,6 +261,9 @@ router.patch(
             const comment = await Comment.findById(comment_id);
             if (!comment) return next(new ErrorHandler(400, 'Comment not found.'));
 
+            const post = await Post.findById(comment._post_id);
+            if (!post) return next(new ErrorHandler(400, 'Post not found.'));
+
             if (userID.toString() === comment._author_id.toString()) {
                 const updatedComment = await Comment.findByIdAndUpdate(Types.ObjectId(comment_id), {
                     $set: {
@@ -264,7 +281,14 @@ router.patch(
                         select: 'fullname username profilePicture'
                     }).execPopulate()
 
-                res.status(200).send(makeResponseJson(updatedComment));
+                // append the isPostOwner and isOwnComment property
+                const result = {
+                    ...updatedComment.toObject(),
+                    isOwnComment: true,
+                    isPostOwner: post._author_id.toString() === req.user._id.toString()
+                }
+
+                res.status(200).send(makeResponseJson(result));
             } else {
                 return next(new ErrorHandler(401));
             }
@@ -284,8 +308,11 @@ router.post(
             const { body, comment_id, post_id } = req.body;
             const userID = req.user._id;
 
+            // check if the Post actually exists
+            const post = await Post.findById(Types.ObjectId(post_id));
+            if (!post) return next(new ErrorHandler(404, 'Unable to reply. Comment not found.'));
             // check if the Comment actually exists
-            const comment = await Comment.findById(comment_id);
+            const comment = await Comment.findById(Types.ObjectId(comment_id));
             if (!comment) return next(new ErrorHandler(404, 'Unable to reply. Comment not found.'));
 
             const reply = new Comment({
@@ -333,7 +360,14 @@ router.post(
                     io.to(comment._author_id.toString()).emit('newNotification', { notification: doc, count: 1 });
                 });
 
-            res.status(200).send(makeResponseJson(reply));
+            // append the isPostOwner and isOwnComment property
+            const result = {
+                ...reply.toObject(),
+                isOwnComment: true,
+                isPostOwner: post._author_id.toString() === req.user._id.toString()
+            }
+
+            res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CAN"T COMMENT', e)
             next(e);

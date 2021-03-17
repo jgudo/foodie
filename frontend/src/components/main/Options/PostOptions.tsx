@@ -6,8 +6,11 @@ import {
     StarOutlined
 } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { BookmarkButton } from '~/components/main';
-import { IPost } from '~/types/types';
+import { setTargetPost } from '~/redux/action/helperActions';
+import { showModal } from '~/redux/action/modalActions';
+import { EModalType, IPost } from '~/types/types';
 
 interface IProps {
     openDeleteModal: () => void;
@@ -18,6 +21,7 @@ interface IProps {
 const PostOptions: React.FC<IProps> = (props) => {
     const [isOpenOption, setIsOpenOption] = useState(false);
     const isOpenOptionRef = useRef(isOpenOption);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside);
@@ -39,15 +43,21 @@ const PostOptions: React.FC<IProps> = (props) => {
         }
     }
 
-    const toggleOpen = () => {
-        setIsOpenOption(!isOpenOption);
+    const handleClickDelete = () => {
+        dispatch(showModal(EModalType.DELETE_POST));
+        dispatch(setTargetPost(props.post));
+    }
+
+    const handleClickEdit = () => {
+        dispatch(showModal(EModalType.DELETE_POST));
+        dispatch(setTargetPost(props.post));
     }
 
     return (
         <div className="post-option-wrapper relative z-10">
             <div
                 className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1100"
-                onClick={toggleOpen}
+                onClick={() => setIsOpenOption(!isOpenOption)}
             >
                 <EllipsisOutlined style={{ fontSize: '20px' }} />
             </div>
@@ -57,18 +67,18 @@ const PostOptions: React.FC<IProps> = (props) => {
                         <>
                             <h4
                                 className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer dark:text-white"
-                                onClick={props.openUpdateModal}
+                                onClick={handleClickEdit}
                             >
                                 <EditOutlined className="mr-4" />
                                 Edit Post
-                        </h4>
+                            </h4>
                             <h4
                                 className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer dark:text-white"
-                                onClick={props.openDeleteModal}
+                                onClick={handleClickDelete}
                             >
                                 <DeleteOutlined className="mr-4" />
                                 Delete Post
-                        </h4>
+                            </h4>
                         </>
                     ) : (
                         <BookmarkButton postID={props.post.id} initBookmarkState={props.post.isBookmarked}>

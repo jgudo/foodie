@@ -1,20 +1,19 @@
 import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
-import { IComment } from '~/types/types';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setTargetCommentID } from '~/redux/action/helperActions';
+import { showModal } from '~/redux/action/modalActions';
+import { EModalType, IComment } from '~/types/types';
 
 interface IProps {
-    openDeleteModal: () => void;
-    setIsUpdating: Dispatch<SetStateAction<boolean>>;
-    setCommentBody: Dispatch<SetStateAction<string>>;
-    setTargetID: Dispatch<SetStateAction<string>>;
-    setInputCommentVisible: Dispatch<SetStateAction<boolean>>;
-    commentInputRef: RefObject<HTMLInputElement>;
     comment: IComment;
+    onClickEdit: () => void;
 }
 
 const CommentOptions: React.FC<IProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const isOpenRef = useRef(isOpen);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside);
@@ -41,17 +40,15 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }
 
     const onClickDelete = () => {
-        props.setTargetID(props.comment.id);
-        props.openDeleteModal();
+        dispatch(setTargetCommentID(props.comment.id));
+        dispatch(showModal(EModalType.DELETE_COMMENT));
     }
 
     const onClickEdit = () => {
-        if (props.commentInputRef.current) props.commentInputRef.current.focus();
         setIsOpen(false);
-        props.setInputCommentVisible(true);
-        props.setCommentBody(props.comment.body);
-        props.setIsUpdating(true);
-        props.setTargetID(props.comment.id);
+
+        props.onClickEdit();
+        dispatch(setTargetCommentID(props.comment.id));
     }
 
     return (

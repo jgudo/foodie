@@ -266,11 +266,11 @@ export const commentOnPost = async (postID: string, body: string): Promise<any> 
     }
 }
 
-export const updateComment = async (postID: string, body: string): Promise<any> => {
+export const updateComment = async (commentID: string, body: string): Promise<any> => {
     try {
         const req = await axios({
             method: 'PATCH',
-            url: `/comment/${postID}`,
+            url: `/comment/${commentID}`,
             data: {
                 body
             }

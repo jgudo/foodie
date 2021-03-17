@@ -1,28 +1,37 @@
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useDidMount } from '~/hooks';
+import { setTargetPost } from '~/redux/action/helperActions';
+import { hideModal } from '~/redux/action/modalActions';
 import { updatePost } from '~/services/api';
-import { IError, IPost } from '~/types/types';
+import { EModalType, IError, IPost, IRootReducer } from '~/types/types';
 
 interface IProps {
-    isOpen: boolean;
     onAfterOpen?: () => void;
-    closeModal: () => void;
-    openModal: () => void;
-    post: IPost;
     updateSuccessCallback: (post: IPost) => void;
 }
 
 Modal.setAppElement('#root');
 
 const EditPostModal: React.FC<IProps> = (props) => {
-    const [description, setDescription] = useState(props.post.description || '');
-    const [privacy, setPrivacy] = useState(props.post.privacy || 'public');
+    const { isOpen, targetPost } = useSelector((state: IRootReducer) => ({
+        isOpen: state.modal.isOpenEditPost,
+        targetPost: state.helper.targetPost
+    }));
+    const [description, setDescription] = useState(targetPost?.description || '');
+    const [privacy, setPrivacy] = useState(targetPost?.privacy || 'public');
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const didMount = useDidMount();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        setPrivacy(targetPost?.privacy as IPost['privacy']);
+        setDescription(targetPost?.description as string);
+    }, [targetPost]);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -37,14 +46,14 @@ const EditPostModal: React.FC<IProps> = (props) => {
     const handleUpdatePost = async () => {
         try {
             setIsUpdating(true);
-            const updatedPost = await updatePost(props.post.id, { description: description.trim(), privacy });
+            const updatedPost = await updatePost((targetPost?.id as string), { description: description.trim(), privacy });
 
             if (didMount) {
                 setIsUpdating(false);
             }
 
             props.updateSuccessCallback(updatedPost);
-            props.closeModal();
+            closeModal();
             toast.dark('Post updated successfully.', {
                 progressStyle: { backgroundColor: '#4caf50' }
             });
@@ -56,11 +65,18 @@ const EditPostModal: React.FC<IProps> = (props) => {
         }
     };
 
+    const closeModal = () => {
+        if (isOpen && !isUpdating) {
+            dispatch(setTargetPost(null));
+            dispatch(hideModal(EModalType.EDIT_POST));
+        }
+    }
+
     return (
         <Modal
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onAfterOpen={props.onAfterOpen}
-            onRequestClose={props.closeModal}
+            onRequestClose={closeModal}
             contentLabel="Example Modal"
             className="modal"
             shouldCloseOnOverlayClick={false}
@@ -69,7 +85,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
             <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
-                    onClick={props.closeModal}
+                    onClick={closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
@@ -110,7 +126,7 @@ const EditPostModal: React.FC<IProps> = (props) => {
                     <div className="flex justify-between mt-4">
                         <button
                             className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
-                            onClick={props.closeModal}
+                            onClick={closeModal}
                         >
                             Cancel
                         </button>

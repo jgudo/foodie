@@ -1,18 +1,22 @@
-import { CommentOutlined, GlobalOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined, GlobalOutlined, LoadingOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useRef, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import withAuth from '~/components/hoc/withAuth';
-import {
-    Comments,
-    DeletePostModal, EditPostModal, LikeButton,
-    PostLikesModal, PostOptions
-} from '~/components/main';
+import { LikeButton, PostOptions } from '~/components/main';
 import { Avatar, ImageGrid } from '~/components/shared';
 import { LOGIN } from '~/constants/routes';
 import { useModal } from '~/hooks';
-import { IPost } from "~/types/types";
+import { setTargetPost } from '~/redux/action/helperActions';
+import { showModal } from '~/redux/action/modalActions';
+import { EModalType, IPost } from "~/types/types";
+
+const Comments = lazy(() => import('~/components/main/Comments'));
+const EditPostModal = lazy(() => import('~/components/main/Modals/EditPostModal'));
+const PostLikesModal = lazy(() => import('~/components/main/Modals/PostLikesModal'));
+const DeletePostModal = lazy(() => import('~/components/main/Modals/DeletePostModal'));
 
 dayjs.extend(relativeTime);
 
@@ -29,8 +33,8 @@ const PostItem: React.FC<IProps> = (props) => {
     const [isCommentVisible, setCommentVisible] = useState(false);
     const deleteModal = useModal();
     const updateModal = useModal();
-    const likesModal = useModal();
     const commentInputRef = useRef<HTMLInputElement | null>(null);
+    const dispatch = useDispatch();
 
     const handleToggleComment = () => {
         if (!isAuth) return;
@@ -50,6 +54,13 @@ const PostItem: React.FC<IProps> = (props) => {
             return `You and ${likesCount - 1} other ${peopleMinusSelf} ${likeMinusSelf} this.`;
         } else {
             return `${likesCount} ${people} ${like} this.`;
+        }
+    }
+
+    const handleClickLikes = () => {
+        if (isAuth) {
+            dispatch(showModal(EModalType.POST_LIKES));
+            dispatch(setTargetPost(props.post));
         }
     }
 
@@ -99,7 +110,7 @@ const PostItem: React.FC<IProps> = (props) => {
             {post.photos.length !== 0 && <ImageGrid images={post.photos.map(img => img.url)} />}
             {/* ---- LIKES/COMMENTS DETAILS ---- */}
             <div className="flex justify-between px-2 my-2">
-                <div onClick={() => isAuth && likesModal.openModal()}>
+                <div onClick={handleClickLikes}>
                     {post.likesCount > 0 && (
                         <span className="text-gray-700 text-sm cursor-pointer hover:underline dark:text-gray-500 dark:hover:text-white">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
@@ -137,7 +148,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 </div>
             )}
             {isAuth && (
-                <>
+                <Suspense fallback={<LoadingOutlined className="text-gray-800 dark:text-white" />}>
                     <Comments
                         postID={post.id}
                         authorID={post.author.id}
@@ -145,33 +156,10 @@ const PostItem: React.FC<IProps> = (props) => {
                         commentInputRef={commentInputRef}
                         setInputCommentVisible={setCommentVisible}
                     />
-                    {deleteModal.isOpen && (
-                        <DeletePostModal
-                            isOpen={deleteModal.isOpen}
-                            openModal={deleteModal.openModal}
-                            closeModal={deleteModal.closeModal}
-                            postID={post.id}
-                            deleteSuccessCallback={deleteSuccessCallback}
-                        />
-                    )}
-                    {updateModal.isOpen && (
-                        <EditPostModal
-                            isOpen={updateModal.isOpen}
-                            openModal={updateModal.openModal}
-                            closeModal={updateModal.closeModal}
-                            post={post}
-                            updateSuccessCallback={updateSuccessCallback}
-                        />
-                    )}
-                    {likesModal.isOpen && (
-                        <PostLikesModal
-                            isOpen={likesModal.isOpen}
-                            openModal={likesModal.openModal}
-                            closeModal={likesModal.closeModal}
-                            postID={post.id}
-                        />
-                    )}
-                </>
+                    <DeletePostModal deleteSuccessCallback={deleteSuccessCallback} />
+                    <EditPostModal updateSuccessCallback={updateSuccessCallback} />
+                    <PostLikesModal />
+                </Suspense>
             )}
         </div>
     );

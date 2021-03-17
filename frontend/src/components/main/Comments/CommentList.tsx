@@ -1,5 +1,10 @@
+import React, { memo, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { useDidMount } from "~/hooks";
+import { setTargetCommentID } from "~/redux/action/helperActions";
 import { IComment } from "~/types/types";
+import { DeleteCommentModal } from "../Modals";
 import CommentItem from "./CommentItem";
 
 interface IProps {
@@ -7,9 +12,28 @@ interface IProps {
 }
 
 const CommentList: React.FC<IProps> = ({ comments }) => {
+    const didMount = useDidMount();
+    const dispatch = useDispatch();
+    const [replies, setReplies] = useState<IComment[]>(comments);
+
+    useEffect(() => {
+        console.log('LIST MOUNTED', comments);
+        setReplies(comments);
+    }, [comments]);
+
+    const deleteSuccessCallback = (commentID: string) => {
+        if (didMount) {
+            dispatch(setTargetCommentID(''));
+            setReplies(oldComments => {
+                console.log(oldComments);
+                return oldComments.filter((comment) => comment.id !== commentID)
+            });
+        }
+    }
+
     return (
         <TransitionGroup component={null}>
-            {comments.map(comment => (
+            {replies.map(comment => (
                 <CSSTransition
                     timeout={500}
                     classNames="fade"
@@ -18,8 +42,10 @@ const CommentList: React.FC<IProps> = ({ comments }) => {
                     <CommentItem comment={comment} />
                 </CSSTransition>
             ))}
+            {/* ---- DELETE MODAL ---- */}
+            <DeleteCommentModal deleteSuccessCallback={deleteSuccessCallback} />
         </TransitionGroup>
     );
 };
 
-export default CommentList;
+export default memo(CommentList);

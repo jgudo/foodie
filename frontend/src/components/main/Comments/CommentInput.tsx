@@ -16,8 +16,8 @@ const CommentInput = forwardRef<HTMLInputElement, IProps>((props, ref) => {
     const { isUpdateMode, isSubmitting, userPicture, isLoading, ...rest } = props;
 
     return (
-        <div className={`flex items-center py-4 px-2 ${isUpdateMode && 'bg-yellow-100 dark:bg-indigo-1100 rounded-2xl'}`}>
-            <Avatar url={userPicture?.url} className="mr-2" />
+        <div className={`flex items-center`}>
+            {!isUpdateMode && <Avatar url={userPicture?.url} className="mr-2 flex-shrink-0" size="sm" />}
             <div className="flex-grow">
                 <input
                     {...rest}
@@ -26,6 +26,7 @@ const CommentInput = forwardRef<HTMLInputElement, IProps>((props, ref) => {
                     readOnly={isLoading || isSubmitting}
                     ref={ref}
                 />
+                {isUpdateMode && <span className="text-xs text-gray-500 ml-2">Press Esc to Cancel</span>}
             </div>
         </div>
     );

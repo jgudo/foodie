@@ -1,16 +1,14 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { hideModal } from '~/redux/action/modalActions';
 import { deleteComment } from '~/services/api';
-import { IError } from '~/types/types';
+import { EModalType, IError, IRootReducer } from '~/types/types';
 
 interface IProps {
-    isOpen: boolean;
     onAfterOpen?: () => void;
-    closeModal: () => void;
-    openModal: () => void;
-    commentID: string;
     deleteSuccessCallback: (commentID: string) => void;
 }
 
@@ -19,14 +17,19 @@ Modal.setAppElement('#root');
 const DeleteCommentModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
+    const dispatch = useDispatch();
+    const { isOpen, targetCommentID } = useSelector((state: IRootReducer) => ({
+        isOpen: state.modal.isOpenDeleteComment,
+        targetCommentID: state.helper.targetCommentID
+    }));
 
     const handleDeleteComment = async () => {
         try {
             setIsDeleting(true);
-            await deleteComment(props.commentID);
+            await deleteComment(targetCommentID);
 
-            props.closeModal();
-            props.deleteSuccessCallback(props.commentID);
+            closeModal();
+            props.deleteSuccessCallback(targetCommentID);
             toast.dark('Comment successfully deleted.', {
                 progressStyle: { backgroundColor: '#4caf50' },
                 autoClose: 2000
@@ -38,11 +41,15 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
         }
     };
 
+    const closeModal = () => {
+        isOpen && dispatch(hideModal(EModalType.DELETE_COMMENT));
+    }
+
     return (
         <Modal
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onAfterOpen={props.onAfterOpen}
-            onRequestClose={props.closeModal}
+            onRequestClose={closeModal}
             contentLabel="Delete Comment"
             className="modal"
             shouldCloseOnOverlayClick={!isDeleting}
@@ -51,7 +58,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
             <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
-                    onClick={props.closeModal}
+                    onClick={closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
@@ -69,7 +76,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
-                            onClick={props.closeModal}
+                            onClick={closeModal}
                         >
                             Cancel
                         </button>
