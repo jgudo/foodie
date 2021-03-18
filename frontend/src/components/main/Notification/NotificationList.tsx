@@ -61,7 +61,8 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                             notif.type === 'like' ? 'likes your post.'
                                                                 : notif.type === 'comment' ? 'commented on your post.'
                                                                     : notif.type === 'follow' ? 'started following you.'
-                                                                        : ''
+                                                                        : notif.type === 'reply' ? 'replied to your comment'
+                                                                            : ''
                                                         }
                                                     </span>
                                                     <br />
@@ -72,7 +73,7 @@ const NotificationList: React.FC<IProps> = (props) => {
                                             </div>
                                             {notif.type === 'like' ? (
                                                 <LikeOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
-                                            ) : notif.type === 'comment' ? (
+                                            ) : (notif.type === 'comment' || notif.type === 'reply') ? (
                                                 <CommentOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
                                             ) : (
                                                 <UserAddOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />

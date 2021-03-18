@@ -3,15 +3,15 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { setTargetCommentID } from '~/redux/action/helperActions';
+import { setTargetComment } from '~/redux/action/helperActions';
 import { deleteComment } from '~/services/api';
-import { IError, IRootReducer } from '~/types/types';
+import { IComment, IError, IRootReducer } from '~/types/types';
 
 interface IProps {
     onAfterOpen?: () => void;
     isOpen: boolean;
     closeModal: () => void;
-    deleteSuccessCallback: (commentID: string) => void;
+    deleteSuccessCallback: (comment: IComment) => void;
 }
 
 Modal.setAppElement('#root');
@@ -20,15 +20,15 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const dispatch = useDispatch();
-    const targetCommentID = useSelector((state: IRootReducer) => state.helper.targetCommentID);
+    const targetComment = useSelector((state: IRootReducer) => state.helper.targetComment);
 
     const handleDeleteComment = async () => {
         try {
             setIsDeleting(true);
-            await deleteComment(targetCommentID);
+            targetComment && await deleteComment(targetComment.id);
 
             closeModal();
-            props.deleteSuccessCallback(targetCommentID);
+            targetComment && props.deleteSuccessCallback(targetComment);
             toast.dark('Comment successfully deleted.', {
                 progressStyle: { backgroundColor: '#4caf50' },
                 autoClose: 2000
@@ -43,7 +43,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
     const closeModal = () => {
         if (props.isOpen) {
             props.closeModal();
-            dispatch(setTargetCommentID(''));
+            dispatch(setTargetComment(null));
         }
     }
 

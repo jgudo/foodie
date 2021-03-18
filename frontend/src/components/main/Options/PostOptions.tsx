@@ -29,6 +29,7 @@ const PostOptions: React.FC<IProps> = (props) => {
         return () => {
             document.removeEventListener('click', handleClickOutside);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const PostOptions: React.FC<IProps> = (props) => {
     }, [isOpenOption]);
 
     const handleClickOutside = (e: Event) => {
-        const option = (e.target as HTMLDivElement).closest('.post-option-wrapper');
+        const option = (e.target as HTMLDivElement).closest(`#post_${props.post.id}`);
 
         if (!option && isOpenOptionRef.current) {
             setIsOpenOption(false);
@@ -49,12 +50,12 @@ const PostOptions: React.FC<IProps> = (props) => {
     }
 
     const handleClickEdit = () => {
-        dispatch(showModal(EModalType.DELETE_POST));
+        dispatch(showModal(EModalType.EDIT_POST));
         dispatch(setTargetPost(props.post));
     }
 
     return (
-        <div className="post-option-wrapper relative z-10">
+        <div className="relative z-10" id={`post_${props.post.id}`}>
             <div
                 className="post-option-toggle p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1100"
                 onClick={() => setIsOpenOption(!isOpenOption)}

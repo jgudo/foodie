@@ -45,7 +45,7 @@ const CommentItem: React.FC<IProps> = (props) => {
 
             setGettingReplies(false);
             setError(null);
-            setReplies(res.replies);
+            setReplies([...replies, res.replies]);
             setOffset(offset + 1);
             setVisibleReplies(true);
         } catch (e) {
@@ -74,6 +74,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                     data = await replyOnComment(newCommentBody, comment.id, comment.post_id);
                 }
 
+                // make sure it's mounted before setting states 
                 if (didMount) {
                     if (isUpdateMode) {
                         setComment(data);
@@ -85,6 +86,8 @@ const CommentItem: React.FC<IProps> = (props) => {
                         setOpenInput(false);
                     }
 
+                    setError(null);
+                    setVisibleReplies(true);
                     setSubmitting(false);
                 }
             } catch (e) {
@@ -97,7 +100,9 @@ const CommentItem: React.FC<IProps> = (props) => {
         } else if (e.key === 'Escape') {
             // if (isUpdateMode) handleCancelUpdate();
             setUpdateMode(false);
+            setOpenInput(false);
             editCommentInputRef.current && editCommentInputRef.current.blur();
+            replyInputRef.current && replyInputRef.current.blur();
         }
 
     };
@@ -119,18 +124,25 @@ const CommentItem: React.FC<IProps> = (props) => {
         editCommentInputRef.current && editCommentInputRef.current.focus();
         // props.setInputCommentVisible(true);
         setUpdateMode(true);
+        setEditCommentBody(comment.body);
         setOpenInput(false);
+    }
+
+    const updateCommentCallback = (comment: IComment) => {
+        if (didMount) {
+            setReplies(oldComments => oldComments.filter((cmt) => cmt.id !== comment.id));
+        }
     }
 
     return (
         <div
-            className="flex py-2 items-start"
+            className="flex py-2 items-start w-full"
             key={comment.id}
         >
             <Link to={`/user/${comment.author.username}`} className="mr-2">
                 <Avatar url={comment.author.profilePicture?.url} size="sm" />
             </Link>
-            <div className="inline-flex items-start flex-col w-full laptop:w-auto">
+            <div className="inline-flex items-start flex-col w-full">
                 {isUpdateMode ? (
                     <CommentInput
                         value={editCommentBody}
@@ -188,20 +200,22 @@ const CommentItem: React.FC<IProps> = (props) => {
                                 )}
                             </div>
                             {/* ---- VIEW MORE BUTTON ----  */}
-                            {comment.replyCount > 0 && (
+                            {replies.length > 0 && (
                                 <div className="flex space-x-2">
-                                    <span
-                                        className="text-xs text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-200 mt-2 hover:cursor-pointer"
-                                        onClick={onClickViewReplies}
-                                    >
-                                        {(isVisibleReplies && replies.length !== 0) ? 'Hide Replies' : 'View Replies'}
+                                    {!error && (
+                                        <span
+                                            className="text-xs text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-200 mt-2 hover:cursor-pointer"
+                                            onClick={onClickViewReplies}
+                                        >
+                                            {(isVisibleReplies && replies.length !== 0) ? 'Hide Replies' : 'View Replies'}
                                         &nbsp;
-                                        {isGettingReplies
-                                            ? <LoadingOutlined className="text-1xs" />
-                                            : (isVisibleReplies && replies.length !== 0) ? <UpOutlined className="text-1xs" />
-                                                : <DownOutlined className="text-1xs" />
-                                        }
-                                    </span>
+                                            {isGettingReplies
+                                                ? <LoadingOutlined className="text-1xs" />
+                                                : (isVisibleReplies && replies.length !== 0) ? <UpOutlined className="text-1xs" />
+                                                    : <DownOutlined className="text-1xs" />
+                                            }
+                                        </span>
+                                    )}
                                     {error && error?.status_code !== 404 && (
                                         <span className="text-gray-400 text-xs">{error?.error?.message}</span>
                                     )}
@@ -212,7 +226,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                 )}
                 {/* ------ REPLY INPUT ----- */}
                 {isOpenInput && !isUpdateMode && (
-                    <div className="py-4">
+                    <div className="py-4 w-full">
                         <CommentInput
                             value={newCommentBody}
                             placeholder="Write a reply..."
@@ -225,7 +239,9 @@ const CommentItem: React.FC<IProps> = (props) => {
                     </div>
                 )}
                 {/* ---- REPLY LIST ------- */}
-                {replies.length > 0 && isVisibleReplies && <CommentList comments={replies} />}
+                {replies.length > 0 && isVisibleReplies && (
+                    <CommentList comments={replies} updateCommentCallback={updateCommentCallback} />
+                )}
             </div>
         </div>
     )

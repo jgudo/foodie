@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setTargetCommentID } from '~/redux/action/helperActions';
+import { setTargetComment } from '~/redux/action/helperActions';
 import { IComment } from '~/types/types';
 
 interface IProps {
@@ -28,7 +28,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }, [isOpen]);
 
     const handleClickOutside = (e: Event) => {
-        const option = (e.target as HTMLDivElement).closest('.comment-option-wrapper');
+        const option = (e.target as HTMLDivElement).closest(`#comment_${props.comment.id}`);
 
         if (!option && isOpenRef.current) {
             setIsOpen(false);
@@ -40,7 +40,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }
 
     const onClickDelete = () => {
-        dispatch(setTargetCommentID(props.comment.id));
+        dispatch(setTargetComment(props.comment));
         props.openDeleteModal();
     }
 
@@ -48,11 +48,11 @@ const CommentOptions: React.FC<IProps> = (props) => {
         setIsOpen(false);
 
         props.onClickEdit();
-        dispatch(setTargetCommentID(props.comment.id));
+        dispatch(setTargetComment(props.comment));
     }
 
     return (
-        <div className="comment-option-wrapper relative z-10">
+        <div className="relative z-10" id={`comment_${props.comment.id}`}>
             <div
                 className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1100"
                 onClick={toggleOpen}

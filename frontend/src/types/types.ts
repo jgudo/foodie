@@ -58,7 +58,7 @@ export interface IPost {
 }
 
 export interface IHelperState {
-    targetCommentID: string;
+    targetComment: IComment | null;
     targetPost: IPost | null;
 }
 
