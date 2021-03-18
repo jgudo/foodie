@@ -28,10 +28,8 @@ interface ICommentsState {
 const Comments: React.FC<IProps> = (props) => {
     const {
         postID,
-        authorID,
         isCommentVisible,
         commentInputRef,
-        setInputCommentVisible
     } = props;
     const [comments, setComments] = useState<ICommentsState>({
         items: [],

@@ -27,6 +27,7 @@ router.post(
                 _post_id: post_id,
                 _author_id: userID,
                 body: filterWords.clean(body),
+                parents: [],
                 createdAt: Date.now()
             });
 
@@ -219,14 +220,13 @@ router.delete(
             // IF POST OWNER OR COMMENTOR - DELETE COMMENT
             if (userID === commentAuthorID || userID === postAuthorID) {
                 // TODO ----------- DELETE ALL COMMENTS/REPLIES/THREAD 
-                // await Comment.deleteMany({
-                //     $or: [
-                //         { _id: { $eq: comment_id } },
-                //         { parent: { $eq: comment_id } }
-                //     ]
-                // });
-                await Comment.findByIdAndDelete(comment_id);
-                await Post.findOneAndUpdate({
+                await Comment.deleteMany({
+                    $or: [
+                        { _id: comment_id },
+                        { parents: { $in: [comment_id] } }
+                    ]
+                });
+                await Post.updateMany({
                     comments: {
                         $in: [comment_id]
                     }
@@ -308,17 +308,18 @@ router.post(
             const { body, comment_id, post_id } = req.body;
             const userID = req.user._id;
 
-            // check if the Post actually exists
-            const post = await Post.findById(Types.ObjectId(post_id));
-            if (!post) return next(new ErrorHandler(404, 'Unable to reply. Comment not found.'));
             // check if the Comment actually exists
             const comment = await Comment.findById(Types.ObjectId(comment_id));
             if (!comment) return next(new ErrorHandler(404, 'Unable to reply. Comment not found.'));
+            // check if the Post actually exists
+            const post = await Post.findById(comment._post_id);
+            if (!post) return next(new ErrorHandler(404, 'Unable to reply. Post not found.'));
 
             const reply = new Comment({
                 _post_id: comment._post_id,
                 _author_id: userID,
                 parent: comment._id,
+                parents: [...comment.parents, comment],
                 depth: comment.depth + 1,
                 body: filterWords.clean(body),
                 createdAt: Date.now()

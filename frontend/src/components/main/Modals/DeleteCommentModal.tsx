@@ -3,12 +3,14 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { hideModal } from '~/redux/action/modalActions';
+import { setTargetCommentID } from '~/redux/action/helperActions';
 import { deleteComment } from '~/services/api';
-import { EModalType, IError, IRootReducer } from '~/types/types';
+import { IError, IRootReducer } from '~/types/types';
 
 interface IProps {
     onAfterOpen?: () => void;
+    isOpen: boolean;
+    closeModal: () => void;
     deleteSuccessCallback: (commentID: string) => void;
 }
 
@@ -18,10 +20,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const dispatch = useDispatch();
-    const { isOpen, targetCommentID } = useSelector((state: IRootReducer) => ({
-        isOpen: state.modal.isOpenDeleteComment,
-        targetCommentID: state.helper.targetCommentID
-    }));
+    const targetCommentID = useSelector((state: IRootReducer) => state.helper.targetCommentID);
 
     const handleDeleteComment = async () => {
         try {
@@ -42,12 +41,15 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
     };
 
     const closeModal = () => {
-        isOpen && dispatch(hideModal(EModalType.DELETE_COMMENT));
+        if (props.isOpen) {
+            props.closeModal();
+            dispatch(setTargetCommentID(''));
+        }
     }
 
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={props.isOpen}
             onAfterOpen={props.onAfterOpen}
             onRequestClose={closeModal}
             contentLabel="Delete Comment"
@@ -63,7 +65,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 {error && (
-                    <span className="p-4 bg-red-100 text-red-500 w-full">
+                    <span className="block p-4 bg-red-100 text-red-500 w-full">
                         {error?.error?.message || 'Unable process request. Please try again.'}
                     </span>
                 )}

@@ -2,12 +2,12 @@ import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icon
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setTargetCommentID } from '~/redux/action/helperActions';
-import { showModal } from '~/redux/action/modalActions';
-import { EModalType, IComment } from '~/types/types';
+import { IComment } from '~/types/types';
 
 interface IProps {
     comment: IComment;
     onClickEdit: () => void;
+    openDeleteModal: () => void;
 }
 
 const CommentOptions: React.FC<IProps> = (props) => {
@@ -41,7 +41,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
 
     const onClickDelete = () => {
         dispatch(setTargetCommentID(props.comment.id));
-        dispatch(showModal(EModalType.DELETE_COMMENT));
+        props.openDeleteModal();
     }
 
     const onClickEdit = () => {

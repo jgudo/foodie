@@ -1,4 +1,4 @@
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, LoadingOutlined, UpOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useRef, useState } from "react";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Avatar } from "~/components/shared";
 import { useDidMount } from "~/hooks";
 import { getCommentReplies, replyOnComment, updateComment } from "~/services/api";
-import { IComment } from "~/types/types";
+import { IComment, IError } from "~/types/types";
 import { CommentOptions } from "../Options";
 import CommentInput from "./CommentInput";
 import CommentList from "./CommentList";
@@ -15,6 +15,7 @@ dayjs.extend(relativeTime);
 
 interface IProps {
     comment: IComment;
+    openDeleteModal: () => void;
 }
 
 const CommentItem: React.FC<IProps> = (props) => {
@@ -22,17 +23,16 @@ const CommentItem: React.FC<IProps> = (props) => {
     const [comment, setComment] = useState<IComment>(props.comment || {});
     const [replies, setReplies] = useState<IComment[]>([]);
     const [isOpenInput, setOpenInput] = useState(false);
+    const [isVisibleReplies, setVisibleReplies] = useState(true);
     const [editCommentBody, setEditCommentBody] = useState(comment.body || '');
     const [newCommentBody, setNewCommentBody] = useState('');
+    const [isGettingReplies, setGettingReplies] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [isUpdateMode, setUpdateMode] = useState(false);
+    const [error, setError] = useState<IError | null>(null);
     const didMount = useDidMount(true);
     const replyInputRef = useRef<HTMLInputElement | null>(null);
     const editCommentInputRef = useRef<HTMLInputElement | null>(null);
-
-    useEffect(() => {
-        console.log('MOUNTED', replies)
-    }, []);
 
     useEffect(() => {
         setComment(props.comment);
@@ -40,13 +40,26 @@ const CommentItem: React.FC<IProps> = (props) => {
 
     const getReplies = async () => {
         try {
+            setGettingReplies(true);
             const res = await getCommentReplies({ offset, comment_id: comment.id, post_id: comment.post_id });
 
+            setGettingReplies(false);
+            setError(null);
             setReplies(res.replies);
             setOffset(offset + 1);
+            setVisibleReplies(true);
         } catch (e) {
             console.log(e);
+            setGettingReplies(false);
+            setError(e);
         }
+    }
+
+    const onClickViewReplies = () => {
+        if (isGettingReplies) return;
+        setVisibleReplies(!isVisibleReplies);
+
+        if (replies.length === 0) getReplies();
     }
 
     const handleSubmitReply = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -144,6 +157,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                                 <CommentOptions
                                     comment={comment}
                                     onClickEdit={onClickEdit}
+                                    openDeleteModal={props.openDeleteModal}
                                 />
                             )}
                         </div>
@@ -175,12 +189,23 @@ const CommentItem: React.FC<IProps> = (props) => {
                             </div>
                             {/* ---- VIEW MORE BUTTON ----  */}
                             {comment.replyCount > 0 && (
-                                <span
-                                    className="text-xs text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-200 mt-2 hover:cursor-pointer"
-                                    onClick={getReplies}
-                                >
-                                    View Replies <DownOutlined className="text-1xs" />
-                                </span>
+                                <div className="flex space-x-2">
+                                    <span
+                                        className="text-xs text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-200 mt-2 hover:cursor-pointer"
+                                        onClick={onClickViewReplies}
+                                    >
+                                        {(isVisibleReplies && replies.length !== 0) ? 'Hide Replies' : 'View Replies'}
+                                        &nbsp;
+                                        {isGettingReplies
+                                            ? <LoadingOutlined className="text-1xs" />
+                                            : (isVisibleReplies && replies.length !== 0) ? <UpOutlined className="text-1xs" />
+                                                : <DownOutlined className="text-1xs" />
+                                        }
+                                    </span>
+                                    {error && error?.status_code !== 404 && (
+                                        <span className="text-gray-400 text-xs">{error?.error?.message}</span>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </>
@@ -200,7 +225,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                     </div>
                 )}
                 {/* ---- REPLY LIST ------- */}
-                {replies.length > 0 && <CommentList comments={replies} />}
+                {replies.length > 0 && isVisibleReplies && <CommentList comments={replies} />}
             </div>
         </div>
     )
