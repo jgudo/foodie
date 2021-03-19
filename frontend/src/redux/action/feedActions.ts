@@ -6,7 +6,8 @@ import {
     GET_FEED_START,
     GET_FEED_SUCCESS,
     HAS_NEW_FEED,
-    UPDATE_FEED_POST
+    UPDATE_FEED_POST,
+    UPDATE_POST_LIKES
 } from "~/constants/actionType";
 import { IFetchParams, IPost } from "~/types/types";
 
@@ -35,6 +36,11 @@ export const updateFeedPost = (post: IPost) => (<const>{
     payload: post
 });
 
+export const updatePostLikes = (postID: string, state: boolean, likesCount: number) => (<const>{
+    type: UPDATE_POST_LIKES,
+    payload: { postID, state, likesCount }
+});
+
 export const deleteFeedPost = (postID: string) => (<const>{
     type: DELETE_FEED_POST,
     payload: postID
@@ -57,4 +63,5 @@ export type TNewsFeedActionType =
     | ReturnType<typeof updateFeedPost>
     | ReturnType<typeof deleteFeedPost>
     | ReturnType<typeof hasNewFeed>
+    | ReturnType<typeof updatePostLikes>
     | ReturnType<typeof clearNewsFeed>;

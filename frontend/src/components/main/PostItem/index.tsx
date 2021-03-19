@@ -22,7 +22,7 @@ dayjs.extend(relativeTime);
 
 interface IProps {
     post: IPost,
-    likeCallback: (post: IPost) => void;
+    likeCallback: (postID: string, state: boolean, newLikeCount: number) => void;
     updateSuccessCallback: (post: IPost) => void;
     deleteSuccessCallback: (postID: string) => void;
     isAuth: boolean;
@@ -112,7 +112,7 @@ const PostItem: React.FC<IProps> = (props) => {
             <div className="flex justify-between px-2 my-2">
                 <div onClick={handleClickLikes}>
                     {post.likesCount > 0 && (
-                        <span className="text-gray-700 text-sm cursor-pointer hover:underline dark:text-gray-500 dark:hover:text-white">
+                        <span className="text-gray-500 text-sm cursor-pointer hover:underline hover:text-gray-800 dark:hover:text-white">
                             {displayLikeMetric(post.likesCount, post.isLiked)}
                         </span>
                     )}
@@ -121,7 +121,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 <div>
                     {post.commentsCount > 0 && (
                         <span
-                            className="text-gray-700 cursor-pointer text-sm hover:underline dark:text-gray-500 dark:hover:text-white"
+                            className="text-gray-500 hover:text-gray-800 cursor-pointer text-sm hover:underline dark:text-gray-500 dark:hover:text-white"
                             onClick={handleToggleComment}
                         >
                             {post.commentsCount} {post.commentsCount === 1 ? 'comment' : 'comments'}
@@ -134,7 +134,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 <div className="flex items-center justify-around py-2 border-t border-gray-200 dark:border-gray-800">
                     <LikeButton postID={post.id} isLiked={post.isLiked} likeCallback={likeCallback} />
                     <span
-                        className="py-2 rounded-md flex items-center justify-center text-gray-700 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white dark:hover:bg-indigo-1100 cursor-pointer hover:bg-gray-100 text-l w-2/4"
+                        className="py-2 rounded-md flex items-center justify-center text-gray-500 hover:text-gray-800 700 dark:text-gray-400 dark:hover:text-white dark:hover:bg-indigo-1100 cursor-pointer hover:bg-gray-100 text-l w-2/4"
                         onClick={handleToggleComment}
                     >
                         <CommentOutlined />&nbsp;Comment

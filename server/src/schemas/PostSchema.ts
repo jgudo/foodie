@@ -41,14 +41,6 @@ const PostSchema = new Schema({
         type: String,
         default: ''
     },
-    likes: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    comments: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
     isEdited: {
         type: Boolean,
         default: false
@@ -62,20 +54,6 @@ PostSchema.virtual('author', {
     localField: '_author_id',
     foreignField: '_id',
     justOne: true
-});
-
-PostSchema.virtual('commentsCount', {
-    ref: 'Comment',
-    localField: 'comments',
-    foreignField: '_id',
-    count: true
-});
-
-PostSchema.virtual('likesCount', {
-    ref: 'User',
-    localField: 'likes',
-    foreignField: '_id',
-    count: true
 });
 
 PostSchema.methods.isPostLiked = function (this: IPost, userID) {

@@ -21,6 +21,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
         return () => {
             document.removeEventListener('click', handleClickOutside);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

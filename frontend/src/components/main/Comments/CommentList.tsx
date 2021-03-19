@@ -19,7 +19,8 @@ const CommentList: React.FC<IProps> = ({ comments, updateCommentCallback }) => {
     const { isOpen, closeModal, openModal } = useModal();
 
     useEffect(() => {
-        setReplies(comments);
+        didMount && setReplies(comments);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [comments]);
 
     const deleteSuccessCallback = (comment: IComment) => {

@@ -1,4 +1,4 @@
-import { CLEAR_FEED, CREATE_POST_SUCCESS, DELETE_FEED_POST, GET_FEED_SUCCESS, HAS_NEW_FEED, UPDATE_FEED_POST } from "~/constants/actionType";
+import { CLEAR_FEED, CREATE_POST_SUCCESS, DELETE_FEED_POST, GET_FEED_SUCCESS, HAS_NEW_FEED, UPDATE_FEED_POST, UPDATE_POST_LIKES } from "~/constants/actionType";
 import { INewsFeed, IPost } from "~/types/types";
 import { TNewsFeedActionType } from "../action/feedActions";
 
@@ -29,6 +29,20 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
                 items: state.items.map((post: IPost) => {
                     if (post.id === action.payload.id) {
                         return action.payload;
+                    }
+                    return post;
+                })
+            }
+        case UPDATE_POST_LIKES:
+            return {
+                ...state,
+                items: state.items.map((post: IPost) => {
+                    if (post.id === action.payload.postID) {
+                        return {
+                            ...post,
+                            isLiked: action.payload.state,
+                            likesCount: action.payload.likesCount
+                        };
                     }
                     return post;
                 })

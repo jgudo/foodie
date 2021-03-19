@@ -19,8 +19,12 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const likeCallback = (post: IPost) => {
-        setPost(post);
+    const likeCallback = (postID: string, state: boolean, newLikesCount: number) => {
+        setPost({
+            ...post,
+            isLiked: state,
+            likesCount: newLikesCount
+        } as IPost);
     }
 
     const updateSuccessCallback = (post: IPost) => {

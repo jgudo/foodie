@@ -2,12 +2,11 @@ import { LikeOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useDidMount } from '~/hooks';
 import { likePost } from '~/services/api';
-import { IPost } from '~/types/types';
 
 interface IProps {
     postID: string;
     isLiked: boolean;
-    likeCallback: (post: IPost) => void;
+    likeCallback: (postID: string, state: boolean, newLikeCount: number) => void;
 }
 
 const LikeButton: React.FC<IProps> = (props) => {
@@ -25,13 +24,13 @@ const LikeButton: React.FC<IProps> = (props) => {
         try {
             setLoading(true);
 
-            const { post, state } = await likePost(props.postID);
+            const { state, likesCount } = await likePost(props.postID);
             if (didMount) {
                 setLoading(false);
                 setIsLiked(state);
             }
 
-            props.likeCallback(post);
+            props.likeCallback(props.postID, state, likesCount);
         } catch (e) {
             didMount && setLoading(false);
             console.log(e);

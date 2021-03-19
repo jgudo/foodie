@@ -33,7 +33,6 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                 progressStyle: { backgroundColor: '#4caf50' },
                 autoClose: 2000
             });
-            setIsDeleting(false);
         } catch (e) {
             setIsDeleting(false);
             setError(e);

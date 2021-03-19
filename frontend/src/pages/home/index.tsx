@@ -9,7 +9,7 @@ import { CreatePostModal, PostItem, SuggestedPeople } from "~/components/main";
 import { Avatar, Loader, PostLoader } from "~/components/shared";
 import { SUGGESTED_PEOPLE } from "~/constants/routes";
 import { useDocumentTitle, useModal } from "~/hooks";
-import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost } from "~/redux/action/feedActions";
+import { clearNewsFeed, createPostStart, deleteFeedPost, getNewsFeedStart, hasNewFeed, updateFeedPost, updatePostLikes } from "~/redux/action/feedActions";
 import socket from "~/socket/socket";
 import { IPost, IRootReducer } from "~/types/types";
 import SideMenu from "./SideMenu";
@@ -53,8 +53,8 @@ const Home: React.FC<IProps> = (props) => {
         dispatch(getNewsFeedStart({ offset: state.newsFeed.offset }));
     };
 
-    const likeCallback = (post: IPost) => {
-        dispatch(updateFeedPost(post));
+    const likeCallback = (postID: string, state: boolean, newLikeCount: number) => {
+        dispatch(updatePostLikes(postID, state, newLikeCount));
     }
 
     const updateSuccessCallback = (post: IPost) => {
@@ -156,7 +156,7 @@ const Home: React.FC<IProps> = (props) => {
                         <PostLoader />
                     </div>
                 )}
-                {(!props.isAuth && !state.isLoadingFeed && !state.error) && (
+                {(!props.isAuth && !state.isLoadingFeed) && (
                     <div className="px-4 laptop:px-0 py-4 mb-4">
                         <h2 className="dark:text-white">Public posts that might <br />interest you.</h2>
                     </div>

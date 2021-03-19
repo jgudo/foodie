@@ -20,7 +20,7 @@ interface IProps {
 
 const CommentItem: React.FC<IProps> = (props) => {
     const [offset, setOffset] = useState(0);
-    const [comment, setComment] = useState<IComment>(props.comment || {});
+    const [comment, setComment] = useState<IComment>(props.comment);
     const [replies, setReplies] = useState<IComment[]>([]);
     const [isOpenInput, setOpenInput] = useState(false);
     const [isVisibleReplies, setVisibleReplies] = useState(true);
@@ -35,7 +35,8 @@ const CommentItem: React.FC<IProps> = (props) => {
     const editCommentInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        setComment(props.comment);
+        didMount && setComment(props.comment);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.comment]);
 
     const getReplies = async () => {
@@ -45,7 +46,7 @@ const CommentItem: React.FC<IProps> = (props) => {
 
             setGettingReplies(false);
             setError(null);
-            setReplies([...replies, res.replies]);
+            setReplies([...replies, ...res.replies]);
             setOffset(offset + 1);
             setVisibleReplies(true);
         } catch (e) {
@@ -57,7 +58,7 @@ const CommentItem: React.FC<IProps> = (props) => {
 
     const onClickViewReplies = () => {
         if (isGettingReplies) return;
-        setVisibleReplies(!isVisibleReplies);
+        if (didMount) setVisibleReplies(!isVisibleReplies);
 
         if (replies.length === 0) getReplies();
     }
@@ -155,13 +156,13 @@ const CommentItem: React.FC<IProps> = (props) => {
                     />
                 ) : (
                     <>
-                        <div className="flex items-start">
+                        <div className="flex items-start w-full laptop:w-auto">
                             {/* ------ USERNAME AND COMMENT TEXT ----- */}
-                            <div className="bg-gray-100 dark:bg-indigo-950 px-2 py-1 rounded-md">
-                                <Link to={`/user/${comment.author.username}`}>
+                            <div className="bg-gray-100 dark:bg-indigo-950 px-2 py-1 rounded-md flex-grow laptop:flex-grow-0">
+                                <Link className="inline-block" to={`/user/${comment.author.username}`}>
                                     <h5 className="dark:text-indigo-400">{comment.author.username}</h5>
                                 </Link>
-                                <p className="text-gray-800 text-sm min-w-full break-all dark:text-gray-200">
+                                <p className="text-gray-800 text-sm min-w-full break-all dark:text-gray-200 inline-block">
                                     {comment.body}
                                 </p>
                             </div>
@@ -200,7 +201,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                                 )}
                             </div>
                             {/* ---- VIEW MORE BUTTON ----  */}
-                            {replies.length > 0 && (
+                            {(comment.replyCount > 0 || replies.length > 0) && (
                                 <div className="flex space-x-2">
                                     {!error && (
                                         <span

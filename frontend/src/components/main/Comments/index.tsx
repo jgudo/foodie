@@ -122,7 +122,7 @@ const Comments: React.FC<IProps> = (props) => {
         <Boundary>
             <div className="rounded-b-md border-t border-gray-200 dark:border-gray-800">
                 {/* ---- LOAD MORE COMMENTS BUTTON ----- */}
-                {(!error && comments.items.length !== 10) && (
+                {(!error) && (
                     <span
                         className="text-indigo-700 dark:text-indigo-400 text-sm font-bold cursor-pointer inline-block p-2"
                         onClick={() => fetchComment({
@@ -136,7 +136,7 @@ const Comments: React.FC<IProps> = (props) => {
                     </span>
                 )}
                 {/* ----- COMMENT LIST ---------- */}
-                <div className="py-4 px-2 space-y-2 divide-y divide-gray-200 dark:divide-gray-800">
+                <div className="py-4 laptop:px-2 space-y-2 divide-y divide-gray-200 dark:divide-gray-800">
                     <CommentList comments={comments.items} updateCommentCallback={updateCommentCallback} />
                 </div>
                 {/*  ---- INPUT COMMENT ----- */}

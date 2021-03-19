@@ -1,9 +1,10 @@
 import { LIKES_LIMIT, POST_LIMIT } from '@/constants/constants';
 import { filterWords, makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
-import { Bookmark, Comment, Follow, NewsFeed, Notification, Post, User } from '@/schemas';
+import { Bookmark, Comment, Follow, Like, NewsFeed, Notification, Post, User } from '@/schemas';
 import { ENotificationType } from '@/schemas/NotificationSchema';
 import { EPrivacy } from '@/schemas/PostSchema';
+import { PostService } from '@/services';
 import { deleteImageFromStorage, multer, uploadImageToStorage } from '@/storage/cloudinary';
 import { schemas, validateBody } from '@/validations/validations';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -98,16 +99,14 @@ router.get(
 
             const user = await User.findOne({ username });
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
+            const following = myFollowing?.following || [];
 
-
-            if (!user) return res.sendStatus(404);
+            if (!user) return next(new ErrorHandler(404, 'User not found'));
 
             const limit = POST_LIMIT;
             const skip = offset * limit;
-
             const query = {
-                _author_id: user._id,
+                _author_id: Types.ObjectId(user._id),
                 privacy: { $in: [EPrivacy.public] },
             };
             const sortQuery = {
@@ -120,38 +119,16 @@ router.get(
                 query.privacy.$in = [EPrivacy.public, EPrivacy.follower];
             }
 
-            const posts = await Post
-                .find(query)
-                .sort(sortQuery)
-                .populate('commentsCount')
-                .populate('likesCount')
-                .populate({
-                    path: 'author',
-                    select: 'username fullname profilePicture',
-                })
-                .skip(skip)
-                .limit(limit);
+            // run aggregation service
+            const agg = await PostService.getPosts(req.user, query, { skip, limit });
 
-            if (posts.length <= 0 && offset === 0) {
+            if (agg.length <= 0 && offset === 0) {
                 return next(new ErrorHandler(404, `${username} hasn't posted anything yet.`));
-            } else if (posts.length <= 0 && offset >= 1) {
+            } else if (agg.length <= 0 && offset >= 1) {
                 return next(new ErrorHandler(404, 'No more posts.'));
             }
 
-            const uPosts = posts.map((post) => { // POST WITH isLiked merged
-                const isPostLiked = post.isPostLiked(req.user._id);
-                const isBookmarked = req.user.isBookmarked(post._id);
-                const isOwnPost = post._author_id.toString() === req.user._id.toString();
-
-                return {
-                    ...post.toObject(),
-                    isBookmarked,
-                    isOwnPost,
-                    isLiked: isPostLiked
-                }
-            });
-
-            res.status(200).send(makeResponseJson(uPosts));
+            res.status(200).send(makeResponseJson(agg));
         } catch (e) {
             console.log(e);
             next(e);
@@ -171,35 +148,12 @@ router.post(
 
             if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
-            const isPostLiked = post.isPostLiked(req.user._id);
-            let query = {};
+            const likedPost = await Like.findOne({ _post_id: Types.ObjectId(post_id), _author_id: req.user._id });
+            const likesCount = await Like.find({ _post_id: Types.ObjectId(post_id) });
 
-            if (isPostLiked) {
-                query = {
-                    $pull: { likes: req.user._id }
-                }
-            } else {
-                query = {
-                    $push: { likes: req.user._id }
-                }
-            }
-
-            const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
-            await fetchedPost.populate('likesCount commentsCount').execPopulate();
-            await fetchedPost
-                .populate({
-                    path: 'author',
-                    select: 'fullname username profilePicture'
-                })
-                .execPopulate();
-            const result = {
-                ...fetchedPost.toObject(),
-                isLiked: !isPostLiked,
-            };
-
-            if (!isPostLiked && result.author.id !== req.user._id.toString()) {
+            if (!Boolean(likedPost) && post._author_id.toString() !== req.user._id.toString()) {
                 const io = req.app.get('io');
-                const targetUserID = Types.ObjectId(result.author.id);
+                const targetUserID = Types.ObjectId(post._author_id);
                 const newNotif = {
                     type: ENotificationType.like,
                     initiator: req.user._id,
@@ -225,7 +179,7 @@ router.post(
                 }
             }
 
-            res.status(200).send(makeResponseJson({ post: result, state: isPostLiked }));
+            res.status(200).send(makeResponseJson({ state: Boolean(likedPost), likesCount: likesCount.length }));
         } catch (e) {
             console.log(e);
             next(e);
@@ -335,26 +289,18 @@ router.get(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { post_id } = req.params;
-            const post = await Post.findById(post_id);
+
+            const agg = await PostService.getPosts(req.user, { _id: Types.ObjectId(post_id) });
+
+            const post = agg[0] || {}
 
             if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
-            if (post.privacy === 'private' && post._author_id.toString() !== req.user._id.toString()) {
+            if (post?.privacy === 'private' && post._author_id?.toString() !== req.user._id.toString()) {
                 return next(new ErrorHandler(401));
             }
 
-            await post
-                .populate({
-                    path: 'author likesCount commentsCount',
-                    select: 'fullname username profilePicture'
-                })
-                .execPopulate();
-
-            const isBookmarked = req.user.isBookmarked(post_id);
-            const isPostLiked = post.isPostLiked(req.user._id);
-            const isOwnPost = post._author_id.toString() === req.user._id.toString();
-            const result = { ...post.toObject(), isLiked: isPostLiked, isBookmarked, isOwnPost };
-            res.status(200).send(makeResponseJson(result));
+            res.status(200).send(makeResponseJson(post));
         } catch (e) {
             console.log('CANT GET POST', e);
             next(e);

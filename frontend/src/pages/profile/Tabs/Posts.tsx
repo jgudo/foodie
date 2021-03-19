@@ -30,8 +30,19 @@ const Posts: React.FC<IProps> = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const likeCallback = (post: IPost) => {
-        updatePostState(post);
+    const likeCallback = (postID: string, state: boolean, newLikesCount: number) => {
+        const updatedPosts = posts.map((item) => {
+            if (item.id === postID) {
+                return {
+                    ...item,
+                    isLiked: state,
+                    likesCount: newLikesCount
+                }
+            }
+
+            return item;
+        });
+        setPosts(updatedPosts)
     };
 
     const updateSuccessCallback = (post: IPost) => {
