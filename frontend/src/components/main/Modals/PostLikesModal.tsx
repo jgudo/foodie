@@ -1,18 +1,17 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '~/components/shared';
 import { useDidMount } from '~/hooks';
+import { setTargetPost } from '~/redux/action/helperActions';
+import { hideModal } from '~/redux/action/modalActions';
 import { getPostLikes } from '~/services/api';
-import { IError, IUser } from '~/types/types';
+import { EModalType, IError, IRootReducer, IUser } from '~/types/types';
 import UserCard from '../UserCard';
 
 interface IProps {
-    isOpen: boolean;
     onAfterOpen?: () => void;
-    closeModal: () => void;
-    openModal: () => void;
-    postID: string;
 }
 
 Modal.setAppElement('#root');
@@ -25,18 +24,23 @@ const PostLikesModal: React.FC<IProps> = (props) => {
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState<IError | null>(null);
     const didMount = useDidMount(true);
+    const dispatch = useDispatch();
+    const { isOpen, targetPost } = useSelector((state: IRootReducer) => ({
+        isOpen: state.modal.isOpenPostLikes,
+        targetPost: state.helper.targetPost
+    }));
 
     useEffect(() => {
-        if (props.isOpen) {
+        if (isOpen && targetPost) {
             fetchLikes();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.isOpen]);
+    }, [isOpen]);
 
     const fetchLikes = async (initOffset = 0) => {
         try {
             setIsLoading(true);
-            const result = await getPostLikes(props.postID, { offset: initOffset });
+            const result = await getPostLikes(targetPost?.id as string, { offset: initOffset });
 
             if (didMount) {
                 setOffset(offset + 1);
@@ -51,11 +55,18 @@ const PostLikesModal: React.FC<IProps> = (props) => {
         }
     };
 
-    return (
+    const closeModal = () => {
+        if (isOpen) {
+            dispatch(hideModal(EModalType.POST_LIKES));
+            dispatch(setTargetPost(null));
+        }
+    }
+
+    return !isOpen ? null : (
         <Modal
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onAfterOpen={props.onAfterOpen}
-            onRequestClose={props.closeModal}
+            onRequestClose={closeModal}
             contentLabel="Example Modal"
             className="modal"
             shouldCloseOnOverlayClick={true}
@@ -64,7 +75,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
             <div className="relative transition-all min-w-15rem">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
-                    onClick={props.closeModal}
+                    onClick={closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
@@ -80,7 +91,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                     </div>
                 )}
                 {likes.length !== 0 && (
-                    <div className="p-4 px-4 w-30rem max-h-70vh overflow-y-scroll scrollbar">
+                    <div className="p-4 px-4 w-full laptop:w-30rem max-h-70vh overflow-y-scroll scrollbar">
                         <div className="divide-y divide-gray-100 dark:divide-gray-800">
                             {likes.map(user => (
                                 <div key={user.id}>

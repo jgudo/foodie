@@ -48,7 +48,7 @@ const NotificationList: React.FC<IProps> = (props) => {
                                             <div className="flex items-start">
                                                 <Avatar
                                                     url={notif.initiator.profilePicture?.url}
-                                                    size="lg"
+                                                    size={window.screen.width < 1024 ? 'sm' : 'lg'}
                                                     className="mr-2 flex-shrink-0"
                                                 />
                                                 <div>
@@ -60,8 +60,10 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                         {
                                                             notif.type === 'like' ? 'likes your post.'
                                                                 : notif.type === 'comment' ? 'commented on your post.'
-                                                                    : notif.type === 'follow' ? 'started following you.'
-                                                                        : ''
+                                                                    : notif.type === 'comment-like' ? 'likes your comment.'
+                                                                        : notif.type === 'follow' ? 'started following you.'
+                                                                            : notif.type === 'reply' ? 'replied to your comment'
+                                                                                : ''
                                                         }
                                                     </span>
                                                     <br />
@@ -70,9 +72,9 @@ const NotificationList: React.FC<IProps> = (props) => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            {notif.type === 'like' ? (
+                                            {(notif.type === 'like' || notif.type === 'comment-like') ? (
                                                 <LikeOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
-                                            ) : notif.type === 'comment' ? (
+                                            ) : (notif.type === 'comment' || notif.type === 'reply') ? (
                                                 <CommentOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />
                                             ) : (
                                                 <UserAddOutlined className="text-2xl text-indigo-700 dark:text-indigo-400 absolute right-4 top-0 bottom-0 my-auto" />

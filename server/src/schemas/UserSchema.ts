@@ -186,6 +186,7 @@ UserSchema.methods.toUserJSON = function () {
 
 UserSchema.methods.toProfileJSON = function (this: IUser) {
     return {
+        id: this._id,
         username: this.username,
         fullname: this.fullname,
         profilePicture: this.profilePicture
@@ -193,7 +194,8 @@ UserSchema.methods.toProfileJSON = function (this: IUser) {
 }
 
 UserSchema.methods.isBookmarked = function (this: IUser, postID) {
-    if (!isValidObjectId(postID)) return;
+    console.log(postID)
+    if (!isValidObjectId(postID)) return 'hehe';
 
     return this.bookmarks.some(bookmark => {
         return bookmark._id.toString() === postID.toString();

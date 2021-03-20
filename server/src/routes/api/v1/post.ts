@@ -1,9 +1,10 @@
 import { LIKES_LIMIT, POST_LIMIT } from '@/constants/constants';
 import { filterWords, makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
-import { Bookmark, Comment, Follow, NewsFeed, Notification, Post, User } from '@/schemas';
+import { Bookmark, Comment, Follow, Like, NewsFeed, Notification, Post, User } from '@/schemas';
 import { ENotificationType } from '@/schemas/NotificationSchema';
 import { EPrivacy } from '@/schemas/PostSchema';
+import { PostService } from '@/services';
 import { deleteImageFromStorage, multer, uploadImageToStorage } from '@/storage/cloudinary';
 import { schemas, validateBody } from '@/validations/validations';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -98,16 +99,14 @@ router.get(
 
             const user = await User.findOne({ username });
             const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
+            const following = myFollowing?.following || [];
 
-
-            if (!user) return res.sendStatus(404);
+            if (!user) return next(new ErrorHandler(404, 'User not found'));
 
             const limit = POST_LIMIT;
             const skip = offset * limit;
-
             const query = {
-                _author_id: user._id,
+                _author_id: Types.ObjectId(user._id),
                 privacy: { $in: [EPrivacy.public] },
             };
             const sortQuery = {
@@ -120,38 +119,16 @@ router.get(
                 query.privacy.$in = [EPrivacy.public, EPrivacy.follower];
             }
 
-            const posts = await Post
-                .find(query)
-                .sort(sortQuery)
-                .populate('commentsCount')
-                .populate('likesCount')
-                .populate({
-                    path: 'author',
-                    select: 'username fullname profilePicture',
-                })
-                .skip(skip)
-                .limit(limit);
+            // run aggregation service
+            const agg = await PostService.getPosts(req.user, query, { skip, limit, sort: sortQuery });
 
-            if (posts.length <= 0 && offset === 0) {
+            if (agg.length <= 0 && offset === 0) {
                 return next(new ErrorHandler(404, `${username} hasn't posted anything yet.`));
-            } else if (posts.length <= 0 && offset >= 1) {
+            } else if (agg.length <= 0 && offset >= 1) {
                 return next(new ErrorHandler(404, 'No more posts.'));
             }
 
-            const uPosts = posts.map((post) => { // POST WITH isLiked merged
-                const isPostLiked = post.isPostLiked(req.user._id);
-                const isBookmarked = req.user.isBookmarked(post._id);
-                const isOwnPost = post._author_id.toString() === req.user._id.toString();
-
-                return {
-                    ...post.toObject(),
-                    isBookmarked,
-                    isOwnPost,
-                    isLiked: isPostLiked
-                }
-            });
-
-            res.status(200).send(makeResponseJson(uPosts));
+            res.status(200).send(makeResponseJson(agg));
         } catch (e) {
             console.log(e);
             next(e);
@@ -171,61 +148,61 @@ router.post(
 
             if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
-            const isPostLiked = post.isPostLiked(req.user._id);
-            let query = {};
-
-            if (isPostLiked) {
-                query = {
-                    $pull: { likes: req.user._id }
-                }
-            } else {
-                query = {
-                    $push: { likes: req.user._id }
-                }
-            }
-
-            const fetchedPost = await Post.findByIdAndUpdate(post_id, query, { new: true });
-            await fetchedPost.populate('likesCount commentsCount').execPopulate();
-            await fetchedPost
-                .populate({
-                    path: 'author',
-                    select: 'fullname username profilePicture'
-                })
-                .execPopulate();
-            const result = {
-                ...fetchedPost.toObject(),
-                isLiked: !isPostLiked,
+            let state = false; // the state whether isLiked = true | false to be sent back to user
+            const query = {
+                target: Types.ObjectId(post_id),
+                user: req.user._id,
+                type: 'Post'
             };
 
-            if (!isPostLiked && result.author.id !== req.user._id.toString()) {
-                const io = req.app.get('io');
-                const targetUserID = Types.ObjectId(result.author.id);
-                const newNotif = {
-                    type: ENotificationType.like,
-                    initiator: req.user._id,
-                    target: targetUserID,
-                    link: `/post/${post_id}`,
-                };
-                const notificationExists = await Notification.findOne(newNotif);
+            const likedPost = await Like.findOne(query); // Check if already liked post
 
-                if (!notificationExists) {
-                    const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+            if (!likedPost) { // If not liked, save new like and notify post owner
+                const like = new Like({
+                    type: 'Post',
+                    target: post._id,
+                    user: req.user._id
+                });
 
-                    const doc = await notification.save();
-                    await doc
-                        .populate({
-                            path: 'target initiator',
-                            select: 'fullname profilePicture username'
-                        })
-                        .execPopulate();
+                await like.save();
+                state = true;
 
-                    io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
-                } else {
-                    await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                // If not the post owner, send notification to post owner
+                if (post._author_id.toString() !== req.user._id.toString()) {
+                    const io = req.app.get('io');
+                    const targetUserID = Types.ObjectId(post._author_id);
+                    const newNotif = {
+                        type: ENotificationType.like,
+                        initiator: req.user._id,
+                        target: targetUserID,
+                        link: `/post/${post_id}`,
+                    };
+                    const notificationExists = await Notification.findOne(newNotif);
+
+                    if (!notificationExists) {
+                        const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+
+                        const doc = await notification.save();
+                        await doc
+                            .populate({
+                                path: 'target initiator',
+                                select: 'fullname profilePicture username'
+                            })
+                            .execPopulate();
+
+                        io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
+                    } else {
+                        await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                    }
                 }
+            } else {
+                await Like.findOneAndDelete(query);
+                state = false;
             }
 
-            res.status(200).send(makeResponseJson({ post: result, state: isPostLiked }));
+            const likesCount = await Like.find({ target: Types.ObjectId(post_id) });
+
+            res.status(200).send(makeResponseJson({ state, likesCount: likesCount.length }));
         } catch (e) {
             console.log(e);
             next(e);
@@ -335,26 +312,18 @@ router.get(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { post_id } = req.params;
-            const post = await Post.findById(post_id);
+
+            const agg = await PostService.getPosts(req.user, { _id: Types.ObjectId(post_id) });
+
+            const post = agg[0] || {}
 
             if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
-            if (post.privacy === 'private' && post._author_id.toString() !== req.user._id.toString()) {
+            if (post?.privacy === 'private' && post._author_id?.toString() !== req.user._id.toString()) {
                 return next(new ErrorHandler(401));
             }
 
-            await post
-                .populate({
-                    path: 'author likesCount commentsCount',
-                    select: 'fullname username profilePicture'
-                })
-                .execPopulate();
-
-            const isBookmarked = req.user.isBookmarked(post_id);
-            const isPostLiked = post.isPostLiked(req.user._id);
-            const isOwnPost = post._author_id.toString() === req.user._id.toString();
-            const result = { ...post.toObject(), isLiked: isPostLiked, isBookmarked, isOwnPost };
-            res.status(200).send(makeResponseJson(result));
+            res.status(200).send(makeResponseJson(post));
         } catch (e) {
             console.log('CANT GET POST', e);
             next(e);
@@ -376,28 +345,34 @@ router.get(
             const exist = await Post.findById(Types.ObjectId(post_id));
             if (!exist) return next(new ErrorHandler(400, 'Post not found.'));
 
-            const post = await Post
-                .findById(Types.ObjectId(post_id))
+            const likers = await Like
+                .find({
+                    target: Types.ObjectId(post_id),
+                    type: 'Post'
+                })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
                 .populate({
-                    path: 'likes',
-                    select: 'profilePicture username fullname',
-                    options: {
-                        skip,
-                        limit,
-                    }
-                });
+                    path: 'user',
+                    select: 'profilePicture username fullname'
+                })
 
-            if (post.likes.length === 0) {
+            if (likers.length === 0 && offset < 1) {
                 return next(new ErrorHandler(404, 'No likes found.'));
             }
 
-            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
+            if (likers.length === 0 && offset > 0) {
+                return next(new ErrorHandler(404, 'No more likes found.'));
+            }
 
-            const result = post.likes.map((user) => {
+            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const following = myFollowing?.following || [];
+
+            const result = likers.map((like) => {
                 return {
-                    ...user.toObject(),
-                    isFollowing: following.includes(user.id)
+                    ...like.user.toObject(),
+                    isFollowing: following.includes(like.user.id)
                 }
             });
 

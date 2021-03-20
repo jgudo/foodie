@@ -30,25 +30,22 @@ const Posts: React.FC<IProps> = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const likeCallback = (post: IPost) => {
-        updatePostState(post);
+    const likeCallback = (postID: string, state: boolean, newLikesCount: number) => {
+        const updatedPosts = posts.map((item) => {
+            if (item.id === postID) {
+                return {
+                    ...item,
+                    isLiked: state,
+                    likesCount: newLikesCount
+                }
+            }
+
+            return item;
+        });
+        setPosts(updatedPosts)
     };
 
     const updateSuccessCallback = (post: IPost) => {
-        updatePostState(post);
-    }
-
-    const deleteSuccessCallback = (postID: string) => {
-        // eslint-disable-next-line array-callback-return
-        const filteredPosts = posts.filter((item) => {
-            if (item.id !== postID) {
-                return item;
-            }
-        });
-        setPosts(filteredPosts);
-    }
-
-    const updatePostState = (post: IPost) => {
         const updatedPosts = posts.map((item) => {
             if (item.id === post.id) {
                 return {
@@ -60,6 +57,16 @@ const Posts: React.FC<IProps> = (props) => {
             return item;
         });
         setPosts(updatedPosts);
+    }
+
+    const deleteSuccessCallback = (postID: string) => {
+        // eslint-disable-next-line array-callback-return
+        const filteredPosts = posts.filter((item) => {
+            if (item.id !== postID) {
+                return item;
+            }
+        });
+        setPosts(filteredPosts);
     }
 
     const fetchPosts = async () => {

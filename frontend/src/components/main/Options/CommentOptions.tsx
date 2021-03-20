@@ -1,24 +1,19 @@
 import { DeleteOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setTargetComment } from '~/redux/action/helperActions';
 import { IComment } from '~/types/types';
 
 interface IProps {
-    isOwnComment: boolean;
-    openDeleteModal: () => void;
-    setIsUpdating: Dispatch<SetStateAction<boolean>>;
-    setCommentBody: Dispatch<SetStateAction<string>>;
-    setTargetID: Dispatch<SetStateAction<string>>;
-    setInputCommentVisible: Dispatch<SetStateAction<boolean>>;
-    commentInputRef: RefObject<HTMLInputElement>;
     comment: IComment;
+    onClickEdit: () => void;
+    openDeleteModal: () => void;
 }
-
-// isOwnComment={user.id === comment.author.id}
-//                                         commentID={comment.id}
 
 const CommentOptions: React.FC<IProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const isOpenRef = useRef(isOpen);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside);
@@ -26,6 +21,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
         return () => {
             document.removeEventListener('click', handleClickOutside);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -33,7 +29,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }, [isOpen]);
 
     const handleClickOutside = (e: Event) => {
-        const option = (e.target as HTMLDivElement).closest('.comment-option-wrapper');
+        const option = (e.target as HTMLDivElement).closest(`#comment_${props.comment.id}`);
 
         if (!option && isOpenRef.current) {
             setIsOpen(false);
@@ -45,21 +41,19 @@ const CommentOptions: React.FC<IProps> = (props) => {
     }
 
     const onClickDelete = () => {
-        props.setTargetID(props.comment.id);
+        dispatch(setTargetComment(props.comment));
         props.openDeleteModal();
     }
 
     const onClickEdit = () => {
-        if (props.commentInputRef.current) props.commentInputRef.current.focus();
         setIsOpen(false);
-        props.setInputCommentVisible(true);
-        props.setCommentBody(props.comment.body);
-        props.setIsUpdating(true);
-        props.setTargetID(props.comment.id);
+
+        props.onClickEdit();
+        dispatch(setTargetComment(props.comment));
     }
 
     return (
-        <div className="comment-option-wrapper relative z-10">
+        <div className="relative z-10" id={`comment_${props.comment.id}`}>
             <div
                 className="p-2 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:text-white dark:hover:bg-indigo-1100"
                 onClick={toggleOpen}
@@ -68,7 +62,7 @@ const CommentOptions: React.FC<IProps> = (props) => {
             </div>
             {isOpen && (
                 <div className=" w-56 flex flex-col bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden absolute top-8 right-3 border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
-                    {props.isOwnComment && (
+                    {props.comment.isOwnComment && (
                         <h4
                             className="p-4 flex items-center hover:bg-indigo-700 hover:text-white cursor-pointer dark:text-white"
                             onClick={onClickEdit}

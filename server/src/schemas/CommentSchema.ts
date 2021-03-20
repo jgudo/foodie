@@ -6,9 +6,31 @@ export interface IComment extends Document {
     _post_id: IPost['_id'];
     body: string;
     _author_id: IUser['_id'];
+    depth: number;
+    parent: IComment['id'];
+    parents: IComment['id'][];
     isEdited: boolean;
     createdAt: number | Date;
     updatedAt: number | Date;
+}
+
+const options = {
+    timestamps: true,
+    toJSON: {
+        virtuals: true,
+        transform: function (doc, ret, opt) {
+            delete ret.parents;
+            return ret;
+        }
+    },
+    toObject: {
+        getters: true,
+        virtuals: true,
+        transform: function (doc, ret, opt) {
+            delete ret.parents;
+            return ret;
+        }
+    }
 }
 
 const CommentSchema = new Schema({
@@ -16,6 +38,19 @@ const CommentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Post',
         required: true
+    },
+    parent: {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment',
+        default: null
+    },
+    parents: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
+    depth: {
+        type: Number,
+        default: 1
     },
     body: String,
     _author_id: {
@@ -28,7 +63,7 @@ const CommentSchema = new Schema({
     },
     createdAt: Date,
     updatedAt: Date
-}, { timestamps: true, toJSON: { virtuals: true }, toObject: { getters: true, virtuals: true } });
+}, options);
 
 CommentSchema.virtual('author', {
     ref: 'User',

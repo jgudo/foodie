@@ -1,17 +1,16 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useDidMount } from '~/hooks';
+import { setTargetPost } from '~/redux/action/helperActions';
+import { hideModal } from '~/redux/action/modalActions';
 import { deletePost } from '~/services/api';
-import { IError } from '~/types/types';
+import { EModalType, IError, IRootReducer } from '~/types/types';
 
 interface IProps {
-    isOpen: boolean;
     onAfterOpen?: () => void;
-    closeModal: () => void;
-    openModal: () => void;
-    postID: string;
     deleteSuccessCallback: (postID: string) => void;
 }
 
@@ -21,18 +20,23 @@ const DeletePostModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const didMount = useDidMount();
+    const dispatch = useDispatch();
+    const { targetPost, isOpen } = useSelector((state: IRootReducer) => ({
+        targetPost: state.helper.targetPost,
+        isOpen: state.modal.isOpenDeletePost
+    }))
 
     const handleDeletePost = async () => {
         try {
             setIsDeleting(true);
-            await deletePost(props.postID);
+            await deletePost(targetPost?.id as string);
 
             if (didMount) {
                 setIsDeleting(false);
             }
 
-            props.closeModal();
-            props.deleteSuccessCallback(props.postID);
+            closeModal();
+            props.deleteSuccessCallback(targetPost?.id as string);
             toast.dark('Post successfully deleted.', {
                 progressStyle: { backgroundColor: '#4caf50' }
             });
@@ -44,17 +48,18 @@ const DeletePostModal: React.FC<IProps> = (props) => {
         }
     };
 
-    const onCloseModal = () => {
-        if (!isDeleting) {
-            props.closeModal();
+    const closeModal = () => {
+        if (isOpen && !isDeleting) {
+            dispatch(setTargetPost(null));
+            dispatch(hideModal(EModalType.DELETE_POST));
         }
     }
 
     return (
         <Modal
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onAfterOpen={props.onAfterOpen}
-            onRequestClose={props.closeModal}
+            onRequestClose={closeModal}
             contentLabel="Example Modal"
             className="modal"
             shouldCloseOnOverlayClick={!isDeleting}
@@ -63,7 +68,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
             <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
-                    onClick={onCloseModal}
+                    onClick={closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
@@ -81,7 +86,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
-                            onClick={props.closeModal}
+                            onClick={closeModal}
                             disabled={isDeleting}
                         >
                             Cancel

@@ -7,7 +7,9 @@ export interface IRootReducer {
     loading: TLoading;
     newsFeed: INewsFeed;
     profile: IProfile;
-    chats: IChatState
+    chats: IChatState;
+    modal: IModalState;
+    helper: IHelperState;
     settings: ISettingsState;
 }
 
@@ -55,12 +57,38 @@ export interface IPost {
     updatedAt: Date;
 }
 
+export interface IHelperState {
+    targetComment: IComment | null;
+    targetPost: IPost | null;
+}
+
+export interface IModalState {
+    isOpenDeleteComment: boolean;
+    isOpenDeletePost: boolean;
+    isOpenEditPost: boolean;
+    isOpenPostLikes: boolean;
+}
+
+export enum EModalType {
+    DELETE_COMMENT = 'DELETE_COMMENT',
+    DELETE_POST = 'DELETE_POST',
+    EDIT_POST = 'EDIT_POST',
+    POST_LIKES = 'POST_LIKES'
+}
+
 export interface IComment {
     id: string;
     body: string;
     createdAt: Date;
     updatedAt: Date;
     isEdited: boolean;
+    depth: number;
+    replyCount: number;
+    likesCount: number;
+    post_id: string;
+    isOwnComment: boolean;
+    isPostOwner: boolean;
+    isLiked: boolean;
     author: IUser;
 }
 

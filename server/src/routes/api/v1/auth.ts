@@ -1,5 +1,5 @@
 //@ts-ignore
-import { makeErrorJson, makeResponseJson, sessionizeUser } from '@/helpers/utils';
+import { makeResponseJson, sessionizeUser } from '@/helpers/utils';
 import { ErrorHandler } from '@/middlewares/error.middleware';
 import { IUser } from '@/schemas/UserSchema';
 import { schemas, validateBody } from '@/validations/validations';
@@ -107,13 +107,13 @@ router.get(
 );
 
 //@route DELETE /api/v1/logout
-router.delete('/v1/logout', (req, res) => {
+router.delete('/v1/logout', (req, res, next) => {
     try {
         req.logOut();
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(422).send(makeErrorJson({ status_code: 422, message: 'Unable to logout. Please try again.' }));
+        next(new ErrorHandler(422, 'Unable to logout. Please try again.'))
     }
 });
 

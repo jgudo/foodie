@@ -1,17 +1,17 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Modal from 'react-modal';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { setTargetComment } from '~/redux/action/helperActions';
 import { deleteComment } from '~/services/api';
-import { IError } from '~/types/types';
+import { IComment, IError, IRootReducer } from '~/types/types';
 
 interface IProps {
-    isOpen: boolean;
     onAfterOpen?: () => void;
+    isOpen: boolean;
     closeModal: () => void;
-    openModal: () => void;
-    commentID: string;
-    deleteSuccessCallback: (commentID: string) => void;
+    deleteSuccessCallback: (comment: IComment) => void;
 }
 
 Modal.setAppElement('#root');
@@ -19,30 +19,38 @@ Modal.setAppElement('#root');
 const DeleteCommentModal: React.FC<IProps> = (props) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<IError | null>(null);
+    const dispatch = useDispatch();
+    const targetComment = useSelector((state: IRootReducer) => state.helper.targetComment);
 
     const handleDeleteComment = async () => {
         try {
             setIsDeleting(true);
-            await deleteComment(props.commentID);
+            targetComment && await deleteComment(targetComment.id);
 
-            props.closeModal();
-            props.deleteSuccessCallback(props.commentID);
+            closeModal();
+            targetComment && props.deleteSuccessCallback(targetComment);
             toast.dark('Comment successfully deleted.', {
                 progressStyle: { backgroundColor: '#4caf50' },
                 autoClose: 2000
             });
-            setIsDeleting(false);
         } catch (e) {
             setIsDeleting(false);
             setError(e);
         }
     };
 
+    const closeModal = () => {
+        if (props.isOpen) {
+            props.closeModal();
+            dispatch(setTargetComment(null));
+        }
+    }
+
     return (
         <Modal
             isOpen={props.isOpen}
             onAfterOpen={props.onAfterOpen}
-            onRequestClose={props.closeModal}
+            onRequestClose={closeModal}
             contentLabel="Delete Comment"
             className="modal"
             shouldCloseOnOverlayClick={!isDeleting}
@@ -51,12 +59,12 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
             <div className="relative">
                 <div
                     className="absolute right-2 top-2 p-1 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 dark:hover:bg-indigo-1100"
-                    onClick={props.closeModal}
+                    onClick={closeModal}
                 >
                     <CloseOutlined className="p-2  outline-none text-gray-500 dark:text-white" />
                 </div>
                 {error && (
-                    <span className="p-4 bg-red-100 text-red-500 w-full">
+                    <span className="block p-4 bg-red-100 text-red-500 w-full">
                         {error?.error?.message || 'Unable process request. Please try again.'}
                     </span>
                 )}
@@ -69,7 +77,7 @@ const DeleteCommentModal: React.FC<IProps> = (props) => {
                     <div className="flex justify-between">
                         <button
                             className="button--muted !rounded-full dark:bg-indigo-1100 dark:text-white dark:hover:bg-indigo-1100"
-                            onClick={props.closeModal}
+                            onClick={closeModal}
                         >
                             Cancel
                         </button>
