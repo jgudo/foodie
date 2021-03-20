@@ -27,8 +27,8 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
         } as IPost);
     }
 
-    const updateSuccessCallback = (post: IPost) => {
-        setPost(post);
+    const updateSuccessCallback = (updatedPost: IPost) => {
+        setPost({ ...post, ...updatedPost });
     }
 
     const deleteSuccessCallback = () => {

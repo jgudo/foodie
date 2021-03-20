@@ -41,7 +41,7 @@ export const getPosts = (user: IUser | null, query: Object, paginate?: Partial<I
                     $lookup: {
                         from: 'likes',
                         localField: '_id',
-                        foreignField: '_post_id',
+                        foreignField: 'target',
                         as: 'likes'
                     }
                 },
@@ -76,15 +76,15 @@ export const getPosts = (user: IUser | null, query: Object, paginate?: Partial<I
                             $map: {
                                 input: "$likes",
                                 as: "postLike",
-                                in: '$$postLike._author_id'
+                                in: '$$postLike.user'
                             }
-                        }
+                        },
                     }
                 },
                 { // add isLiked field by checking if user id exists in $likes array from lookup
                     $addFields: {
                         isLiked: { $in: [user?._id, '$likeIDs'] },
-                        isOwnPost: '$author.id' === user?._id?.toString(),
+                        isOwnPost: { $eq: ['$$CURRENT._author_id', user?._id] },
                         isBookmarked: { $in: ['$_id', bookmarkPostIDs] }
                     }
                 },

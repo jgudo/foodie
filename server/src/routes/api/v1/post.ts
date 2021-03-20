@@ -120,7 +120,7 @@ router.get(
             }
 
             // run aggregation service
-            const agg = await PostService.getPosts(req.user, query, { skip, limit });
+            const agg = await PostService.getPosts(req.user, query, { skip, limit, sort: sortQuery });
 
             if (agg.length <= 0 && offset === 0) {
                 return next(new ErrorHandler(404, `${username} hasn't posted anything yet.`));
@@ -148,38 +148,61 @@ router.post(
 
             if (!post) return next(new ErrorHandler(400, 'Post not found.'));
 
-            const likedPost = await Like.findOne({ _post_id: Types.ObjectId(post_id), _author_id: req.user._id });
-            const likesCount = await Like.find({ _post_id: Types.ObjectId(post_id) });
+            let state = false; // the state whether isLiked = true | false to be sent back to user
+            const query = {
+                target: Types.ObjectId(post_id),
+                user: req.user._id,
+                type: 'Post'
+            };
 
-            if (!Boolean(likedPost) && post._author_id.toString() !== req.user._id.toString()) {
-                const io = req.app.get('io');
-                const targetUserID = Types.ObjectId(post._author_id);
-                const newNotif = {
-                    type: ENotificationType.like,
-                    initiator: req.user._id,
-                    target: targetUserID,
-                    link: `/post/${post_id}`,
-                };
-                const notificationExists = await Notification.findOne(newNotif);
+            const likedPost = await Like.findOne(query); // Check if already liked post
 
-                if (!notificationExists) {
-                    const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+            if (!likedPost) { // If not liked, save new like and notify post owner
+                const like = new Like({
+                    type: 'Post',
+                    target: post._id,
+                    user: req.user._id
+                });
 
-                    const doc = await notification.save();
-                    await doc
-                        .populate({
-                            path: 'target initiator',
-                            select: 'fullname profilePicture username'
-                        })
-                        .execPopulate();
+                await like.save();
+                state = true;
 
-                    io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
-                } else {
-                    await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                // If not the post owner, send notification to post owner
+                if (post._author_id.toString() !== req.user._id.toString()) {
+                    const io = req.app.get('io');
+                    const targetUserID = Types.ObjectId(post._author_id);
+                    const newNotif = {
+                        type: ENotificationType.like,
+                        initiator: req.user._id,
+                        target: targetUserID,
+                        link: `/post/${post_id}`,
+                    };
+                    const notificationExists = await Notification.findOne(newNotif);
+
+                    if (!notificationExists) {
+                        const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+
+                        const doc = await notification.save();
+                        await doc
+                            .populate({
+                                path: 'target initiator',
+                                select: 'fullname profilePicture username'
+                            })
+                            .execPopulate();
+
+                        io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
+                    } else {
+                        await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                    }
                 }
+            } else {
+                await Like.findOneAndDelete(query);
+                state = false;
             }
 
-            res.status(200).send(makeResponseJson({ state: Boolean(likedPost), likesCount: likesCount.length }));
+            const likesCount = await Like.find({ target: Types.ObjectId(post_id) });
+
+            res.status(200).send(makeResponseJson({ state, likesCount: likesCount.length }));
         } catch (e) {
             console.log(e);
             next(e);
@@ -322,28 +345,34 @@ router.get(
             const exist = await Post.findById(Types.ObjectId(post_id));
             if (!exist) return next(new ErrorHandler(400, 'Post not found.'));
 
-            const post = await Post
-                .findById(Types.ObjectId(post_id))
+            const likers = await Like
+                .find({
+                    target: Types.ObjectId(post_id),
+                    type: 'Post'
+                })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
                 .populate({
-                    path: 'likes',
-                    select: 'profilePicture username fullname',
-                    options: {
-                        skip,
-                        limit,
-                    }
-                });
+                    path: 'user',
+                    select: 'profilePicture username fullname'
+                })
 
-            if (post.likes.length === 0) {
+            if (likers.length === 0 && offset < 1) {
                 return next(new ErrorHandler(404, 'No likes found.'));
             }
 
-            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = (myFollowing && myFollowing.following) ? myFollowing.following : [];
+            if (likers.length === 0 && offset > 0) {
+                return next(new ErrorHandler(404, 'No more likes found.'));
+            }
 
-            const result = post.likes.map((user) => {
+            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
+            const following = myFollowing?.following || [];
+
+            const result = likers.map((like) => {
                 return {
-                    ...user.toObject(),
-                    isFollowing: following.includes(user.id)
+                    ...like.user.toObject(),
+                    isFollowing: following.includes(like.user.id)
                 }
             });
 

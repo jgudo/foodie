@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "~/components/shared";
 import { useDidMount } from "~/hooks";
-import { getCommentReplies, replyOnComment, updateComment } from "~/services/api";
+import { getCommentReplies, likeComment, replyOnComment, updateComment } from "~/services/api";
 import { IComment, IError } from "~/types/types";
 import { CommentOptions } from "../Options";
 import CommentInput from "./CommentInput";
@@ -28,6 +28,7 @@ const CommentItem: React.FC<IProps> = (props) => {
     const [newCommentBody, setNewCommentBody] = useState('');
     const [isGettingReplies, setGettingReplies] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
+    const [isLiking, setIsLiking] = useState(false);
     const [isUpdateMode, setUpdateMode] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const didMount = useDidMount(true);
@@ -122,11 +123,26 @@ const CommentItem: React.FC<IProps> = (props) => {
     };
 
     const onClickEdit = () => {
-        editCommentInputRef.current && editCommentInputRef.current.focus();
-        // props.setInputCommentVisible(true);
         setUpdateMode(true);
         setEditCommentBody(comment.body);
         setOpenInput(false);
+    }
+
+    const onClickLike = async () => {
+        if (isLiking) return;
+
+        try {
+            setIsLiking(true);
+            const { state, likesCount } = await likeComment(comment.id);
+
+            if (didMount) {
+                setIsLiking(false);
+                setComment({ ...comment, isLiked: state, likesCount });
+            }
+        } catch (err) {
+            didMount && setIsLiking(false);
+            console.log(err);
+        }
     }
 
     const updateCommentCallback = (comment: IComment) => {
@@ -178,9 +194,15 @@ const CommentItem: React.FC<IProps> = (props) => {
                             {/* ---- DATE AND LIKE BUTTON ----- */}
                             <div className="mt-1 flex items-center space-x-2">
                                 {/* ---- LIKE BUTTON ---- */}
-                                <span className="text-gray-400 hover:cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 text-xs">
-                                    Like
-                            </span>
+                                {comment.likesCount > 0 && (
+                                    <span className="text-sm text-gray-500">{comment.likesCount}</span>
+                                )}
+                                <span
+                                    className={`text-gray-400 hover:cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 text-xs ${comment.isLiked && 'font-bold text-indigo-500 dark:text-indigo-300'} ${isLiking && 'opacity-50 hover:cursor-default'}`}
+                                    onClick={onClickLike}
+                                >
+                                    {comment.isLiked ? 'Unlike' : 'Like'}
+                                </span>
                                 {/* ---- REPLY BUTTON */}
                                 {comment.depth < 3 && (
                                     <span

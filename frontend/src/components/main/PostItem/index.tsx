@@ -64,6 +64,13 @@ const PostItem: React.FC<IProps> = (props) => {
         }
     }
 
+    const handleClickPrivacyChange = () => {
+        if (post.isOwnPost) {
+            dispatch(setTargetPost(post));
+            dispatch(showModal(EModalType.EDIT_POST));
+        }
+    }
+
     return (
         <div className="flex flex-col bg-white rounded-lg my-4 p-4 first:mt-0 shadow-lg dark:bg-indigo-1000">
             {/* --- AVATAR AND OPTIONS */}
@@ -81,7 +88,7 @@ const PostItem: React.FC<IProps> = (props) => {
                             <span className="text-sm text-gray-500">{dayjs(post.createdAt).fromNow()}</span>
                             <div
                                 className={`w-4 h-4 rounded-full flex items-center justify-center ${post.isOwnPost && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-indigo-900'}`}
-                                onClick={() => post.isOwnPost && updateModal.openModal()}
+                                onClick={handleClickPrivacyChange}
                                 title={post.isOwnPost ? 'Change Privacy' : ''}
                             >
                                 {post.privacy === 'private'

@@ -1,7 +1,8 @@
 import { COMMENTS_LIMIT } from '@/constants/constants';
 import { filterWords, makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
-import { Comment, Notification, Post } from '@/schemas';
+import { Comment, Like, Notification, Post } from '@/schemas';
+import { ENotificationType } from '@/schemas/NotificationSchema';
 import { schemas, validateBody } from '@/validations/validations';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
@@ -157,9 +158,31 @@ router.get(
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'likes',
+                        localField: '_id',
+                        foreignField: 'target',
+                        as: 'likes'
+                    }
+                },
+                {
+                    $addFields: {
+                        likesUserIDs: {
+                            $map: {
+                                input: "$likes",
+                                as: "commentLike",
+                                in: '$$commentLike.user'
+                            }
+                        }
+                    }
+                },
+                {
                     $addFields: {
                         isOwnComment: {
                             $eq: ['$author.id', req.user._id]
+                        },
+                        isLiked: {
+                            $in: [req.user?._id, '$likesUserIDs']
                         },
                         isPostOwner: post._author_id.toString() === req.user._id.toString()
                     } //user.id === comment.author.id || authorID === user.id)
@@ -178,9 +201,9 @@ router.get(
                         body: 1,
                         isOwnComment: 1,
                         isPostOwner: 1,
-                        replyCount: {
-                            $size: '$replyCount'
-                        }
+                        isLiked: 1,
+                        replyCount: { $size: '$replyCount' },
+                        likesCount: { $size: '$likes' }
                     }
                 }
             ]);
@@ -450,9 +473,31 @@ router.get(
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'likes',
+                        localField: '_id',
+                        foreignField: 'target',
+                        as: 'likes'
+                    }
+                },
+                {
+                    $addFields: {
+                        likesUserIDs: {
+                            $map: {
+                                input: "$likes",
+                                as: "commentLike",
+                                in: '$$commentLike.user'
+                            }
+                        }
+                    }
+                },
+                {
                     $addFields: {
                         isOwnComment: {
                             $eq: ['$author.id', req.user._id]
+                        },
+                        isLiked: {
+                            $in: [req.user?._id, '$likesUserIDs']
                         },
                         isPostOwner: post._author_id.toString() === req.user._id.toString()
                     } //user.id === comment.author.id || authorID === user.id)
@@ -471,9 +516,9 @@ router.get(
                         body: 1,
                         isOwnComment: 1,
                         isPostOwner: 1,
-                        replyCount: {
-                            $size: '$replyCount'
-                        }
+                        isLiked: 1,
+                        replyCount: { $size: '$replyCount' },
+                        likesCount: { $size: '$likes' }
                     }
                 }
             ]);
@@ -487,6 +532,80 @@ router.get(
             }
 
             res.status(200).send(makeResponseJson({ replies: agg, count: 0 }));
+        } catch (e) {
+            console.log(e);
+            next(e);
+        }
+    }
+);
+
+router.post(
+    '/v1/like/comment/:comment_id',
+    isAuthenticated,
+    validateObjectID('comment_id'),
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { comment_id } = req.params;
+
+            const comment = await Comment.findById(comment_id);
+
+            if (!comment) return next(new ErrorHandler(400, 'Comment not found.'));
+
+            let state = false; // the state whether isLiked = true | false to be sent back to user
+            const query = {
+                target: Types.ObjectId(comment_id),
+                user: req.user._id,
+                type: 'Comment'
+            };
+
+            const likedComment = await Like.findOne(query); // Check if already liked post
+
+            if (!likedComment) { // If not liked, save new like and notify post owner
+                const like = new Like({
+                    type: 'Comment',
+                    target: comment._id,
+                    user: req.user._id
+                });
+
+                await like.save();
+                state = true;
+
+                // If not the post owner, send notification to post owner
+                if (comment._author_id.toString() !== req.user._id.toString()) {
+                    const io = req.app.get('io');
+                    const targetUserID = Types.ObjectId(comment._author_id);
+                    const newNotif = {
+                        type: ENotificationType.commentLike,
+                        initiator: req.user._id,
+                        target: targetUserID,
+                        link: `/post/${comment._post_id}`,
+                    };
+                    const notificationExists = await Notification.findOne(newNotif);
+
+                    if (!notificationExists) {
+                        const notification = new Notification({ ...newNotif, createdAt: Date.now() });
+
+                        const doc = await notification.save();
+                        await doc
+                            .populate({
+                                path: 'target initiator',
+                                select: 'fullname profilePicture username'
+                            })
+                            .execPopulate();
+
+                        io.to(targetUserID).emit('newNotification', { notification: doc, count: 1 });
+                    } else {
+                        await Notification.findOneAndUpdate(newNotif, { $set: { createdAt: Date.now() } });
+                    }
+                }
+            } else {
+                await Like.findOneAndDelete(query);
+                state = false;
+            }
+
+            const likesCount = await Like.find({ target: Types.ObjectId(comment_id) });
+
+            res.status(200).send(makeResponseJson({ state, likesCount: likesCount.length }));
         } catch (e) {
             console.log(e);
             next(e);

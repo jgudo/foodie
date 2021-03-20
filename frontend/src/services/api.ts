@@ -282,6 +282,19 @@ export const updateComment = async (commentID: string, body: string): Promise<an
     }
 }
 
+export const likeComment = async (commentID: string): Promise<any> => {
+    try {
+        const req = await axios({
+            method: 'POST',
+            url: `/like/comment/${commentID}`
+        });
+
+        return Promise.resolve(req.data.data)
+    } catch (e) {
+        return Promise.reject(e?.response?.data || {});
+    }
+}
+
 export const getNotifications = async (params: IFetchParams): Promise<any> => {
     try {
         const req = await axios({

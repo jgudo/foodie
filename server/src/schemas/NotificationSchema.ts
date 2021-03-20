@@ -4,6 +4,7 @@ import { IUser } from "./UserSchema";
 export enum ENotificationType {
     follow = 'follow',
     like = 'like',
+    commentLike = 'comment-like',
     comment = 'comment',
     reply = 'reply'
 }
@@ -21,7 +22,7 @@ const NotificationSchema = new Schema({
     type: {
         type: String,
         required: true,
-        enum: ['follow', 'like', 'comment', 'reply'],
+        enum: ['follow', 'like', 'comment-like', 'comment', 'reply'],
     },
     initiator: {
         type: Schema.Types.ObjectId,

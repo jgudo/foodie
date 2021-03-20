@@ -28,7 +28,10 @@ const newsFeedReducer = (state = initState, action: TNewsFeedActionType) => {
                 ...state,
                 items: state.items.map((post: IPost) => {
                     if (post.id === action.payload.id) {
-                        return action.payload;
+                        return {
+                            ...post,
+                            ...action.payload
+                        };
                     }
                     return post;
                 })

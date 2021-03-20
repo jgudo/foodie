@@ -84,10 +84,11 @@ export interface IComment {
     isEdited: boolean;
     depth: number;
     replyCount: number;
+    likesCount: number;
     post_id: string;
     isOwnComment: boolean;
     isPostOwner: boolean;
-
+    isLiked: boolean;
     author: IUser;
 }
 

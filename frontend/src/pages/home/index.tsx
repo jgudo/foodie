@@ -1,7 +1,7 @@
 import { CoffeeOutlined, UndoOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { withAuth } from "~/components/hoc";
@@ -29,7 +29,7 @@ const Home: React.FC<IProps> = (props) => {
         error: state.error.newsFeedError,
         isLoadingFeed: state.loading.isLoadingFeed,
         isLoadingCreatePost: state.loading.isLoadingCreatePost
-    }));
+    }), shallowEqual);
     const dispatch = useDispatch();
     const { isOpen, openModal, closeModal } = useModal();
     const from = props.location.state?.from || null;

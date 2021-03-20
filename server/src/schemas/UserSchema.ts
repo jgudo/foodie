@@ -186,6 +186,7 @@ UserSchema.methods.toUserJSON = function () {
 
 UserSchema.methods.toProfileJSON = function (this: IUser) {
     return {
+        id: this._id,
         username: this.username,
         fullname: this.fullname,
         profilePicture: this.profilePicture

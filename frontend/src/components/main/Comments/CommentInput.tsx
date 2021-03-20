@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, MutableRefObject, useEffect } from "react";
 import { Avatar } from "~/components/shared";
 
 interface IProps {
@@ -14,6 +14,10 @@ interface IProps {
 
 const CommentInput = forwardRef<HTMLInputElement, IProps>((props, ref) => {
     const { isUpdateMode, isSubmitting, userPicture, isLoading, ...rest } = props;
+
+    useEffect(() => {
+        ref && (ref as MutableRefObject<HTMLInputElement>).current.focus();
+    }, [ref])
 
     return (
         <div className={`flex items-center w-full`}>

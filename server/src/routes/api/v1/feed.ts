@@ -21,7 +21,7 @@ router.get(
             if (req.isAuthenticated()) {
                 result = await NewsFeedService.getNewsFeed(req.user, { follower: req.user._id }, skip, limit);
             } else {
-                result = await PostService.getPosts(null, { privacy: EPrivacy.public }, { skip, limit });
+                result = await PostService.getPosts(null, { privacy: EPrivacy.public }, { skip, limit, sort: { createdAt: -1 } });
             }
 
             if (result.length === 0) {
