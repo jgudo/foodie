@@ -11,12 +11,14 @@ interface IProps {
     updateSuccessCallback: (post: IPost) => void;
 }
 
-const PostModals: React.FC<IProps> = (props) => (
-    <Suspense fallback={<LoadingOutlined className="text-gray-800 dark:text-white" />}>
-        <DeletePostModal deleteSuccessCallback={props.deleteSuccessCallback} />
-        <EditPostModal updateSuccessCallback={props.updateSuccessCallback} />
-        <PostLikesModal />
-    </Suspense>
-);
+const PostModals: React.FC<IProps> = (props) => {
+    return (
+        <Suspense fallback={<LoadingOutlined className="text-gray-800 dark:text-white" />}>
+            <DeletePostModal deleteSuccessCallback={props.deleteSuccessCallback} />
+            <EditPostModal updateSuccessCallback={props.updateSuccessCallback} />
+            <PostLikesModal />
+        </Suspense>
+    );
+}
 
 export default PostModals;

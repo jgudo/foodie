@@ -31,9 +31,7 @@ const DeletePostModal: React.FC<IProps> = (props) => {
             setIsDeleting(true);
             await deletePost(targetPost?.id as string);
 
-            if (didMount) {
-                setIsDeleting(false);
-            }
+            didMount && setIsDeleting(false);
 
             closeModal();
             props.deleteSuccessCallback(targetPost?.id as string);

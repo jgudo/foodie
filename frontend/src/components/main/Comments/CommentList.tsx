@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { LoadingOutlined } from "@ant-design/icons";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { useDidMount, useModal } from "~/hooks";
 import { setTargetComment } from "~/redux/action/helperActions";
 import { IComment } from "~/types/types";
-import { DeleteCommentModal } from "../Modals";
 import CommentItem from "./CommentItem";
+
+const DeleteCommentModal = lazy(() => import('~/components/main/Modals/DeleteCommentModal'))
 
 interface IProps {
     comments: IComment[];
@@ -43,11 +45,15 @@ const CommentList: React.FC<IProps> = ({ comments, updateCommentCallback }) => {
                 </CSSTransition>
             ))}
             {/* ---- DELETE MODAL ---- */}
-            <DeleteCommentModal
-                isOpen={isOpen}
-                closeModal={closeModal}
-                deleteSuccessCallback={deleteSuccessCallback}
-            />
+            <Suspense fallback={<LoadingOutlined className="text-gray-800 dark:text-white" />}>
+                {isOpen && (
+                    <DeleteCommentModal
+                        isOpen={isOpen}
+                        closeModal={closeModal}
+                        deleteSuccessCallback={deleteSuccessCallback}
+                    />
+                )}
+            </Suspense>
         </TransitionGroup>
     );
 };
