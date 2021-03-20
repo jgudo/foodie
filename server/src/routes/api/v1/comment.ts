@@ -362,27 +362,29 @@ router.post(
                 }).execPopulate();
 
             // SEND NOTIFICATION
-            const io = req.app.get('io');
-            const notification = new Notification({
-                type: 'reply',
-                initiator: userID,
-                target: Types.ObjectId(comment._author_id),
-                link: `/post/${post_id}`,
-                createdAt: Date.now()
-            });
-
-            notification
-                .save()
-                .then(async (doc) => {
-                    await doc
-                        .populate({
-                            path: 'target initiator',
-                            select: 'fullname profilePicture username'
-                        })
-                        .execPopulate();
-
-                    io.to(comment._author_id.toString()).emit('newNotification', { notification: doc, count: 1 });
+            if (req.user._id.toString() !== comment._author_id.toString()) {
+                const io = req.app.get('io');
+                const notification = new Notification({
+                    type: 'reply',
+                    initiator: userID,
+                    target: Types.ObjectId(comment._author_id),
+                    link: `/post/${post_id}`,
+                    createdAt: Date.now()
                 });
+
+                notification
+                    .save()
+                    .then(async (doc) => {
+                        await doc
+                            .populate({
+                                path: 'target initiator',
+                                select: 'fullname profilePicture username'
+                            })
+                            .execPopulate();
+
+                        io.to(comment._author_id.toString()).emit('newNotification', { notification: doc, count: 1 });
+                    });
+            }
 
             // append the isPostOwner and isOwnComment property
             const result = {

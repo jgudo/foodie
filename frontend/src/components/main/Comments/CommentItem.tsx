@@ -91,11 +91,13 @@ const CommentItem: React.FC<IProps> = (props) => {
                     setError(null);
                     setVisibleReplies(true);
                     setSubmitting(false);
+                    replies.length === 0 && getReplies();
                 }
             } catch (e) {
                 console.log(e);
                 if (didMount) {
                     setSubmitting(false);
+                    setError(e);
                     // setError(e.error.message);
                 }
             }
@@ -222,7 +224,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                                     </span>
                                 )}
                             </div>
-                            {/* ---- VIEW MORE BUTTON ----  */}
+                            {/* ---- VIEW REPLIES BUTTON ----  */}
                             {(comment.replyCount > 0 || replies.length > 0) && (
                                 <div className="flex space-x-2">
                                     {!error && (
@@ -231,7 +233,7 @@ const CommentItem: React.FC<IProps> = (props) => {
                                             onClick={onClickViewReplies}
                                         >
                                             {(isVisibleReplies && replies.length !== 0) ? 'Hide Replies' : 'View Replies'}
-                                        &nbsp;
+                                            &nbsp;
                                             {isGettingReplies
                                                 ? <LoadingOutlined className="text-1xs" />
                                                 : (isVisibleReplies && replies.length !== 0) ? <UpOutlined className="text-1xs" />

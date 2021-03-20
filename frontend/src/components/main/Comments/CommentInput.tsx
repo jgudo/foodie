@@ -1,19 +1,18 @@
 import React, { forwardRef, MutableRefObject, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Avatar } from "~/components/shared";
+import { IRootReducer } from "~/types/types";
 
 interface IProps {
     isLoading: boolean;
     isSubmitting: boolean;
     isUpdateMode: boolean;
-    userPicture: {
-        url: string;
-        [prop: string]: any;
-    },
     [prop: string]: any;
 }
 
 const CommentInput = forwardRef<HTMLInputElement, IProps>((props, ref) => {
-    const { isUpdateMode, isSubmitting, userPicture, isLoading, ...rest } = props;
+    const { isUpdateMode, isSubmitting, isLoading, ...rest } = props;
+    const userPicture = useSelector((state: IRootReducer) => state.auth.profilePicture);
 
     useEffect(() => {
         ref && (ref as MutableRefObject<HTMLInputElement>).current.focus();

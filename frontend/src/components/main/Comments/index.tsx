@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Boundary, Loader } from '~/components/shared';
 import { useDidMount } from '~/hooks';
 import { setTargetComment } from '~/redux/action/helperActions';
 import { commentOnPost, getComments } from "~/services/api";
-import { IComment, IFetchParams, IRootReducer } from "~/types/types";
+import { IComment, IFetchParams } from "~/types/types";
 import CommentInput from './CommentInput';
 import CommentList from './CommentList';
 
@@ -40,7 +40,6 @@ const Comments: React.FC<IProps> = (props) => {
     const [isUpdateMode, setUpdateMode] = useState(false);
     const [isSubmitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
-    const user = useSelector((state: IRootReducer) => state.auth);
     const [commentBody, setCommentBody] = useState('');
     const didMount = useDidMount(true);
     const dispatch = useDispatch();
@@ -148,7 +147,6 @@ const Comments: React.FC<IProps> = (props) => {
                         isSubmitting={isSubmitting}
                         isLoading={isLoading}
                         isUpdateMode={isUpdateMode}
-                        userPicture={user.profilePicture}
                         onKeyDown={handleSubmitComment}
                         value={commentBody}
                     />

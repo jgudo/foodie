@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { withAuth } from "~/components/hoc";
-import { CreatePostModal, PostItem, SuggestedPeople } from "~/components/main";
+import { CreatePostModal, PostItem, PostModals, SuggestedPeople } from "~/components/main";
 import { Avatar, Loader, PostLoader } from "~/components/shared";
 import { SUGGESTED_PEOPLE } from "~/constants/routes";
 import { useDocumentTitle, useModal } from "~/hooks";
@@ -176,8 +176,6 @@ const Home: React.FC<IProps> = (props) => {
                                             key={post.id}
                                             post={post}
                                             likeCallback={likeCallback}
-                                            updateSuccessCallback={updateSuccessCallback}
-                                            deleteSuccessCallback={deleteSuccessCallback}
                                         />
                                     </CSSTransition>
                                 ))}
@@ -204,6 +202,11 @@ const Home: React.FC<IProps> = (props) => {
                     <SuggestedPeople />
                 )}
             </div>
+            {/*  --- ALL POST MODALS (DELETE COMMENT NOT INCLUDED) --- */}
+            <PostModals
+                deleteSuccessCallback={deleteSuccessCallback}
+                updateSuccessCallback={updateSuccessCallback}
+            />
         </div >
     );
 };

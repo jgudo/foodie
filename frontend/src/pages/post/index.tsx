@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { PostItem } from '~/components/main';
+import { PostItem, PostModals } from '~/components/main';
 import { Loader } from '~/components/shared';
 import { useDocumentTitle } from '~/hooks';
 import { PageNotFound } from '~/pages';
@@ -59,12 +59,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
             )}
             {(!isLoading && !error && post) && (
                 <div className="pt-20 w-full px-4 laptop:w-2/4 m-auto">
-                    <PostItem
-                        post={post}
-                        likeCallback={likeCallback}
-                        updateSuccessCallback={updateSuccessCallback}
-                        deleteSuccessCallback={deleteSuccessCallback}
-                    />
+                    <PostItem post={post} likeCallback={likeCallback} />
                 </div>
             )}
             {(!isLoading && error) && (
@@ -80,6 +75,11 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
                     )}
                 </>
             )}
+            {/*  ----- ALL PSOST MODALS ----- */}
+            <PostModals
+                deleteSuccessCallback={deleteSuccessCallback}
+                updateSuccessCallback={updateSuccessCallback}
+            />
         </>
     )
 };

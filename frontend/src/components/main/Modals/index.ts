@@ -7,3 +7,5 @@ export { default as EditPostModal } from './EditPostModal';
 export { default as ImageLightbox } from './ImageLightbox';
 export { default as LogoutModal } from './LogoutModal';
 export { default as PostLikesModal } from './PostLikesModal';
+export { default as PostModals } from './PostModals';
+

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { toast } from "react-toastify";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { CreatePostModal, PostItem } from "~/components/main";
+import { CreatePostModal, PostItem, PostModals } from "~/components/main";
 import { Avatar, Loader } from "~/components/shared";
 import { PostLoader } from "~/components/shared/Loaders";
 import { useDidMount, useDocumentTitle, useModal } from "~/hooks";
@@ -171,8 +171,6 @@ const Posts: React.FC<IProps> = (props) => {
                                     key={post.id}
                                     likeCallback={likeCallback}
                                     post={post}
-                                    updateSuccessCallback={updateSuccessCallback}
-                                    deleteSuccessCallback={deleteSuccessCallback}
                                 />
                             </CSSTransition>
                         ))}
@@ -191,6 +189,11 @@ const Posts: React.FC<IProps> = (props) => {
                     )}
                 </div>
             )}
+            {/* ----- POST MODALS ---- */}
+            <PostModals
+                deleteSuccessCallback={deleteSuccessCallback}
+                updateSuccessCallback={updateSuccessCallback}
+            />
         </div>
     );
 };
