@@ -83,17 +83,17 @@ const PostOptions: React.FC<IProps> = (props) => {
                         </>
                     ) : (
                         <BookmarkButton postID={props.post.id} initBookmarkState={props.post.isBookmarked}>
-                            {({ dispatchBookmark, isBookmarked }) => (
+                            {({ dispatchBookmark, isBookmarked, isLoading }) => (
                                 <h4
-                                    className="p-4 flex items-center cursor-pointer dark:text-white"
+                                    className="group p-4 flex items-center cursor-pointer dark:text-white hover:bg-indigo-500 hover:text-white"
                                     onClick={dispatchBookmark}
                                 >
                                     {isBookmarked ? (
-                                        <StarFilled className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                        <StarFilled className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
                                     ) : (
-                                        <StarOutlined className="text-red-600 text-2xl p-2 flex justify-center items-center rounded-full hover:bg-red-100" />
+                                        <StarOutlined className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
                                     )}
-                                    <span>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
+                                    <span className={`${isLoading && 'opacity-50'}`}>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
                                 </h4>
                             )}
                         </BookmarkButton>

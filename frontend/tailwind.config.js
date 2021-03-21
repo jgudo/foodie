@@ -79,7 +79,7 @@ module.exports = {
     display: ['responsive'],
     padding: ['important', 'responsive'],
     borderRadius: ['important', 'responsive'],
-    textColor: ['important', 'hover', 'dark'],
+    textColor: ['important', 'group-hover', 'hover', 'dark'],
     borderColor: ['important', 'focus', 'hover', 'dark'],
     outlineOffset: ['hover'],
     boxShadow: ['responsive', 'dark'],
