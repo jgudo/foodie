@@ -21,6 +21,7 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
     const id = useSelector((state: IRootReducer) => state.auth.id);
     const [isNotificationOpen, setNotificationOpen] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [hasReadAll, setHasReadAll] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState<IError | null>(null);
@@ -118,7 +119,7 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
     };
 
     const handleMarkAllUnread = async () => {
-        if (notifications.items.length === 0) return;
+        if (notifications.items.length === 0 || hasReadAll) return;
 
         try {
             const { state } = await markAllAsUnreadNotifications();
@@ -128,6 +129,7 @@ const Notification: React.FC<IProps> = ({ isAuth }) => {
                     unread: state
                 }
             });
+            setHasReadAll(true);
             setNotifications({ ...notifications, items: updatedNotifs });
         } catch (e) {
             console.log(e);
