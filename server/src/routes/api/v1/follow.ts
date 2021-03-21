@@ -1,7 +1,8 @@
 import { USERS_LIMIT } from '@/constants/constants';
-import { makeResponseJson, sessionizeUser } from '@/helpers/utils';
+import { makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler, isAuthenticated, validateObjectID } from '@/middlewares';
 import { Follow, NewsFeed, Notification, Post, User } from '@/schemas';
+import { FollowService } from '@/services';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
 
@@ -24,29 +25,20 @@ router.post(
             //  CHECK IF ALREADY FOLLOWING
             const isFollowing = await Follow
                 .findOne({
-                    _user_id: req.user._id,
-                    following: {
-                        $in: [Types.ObjectId(follow_id)]
-                    }
+                    user: req.user._id,
+                    target: Types.ObjectId(follow_id)
                 });
 
-            if (isFollowing) return next(new ErrorHandler(400, 'Already following.'));
+            if (isFollowing) {
+                return next(new ErrorHandler(400, 'Already following.'))
+            } else {
+                const newFollower = new Follow({
+                    user: req.user._id,
+                    target: Types.ObjectId(follow_id)
+                });
 
-            const bulk = Follow.collection.initializeUnorderedBulkOp();
-
-            bulk.find({ _user_id: req.user._id }).upsert().updateOne({
-                $addToSet: {
-                    following: Types.ObjectId(follow_id),
-                }
-            });
-
-            bulk.find({ _user_id: Types.ObjectId(follow_id) }).upsert().updateOne({
-                $addToSet: {
-                    followers: req.user._id,
-                }
-            });
-
-            await bulk.execute();
+                await newFollower.save();
+            }
 
             // TODO ---- FILTER OUT DUPLICATES
             const io = req.app.get('io');
@@ -108,37 +100,19 @@ router.post(
             if (!user) return next(new ErrorHandler(400, 'The person you\'re trying to unfollow doesn\'t exist.'));
             if (follow_id === req.user._id.toString()) return next(new ErrorHandler(400));
 
-            const bulk = Follow.collection.initializeUnorderedBulkOp();
-
-            bulk.find({ _user_id: req.user._id }).upsert().updateOne({
-                $pull: {
-                    following: Types.ObjectId(follow_id)
-                }
+            await Follow.deleteOne({
+                target: Types.ObjectId(follow_id),
+                user: req.user._id
             });
 
-            bulk.find({ _user_id: Types.ObjectId(follow_id) }).upsert().updateOne({
-                $pull: {
-                    followers: req.user._id
-                }
-            });
+            // UNSUBSCRIBE TO PERSON'S FEED
+            await NewsFeed
+                .deleteMany({
+                    post_owner: Types.ObjectId(follow_id),
+                    follower: req.user._id
+                })
 
-            bulk.execute(function (err, doc) {
-                if (err) {
-                    return res.status(200).send(makeResponseJson({ state: false }));
-                }
-
-                // UNSUBSCRIBE TO PERSON'S FEED
-                NewsFeed
-                    .deleteMany({
-                        post_owner: Types.ObjectId(follow_id),
-                        follower: req.user._id
-                    })
-                    .then(() => {
-                        console.log('UNSUBSCRIBED TO USER SUCCESSFUL.')
-                    });
-
-                res.status(200).send(makeResponseJson({ state: false }));
-            });
+            res.status(200).send(makeResponseJson({ state: false }));
         } catch (e) {
             console.log('CANT FOLLOW USER, ', e);
             next(e);
@@ -156,71 +130,22 @@ router.get(
             const limit = USERS_LIMIT;
             const skip = offset * limit;
 
-            // TODO ---------- TEST LIMIT AND SKIP
-            const follow = await Follow.findOne({ _user_id: req.user._id });
-            const myFollowing = follow ? follow.following : [];
             const user = await User.findOne({ username });
-            if (!user) return next(new ErrorHandler(400));
+            if (!user) return next(new ErrorHandler(404, 'User not found.'))
 
-            const doc = await Follow.aggregate([
-                {
-                    $match: {
-                        _user_id: Types.ObjectId(user._id)
-                    }
-                },
-                { $unwind: '$following' },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'following',
-                        foreignField: '_id',
-                        as: 'userFollowing',
-                    }
-                },
-                { $unwind: '$userFollowing' },
-                { $skip: skip },
-                { $limit: limit },
-                {
-                    $project: {
-                        user: {
-                            id: '$userFollowing._id',
-                            username: '$userFollowing.username',
-                            profilePicture: '$userFollowing.profilePicture',
-                            email: '$userFollowing.email',
-                            fullname: '$userFollowing.fullname'
-                        }
-                    }
-                },
-                {
-                    $addFields: {
-                        isFollowing: {
-                            $in: ['$user.id', myFollowing]
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: '$_id',
-                        following: { $push: { user: '$user', isFollowing: '$isFollowing' } }
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        _user_id: 1,
-                        following: 1,
-                    }
-                }
-            ]);
+            const following = await FollowService.getFollow(
+                { user: user._id },
+                'following',
+                req.user,
+                skip,
+                limit
+            )
 
-            const { following } = doc[0] || {};
-            const finalResult = following ? following : [];
-
-            if (finalResult.length === 0) {
+            if (following.length === 0) {
                 return next(new ErrorHandler(404, `${username} isn't following anyone.`));
             }
 
-            res.status(200).send(makeResponseJson(finalResult));
+            res.status(200).send(makeResponseJson(following));
         } catch (e) {
             next(e);
         }
@@ -236,70 +161,22 @@ router.get(
             const limit = USERS_LIMIT;
             const skip = offset * limit;
 
-            const follow = await Follow.findOne({ _user_id: req.user._id });
-            const selfFollowing = follow ? follow.following : [];
-
             const user = await User.findOne({ username });
-            if (!user) return next(new ErrorHandler(400, `No ${username} user found.`));
+            if (!user) return next(new ErrorHandler(404, 'User not found.'))
 
-            const doc = await Follow.aggregate([
-                {
-                    $match: {
-                        _user_id: Types.ObjectId(user._id)
-                    }
-                },
-                { $unwind: '$followers' },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'followers',
-                        foreignField: '_id',
-                        as: 'userFollowers'
-                    }
-                },
-                { $unwind: '$userFollowers' },
-                { $skip: skip },
-                { $limit: limit },
-                {
-                    $project: {
-                        user: {
-                            id: '$userFollowers._id',
-                            username: '$userFollowers.username',
-                            profilePicture: '$userFollowers.profilePicture',
-                            email: '$userFollowers.email',
-                            fullname: '$userFollowers.fullname'
-                        }
-                    }
-                },
-                {
-                    $addFields: {
-                        isFollowing: {
-                            $in: ['$user.id', selfFollowing]
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: '$_id',
-                        followers: { $push: { user: '$user', isFollowing: '$isFollowing' } }
-                    }
-                },
-                {
-                    $project: {
-                        _user_id: 1,
-                        followers: 1
-                    }
-                },
-            ]);
+            const followers = await FollowService.getFollow(
+                { target: user._id },
+                'followers',
+                req.user,
+                skip,
+                limit
+            )
 
-            const { followers } = doc[0] || {};
-            const finalResult = followers ? followers : [];
-
-            if (finalResult.length === 0) {
+            if (followers.length === 0) {
                 return next(new ErrorHandler(404, `${username} has no followers.`));
             }
 
-            res.status(200).send(makeResponseJson(finalResult))
+            res.status(200).send(makeResponseJson(followers));
         } catch (e) {
             console.log('CANT GET FOLLOWERS', e);
             next(e);
@@ -317,17 +194,14 @@ router.get(
             const limit = parseInt(req.query.limit as string) || USERS_LIMIT;
             const skip = skipParam || offset * limit;
 
-            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            let following = [];
+            const myFollowingDoc = await Follow.find({ user: req.user._id });
+            const myFollowing = myFollowingDoc.map(user => user.target);
 
-            if (myFollowing) following = myFollowing.following;
-
-            console.log(limit)
             const people = await User.aggregate([
                 {
                     $match: {
                         _id: {
-                            $nin: [...following, req.user._id]
+                            $nin: [...myFollowing, req.user._id]
                         }
                     }
                 },
@@ -351,19 +225,6 @@ router.get(
             ]);
 
             if (people.length === 0) return next(new ErrorHandler(404, 'No suggested people.'));
-
-            // I want my own account to be on top :) 
-            // Just remove this xD
-            if (limit < 10) { // If less than 10, I want to only append mine in Home page Suggested people list
-                const julius = await User.findOne({ username: 'jgudo' });
-                if (julius) {
-                    people.unshift({
-                        ...sessionizeUser(julius),
-                        isFollowing: following.includes(julius._id.toString())
-                    });
-                }
-            }
-            // ---
 
             res.status(200).send(makeResponseJson(people));
         } catch (e) {

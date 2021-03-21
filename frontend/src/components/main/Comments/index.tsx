@@ -20,21 +20,13 @@ interface IProps {
     setInputCommentVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface ICommentsState {
-    items: IComment[],
-    commentsCount: number;
-}
-
 const Comments: React.FC<IProps> = (props) => {
     const {
         postID,
         isCommentVisible,
         commentInputRef,
     } = props;
-    const [comments, setComments] = useState<ICommentsState>({
-        items: [],
-        commentsCount: 0
-    });
+    const [comments, setComments] = useState<IComment[]>([]);
     const [offset, setOffset] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdateMode, setUpdateMode] = useState(false);
@@ -57,11 +49,11 @@ const Comments: React.FC<IProps> = (props) => {
     const fetchComment = async (params: IFetchParams) => {
         try {
             setIsLoading(true);
-            const { comments: fetchedComments, commentsCount } = await getComments(postID, params);
+            const result = await getComments(postID, params);
 
             if (didMount) {
                 setOffset(offset + 1);
-                setComments({ items: [...fetchedComments.reverse(), ...comments.items], commentsCount });
+                setComments([...result.reverse(), ...comments]);
                 setIsLoading(false);
             }
         } catch (e) {
@@ -83,7 +75,7 @@ const Comments: React.FC<IProps> = (props) => {
                 const comment = await commentOnPost(postID, commentBody);
 
                 if (didMount) {
-                    setComments({ commentsCount: comments.commentsCount + 1, items: [...comments.items, comment] });
+                    setComments([...comments, comment]);
 
                     setCommentBody('');
                     setUpdateMode(false);
@@ -112,7 +104,7 @@ const Comments: React.FC<IProps> = (props) => {
         if (didMount) {
             setComments(oldComments => ({
                 ...oldComments,
-                items: oldComments.items.filter((cmt) => cmt.id !== comment.id)
+                items: oldComments.filter((cmt) => cmt.id !== comment.id)
             }));
         }
     }
@@ -127,7 +119,7 @@ const Comments: React.FC<IProps> = (props) => {
                         onClick={() => fetchComment({
                             offset: 1,
                             limit: 10,
-                            skip: comments.items.length === 1 ? 1 : undefined,
+                            skip: comments.length === 1 ? 1 : undefined,
                             sort: 'asc'
                         })}
                     >
@@ -136,7 +128,7 @@ const Comments: React.FC<IProps> = (props) => {
                 )}
                 {/* ----- COMMENT LIST ---------- */}
                 <div className="py-4 laptop:px-2 space-y-2 divide-y divide-gray-200 dark:divide-gray-800">
-                    <CommentList comments={comments.items} updateCommentCallback={updateCommentCallback} />
+                    <CommentList comments={comments} updateCommentCallback={updateCommentCallback} />
                 </div>
                 {/*  ---- INPUT COMMENT ----- */}
                 {isCommentVisible && (

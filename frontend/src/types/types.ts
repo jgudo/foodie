@@ -38,6 +38,7 @@ export interface IUser {
     username: string;
     fullname?: string;
     profilePicture?: Record<string, any>;
+    [prop: string]: any;
 }
 
 export interface IPost {

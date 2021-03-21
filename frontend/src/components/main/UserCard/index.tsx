@@ -2,14 +2,13 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FollowButton } from '~/components/main';
 import { Avatar } from "~/components/shared";
-import { IRootReducer, IUser } from "~/types/types";
+import { IProfile, IRootReducer, IUser } from "~/types/types";
 
 interface IProps {
-    profile: IUser;
-    isFollowing: boolean;
+    profile: IProfile | IUser;
 }
 
-const UserCard: React.FC<IProps> = ({ profile, isFollowing }) => {
+const UserCard: React.FC<IProps> = ({ profile }) => {
     const myUsername = useSelector((state: IRootReducer) => state.auth.username);
 
     return (
@@ -24,7 +23,7 @@ const UserCard: React.FC<IProps> = ({ profile, isFollowing }) => {
                 {profile.username === myUsername ? (
                     <h4 className="text-gray-400">Me</h4>
                 ) : (
-                    <FollowButton userID={profile.id} isFollowing={isFollowing} />
+                    <FollowButton userID={profile.id} isFollowing={profile.isFollowing} />
                 )}
             </div>
         </div>

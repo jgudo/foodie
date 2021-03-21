@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useHistory } from 'react-router-dom';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
+import thumbnail from '~/images/thumbnail.jpg';
 import { IPost } from "~/types/types";
 
 dayjs.extend(relativeTime);
@@ -47,7 +48,7 @@ const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
                     <div
                         className="w-24 laptop:w-32 h-full !bg-cover !bg-no-repeat !bg-center"
                         style={{
-                            background: `#f7f7f7 url(${post.photos[0]})`
+                            background: `#f7f7f7 url(${post.photos[0]?.url || thumbnail})`
                         }}
                     />
                     <div className="flex-grow p-2 pb-4 max-w-sm">

@@ -55,7 +55,7 @@ const SearchInput: React.FC<IProps> = (props) => {
                 setError(null);
                 const users = await search({ q: val, limit: 5 });
 
-                setSuggestions(users);
+                setSuggestions(users as IProfile[]);
                 setSuggesting(false);
             } catch (e) {
                 setSuggesting(false);

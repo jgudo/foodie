@@ -16,14 +16,14 @@ export const updateProfileInfo = (user: IProfile) => (<const>{
     payload: user
 });
 
-export const updateProfilePicture = (url: string) => (<const>{
+export const updateProfilePicture = (image: Object) => (<const>{
     type: UPDATE_PROFILE_PICTURE,
-    payload: url
+    payload: image
 });
 
-export const updateCoverPhoto = (url: string) => (<const>{
+export const updateCoverPhoto = (image: Object) => (<const>{
     type: UPDATE_COVER_PHOTO,
-    payload: url
+    payload: image
 });
 
 export type TProfileActionTypes =

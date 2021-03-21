@@ -77,10 +77,7 @@ const SuggestedPeople = () => {
                             key={user.id}
                         >
                             <div className="bg-white dark:bg-indigo-1000 rounded-md mb-4 shadow-md dark:shadow-none" key={user.id}>
-                                <UserCard
-                                    profile={user}
-                                    isFollowing={user.isFollowing}
-                                />
+                                <UserCard profile={user} />
                             </div>
                         </CSSTransition>
                     ))}

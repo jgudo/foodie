@@ -13,57 +13,66 @@ router.get(
     isAuthenticated,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const reqUser = req.user as IUser;
             const { username } = req.params;
             const user = await User.findOne({ username });
 
             if (!user) return next(new ErrorHandler(404, 'User not found.'));
 
-            const result = await Follow.aggregate([
+            const myFollowingDoc = await Follow.find({ user: req.user._id });
+            const myFollowing = myFollowingDoc.map(user => user.target);
+
+            const agg = await User.aggregate([
                 {
-                    $match: { _user_id: user._id }
+                    $match: { _id: user._id }
                 },
                 {
-                    $project: {
-                        following: { $ifNull: ["$following", []] },
-                        followers: { $ifNull: ["$followers", []] },
+                    $lookup: { // lookup for followers
+                        from: 'follows',
+                        localField: '_id',
+                        foreignField: 'target',
+                        as: 'followers'
+                    }
+                },
+                {
+                    $lookup: { // lookup for following
+                        from: 'follows',
+                        localField: '_id',
+                        foreignField: 'user',
+                        as: 'following'
+                    }
+                },
+                {
+                    $addFields: {
+                        isFollowing: { $in: ['$_id', myFollowing] },
+                        isOwnProfile: {
+                            $eq: ['$$CURRENT.username', req.user.username]
+                        }
                     }
                 },
                 {
                     $project: {
                         _id: 0,
+                        id: '$_id',
+                        info: 1,
+                        isEmailValidated: 1,
+                        email: 1,
+                        profilePicture: 1,
+                        coverPhoto: 1,
+                        username: 1,
+                        firstname: 1,
+                        lastname: 1,
+                        dateJoined: 1,
                         followingCount: { $size: '$following' },
                         followersCount: { $size: '$followers' },
-                        followers: 1
+                        isFollowing: 1,
+                        isOwnProfile: 1
                     }
                 },
             ]);
 
-            console.log(result)
+            if (agg.length === 0) return next(new ErrorHandler(404, 'User not found.'));
 
-            const { followingCount, followersCount, followers } = result[0] || {};
-
-            const toObjectUser = {
-                ...user.toUserJSON(),
-                followingCount: followingCount || 0,
-                followersCount: followersCount || 0
-            };
-
-            if (reqUser.username !== username) {
-                let isFollowing = false;
-
-                if (followers) {
-                    isFollowing = followers.some((follower) => {
-                        return follower._id.toString() === reqUser._id.toString();
-                    });
-                }
-
-                toObjectUser.isFollowing = isFollowing;
-            }
-
-            toObjectUser.isOwnProfile = reqUser.username === username
-
-            res.status(200).send(makeResponseJson(toObjectUser));
+            res.status(200).send(makeResponseJson({ ...agg[0], fullname: user.fullname }));
         } catch (e) {
             console.log(e)
             next(e);
@@ -136,7 +145,7 @@ router.post(
                 }
             });
 
-            res.status(200).send(makeResponseJson(image));
+            res.status(200).send(makeResponseJson({ image }));
         } catch (e) {
             console.log('CANT UPLOAD FILE: ', e);
             next(e);

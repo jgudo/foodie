@@ -216,7 +216,7 @@ router.get(
                 return next(new ErrorHandler(404, 'No more comments.'));
             }
 
-            res.status(200).send(makeResponseJson({ comments: agg, count: 0 }));
+            res.status(200).send(makeResponseJson(agg));
         } catch (e) {
             console.log(e);
             next(e);
@@ -533,7 +533,7 @@ router.get(
                 return next(new ErrorHandler(404, 'No more comments.'));
             }
 
-            res.status(200).send(makeResponseJson({ replies: agg, count: 0 }));
+            res.status(200).send(makeResponseJson(agg));
         } catch (e) {
             console.log(e);
             next(e);

@@ -51,9 +51,9 @@ export const checkSession = () => (<const>{
     type: CHECK_SESSION
 });
 
-export const updateAuthPicture = (url: string) => (<const>{
+export const updateAuthPicture = (image: Object) => (<const>{
     type: UPDATE_AUTH_PICTURE,
-    payload: url
+    payload: image
 });
 
 export type TAuthActionType =

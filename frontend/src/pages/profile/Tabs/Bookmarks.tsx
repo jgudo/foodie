@@ -8,6 +8,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { BookmarkButton } from "~/components/main";
 import { Loader } from '~/components/shared';
 import { useDidMount, useDocumentTitle } from '~/hooks';
+import thumbnail from '~/images/thumbnail.jpg';
 import { getBookmarks } from "~/services/api";
 import { IBookmark, IError } from "~/types/types";
 
@@ -126,7 +127,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                         <div
                                             className="w-32 h-full !bg-cover !bg-no-repeat !bg-center"
                                             style={{
-                                                background: `#f7f7f7 url(${item.post.photos[0]})`
+                                                background: `#f7f7f7 url(${item.post.photos[0]?.url || thumbnail})`
                                             }}
                                         />
                                     </Link>

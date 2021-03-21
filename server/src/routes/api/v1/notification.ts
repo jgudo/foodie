@@ -85,7 +85,7 @@ router.patch(
             const notif = await Notification.findById(id);
             if (!notif) return res.sendStatus(400);
 
-            const result = await Notification
+            await Notification
                 .findByIdAndUpdate(id, {
                     $set: {
                         unread: false

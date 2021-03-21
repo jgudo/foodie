@@ -43,11 +43,11 @@ const CommentItem: React.FC<IProps> = (props) => {
     const getReplies = async () => {
         try {
             setGettingReplies(true);
-            const res = await getCommentReplies({ offset, comment_id: comment.id, post_id: comment.post_id });
+            const data = await getCommentReplies({ offset, comment_id: comment.id, post_id: comment.post_id });
 
             setGettingReplies(false);
             setError(null);
-            setReplies([...replies, ...res.replies]);
+            setReplies([...replies, ...data]);
             setOffset(offset + 1);
             setVisibleReplies(true);
         } catch (e) {

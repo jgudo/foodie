@@ -46,26 +46,23 @@ router.post(
                 })
                 .execPopulate();
 
-            const myFollowers = await Follow.findOne({ _user_id: req.user._id });
-            const followers = !myFollowers ? [] : myFollowers.followers;
-            let newsFeeds = [];
 
-            // add post to follower's newsfeed
-            if (myFollowers && myFollowers.followers) {
-                newsFeeds = myFollowers.followers.map(follower => ({
+            const myFollowersDoc = await Follow.find({ target: req.user._id });
+            const myFollowers = myFollowersDoc.map(user => user.target);
+
+            const newsFeeds = myFollowers
+                .map(follower => ({ // add post to follower's newsfeed
                     follower: Types.ObjectId(follower._id),
                     post: Types.ObjectId(post._id),
                     post_owner: req.user._id,
                     createdAt: post.createdAt
-                }));
-            }
-            // append own post on newsfeed
-            newsFeeds = newsFeeds.concat({
-                follower: req.user._id,
-                post_owner: req.user._id,
-                post: Types.ObjectId(post._id),
-                createdAt: post.createdAt
-            });
+                }))
+                .concat({ // append own post on newsfeed
+                    follower: req.user._id,
+                    post_owner: req.user._id,
+                    post: Types.ObjectId(post._id),
+                    createdAt: post.createdAt
+                });
 
             if (newsFeeds.length !== 0) {
                 await NewsFeed.insertMany(newsFeeds);
@@ -73,8 +70,8 @@ router.post(
 
             // Notify followers that new post has been made 
             const io = req.app.get('io');
-            followers.forEach((user) => {
-                io.to(user._id.toString()).emit('newFeed', {
+            myFollowers.forEach((id) => {
+                io.to(id.toString()).emit('newFeed', {
                     ...post.toObject(),
                     isOwnPost: false
                 });
@@ -95,14 +92,13 @@ router.get(
             const { username } = req.params;
             const { sortBy, sortOrder } = req.query;
 
-            const offset = parseInt(req.query.offset as string) || 0;
-
             const user = await User.findOne({ username });
-            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = myFollowing?.following || [];
+            const myFollowingDoc = await Follow.find({ user: req.user._id });
+            const myFollowing = myFollowingDoc.map(user => user.target);
 
             if (!user) return next(new ErrorHandler(404, 'User not found'));
 
+            const offset = parseInt(req.query.offset as string) || 0;
             const limit = POST_LIMIT;
             const skip = offset * limit;
             const query = {
@@ -113,9 +109,10 @@ router.get(
                 [sortBy || 'createdAt']: sortOrder === 'asc' ? 1 : -1
             };
 
-            if (username === req.user.username) {
+            if (username === req.user.username) { // if own profile, get both public,private,follower posts
                 query.privacy.$in = [EPrivacy.public, EPrivacy.follower, EPrivacy.private];
-            } else if (following.includes(user._id.toString())) {
+            } else if (myFollowing.includes(user._id.toString())) {
+                // else get only public posts or follower-only posts
                 query.privacy.$in = [EPrivacy.public, EPrivacy.follower];
             }
 
@@ -366,13 +363,13 @@ router.get(
                 return next(new ErrorHandler(404, 'No more likes found.'));
             }
 
-            const myFollowing = await Follow.findOne({ _user_id: req.user._id });
-            const following = myFollowing?.following || [];
+            const myFollowingDoc = await Follow.find({ user: req.user._id });
+            const myFollowing = myFollowingDoc.map(user => user.target);
 
             const result = likers.map((like) => {
                 return {
                     ...like.user.toObject(),
-                    isFollowing: following.includes(like.user.id)
+                    isFollowing: myFollowing.includes(like.user.id)
                 }
             });
 

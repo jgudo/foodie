@@ -7,7 +7,7 @@ import { useDidMount } from '~/hooks';
 import { setTargetPost } from '~/redux/action/helperActions';
 import { hideModal } from '~/redux/action/modalActions';
 import { getPostLikes } from '~/services/api';
-import { EModalType, IError, IRootReducer, IUser } from '~/types/types';
+import { EModalType, IError, IProfile, IRootReducer } from '~/types/types';
 import UserCard from '../UserCard';
 
 interface IProps {
@@ -16,10 +16,8 @@ interface IProps {
 
 Modal.setAppElement('#root');
 
-type TLikesState = IUser & { isFollowing: boolean };
-
 const PostLikesModal: React.FC<IProps> = (props) => {
-    const [likes, setLikes] = useState<TLikesState[]>([]);
+    const [likes, setLikes] = useState<IProfile[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [error, setError] = useState<IError | null>(null);
@@ -95,7 +93,7 @@ const PostLikesModal: React.FC<IProps> = (props) => {
                         <div className="divide-y divide-gray-100 dark:divide-gray-800">
                             {likes.map(user => (
                                 <div key={user.id}>
-                                    <UserCard profile={user} isFollowing={user.isFollowing} />
+                                    <UserCard profile={user} />
                                 </div>
                             ))}
                         </div>

@@ -60,13 +60,13 @@ router.get(
                     return next(new ErrorHandler(404, 'No users found.'));
                 }
 
-                const myFollowing = await Follow.findOne({ _user_id: req?.user?._id });
-                const following = myFollowing?.following || [];
+                const myFollowingDoc = await Follow.find({ user: req.user._id });
+                const myFollowing = myFollowingDoc.map(user => user.target);
 
                 const usersResult = users.map((user) => {
                     return {
                         ...user.toProfileJSON(),
-                        isFollowing: following.includes(user.id)
+                        isFollowing: myFollowing.includes(user.id)
                     }
                 });
 

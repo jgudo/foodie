@@ -163,7 +163,7 @@ const Home: React.FC<IProps> = (props) => {
                 )}
                 {/* ---- NEWS FEED ---- */}
                 {(state.newsFeed.items.length !== 0) && (
-                    <>
+                    <div className="mb-8">
                         <TransitionGroup component={null}>
                             <div ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                                 {state.newsFeed.items.map((post: IPost) => post.author && ( // avoid render posts with null author
@@ -193,7 +193,7 @@ const Home: React.FC<IProps> = (props) => {
                                 </p>
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
             </div>
             {/* --- SUGGESTED PEOPLE --- */}

@@ -47,7 +47,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 const fetchedPosts = await search({ q: searchQuery, type: 'posts', offset: postOffset });
 
                 if (didMount) {
-                    setPosts([...posts, ...fetchedPosts]);
+                    setPosts([...posts, ...(fetchedPosts as IPost[])]);
                     setIsLoadingPost(false);
                     setPostOffset(postOffset + 1);
                 }
@@ -68,7 +68,7 @@ const Search: React.FC<RouteComponentProps> = ({ history }) => {
                 const fetchedUsers = await search({ q: searchQuery, offset: userOffset });
 
                 if (didMount) {
-                    setUsers([...users, ...fetchedUsers]);
+                    setUsers([...users, ...(fetchedUsers as IProfile[])]);
                     setIsLoadingUser(false);
                     setUserOffset(userOffset + 1);
                 }

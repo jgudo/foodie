@@ -11,13 +11,8 @@ interface IProps {
     username: string;
 }
 
-interface IFollowerState {
-    user: IProfile;
-    isFollowing: boolean;
-}
-
 const Followers: React.FC<IProps> = ({ username }) => {
-    const [followers, setFollowers] = useState<IFollowerState[]>([]);
+    const [followers, setFollowers] = useState<IProfile[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0); // Pagination
     const didMount = useDidMount(true);
@@ -77,17 +72,14 @@ const Followers: React.FC<IProps> = ({ username }) => {
                 <div>
                     <h4 className="text-gray-700 dark:text-white mb-4 ml-4 mt-4 laptop:mt-0">Followers</h4>
                     <TransitionGroup component={null}>
-                        {followers.map(follower => (
+                        {followers.map(user => (
                             <CSSTransition
                                 timeout={500}
                                 classNames="fade"
-                                key={follower.user._id}
+                                key={user.id}
                             >
-                                <div className="bg-white dark:bg-indigo-1000 rounded-md mb-4 shadow-md" key={follower.user._id}>
-                                    <UserCard
-                                        profile={follower.user}
-                                        isFollowing={follower.isFollowing}
-                                    />
+                                <div className="bg-white dark:bg-indigo-1000 rounded-md mb-4 shadow-md">
+                                    <UserCard profile={user} />
                                 </div>
                             </CSSTransition>
                         ))}
