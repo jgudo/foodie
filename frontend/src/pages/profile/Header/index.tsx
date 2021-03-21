@@ -77,10 +77,10 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
             setIsUploadingProfileImage(true);
             toast('Uploading...', { hideProgressBar: true, bodyStyle: { color: '#1a1a1a' } });
 
-            const imageUrl = await uploadPhoto(formData, 'picture');
+            const { image } = await uploadPhoto(formData, 'picture');
 
-            dispatch(updateProfilePicture(imageUrl));
-            dispatch(updateAuthPicture(imageUrl));
+            dispatch(updateProfilePicture(image));
+            dispatch(updateAuthPicture(image));
             setIsUploadingProfileImage(false);
 
             toast.dismiss();
@@ -101,9 +101,9 @@ const Header: React.FC<IProps> = ({ profile, auth }) => {
                 setIsUploadingCoverPhoto(true);
                 toast('Uploading Cover Photo...', { hideProgressBar: true, bodyStyle: { color: '#1a1a1a' } });
 
-                const imageUrl = await uploadPhoto(formData, 'cover');
+                const { image } = await uploadPhoto(formData, 'cover');
 
-                dispatch(updateCoverPhoto(imageUrl));
+                dispatch(updateCoverPhoto(image));
                 setIsUploadingCoverPhoto(false);
 
                 coverPhoto.clearFiles();
