@@ -1,37 +1,5 @@
-import axios from 'axios';
-import { logoutStart } from '~/redux/action/authActions';
-import store from '~/redux/store/store';
 import { IBookmark, IComment, IFetchParams, IMessage, INotification, IPost, IProfile, IRegister, IUser } from '~/types/types';
 import httpRequest from './fetcher';
-
-const foodieUrl = process.env.REACT_APP_FOODIE_URL || 'http://localhost:9000';
-const foodieApiVersion = process.env.REACT_APP_FOODIE_API_VERSION || 'v1';
-axios.defaults.baseURL = `${foodieUrl}/api/${foodieApiVersion}`;
-axios.defaults.withCredentials = true;
-
-let isLogoutTriggered = false;
-
-function resetIsLogoutTriggered() {
-    isLogoutTriggered = false;
-}
-
-axios.interceptors.response.use(
-    response => response,
-    error => {
-        const { data, status } = error.response;
-        if (status === 401
-            && (data?.error?.type || '') !== 'INCORRECT_CREDENTIALS'
-            && error.config
-            && !error.config.__isRetryRequest
-        ) {
-            if (!isLogoutTriggered) {
-                isLogoutTriggered = true;
-                store.dispatch(logoutStart(resetIsLogoutTriggered));
-            }
-        }
-        return Promise.reject(error);
-    }
-);
 
 export const login = (username: string, password: string) => httpRequest<IUser>({
     method: 'POST',
