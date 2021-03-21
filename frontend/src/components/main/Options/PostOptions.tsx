@@ -2,6 +2,7 @@ import {
     DeleteOutlined,
     EditOutlined,
     EllipsisOutlined,
+    LoadingOutlined,
     StarFilled,
     StarOutlined
 } from '@ant-design/icons';
@@ -88,11 +89,13 @@ const PostOptions: React.FC<IProps> = (props) => {
                                     className="group p-4 flex items-center cursor-pointer dark:text-white hover:bg-indigo-500 hover:text-white"
                                     onClick={dispatchBookmark}
                                 >
-                                    {isBookmarked ? (
-                                        <StarFilled className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
-                                    ) : (
-                                        <StarOutlined className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
-                                    )}
+                                    {isLoading
+                                        ? <LoadingOutlined className="text-gray-600 text-2xl p-2 dark:text-white group-hover:text-white" />
+                                        : isBookmarked ? (
+                                            <StarFilled className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
+                                        ) : (
+                                            <StarOutlined className="text-red-600 group-hover:text-white text-2xl p-2 flex justify-center items-center rounded-full" />
+                                        )}
                                     <span className={`${isLoading && 'opacity-50'}`}>{isBookmarked ? 'Unbookmark Post' : 'Bookmark Post'} </span>
                                 </h4>
                             )}

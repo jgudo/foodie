@@ -1,4 +1,4 @@
-import { StarFilled, StarOutlined } from '@ant-design/icons';
+import { LoadingOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { useEffect, useState } from "react";
@@ -88,16 +88,18 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                                 <div key={item.id} className="h-24 flex justify-between bg-white dark:bg-indigo-1000 rounded-md shadow-lg overflow-hidden">
                                     <div className="flex justify-center items-center">
                                         <BookmarkButton postID={item.post.id} initBookmarkState={item.isBookmarked}>
-                                            {({ dispatchBookmark, isBookmarked }) => (
+                                            {({ dispatchBookmark, isBookmarked, isLoading }) => (
                                                 <h4
                                                     className="p-4 flex items-center cursor-pointer"
                                                     onClick={dispatchBookmark}
                                                 >
-                                                    {isBookmarked ? (
-                                                        <StarFilled className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
-                                                    ) : (
-                                                        <StarOutlined className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
-                                                    )}
+                                                    {isLoading
+                                                        ? <LoadingOutlined className="text-gray-600 text-2xl p-2 dark:text-white" />
+                                                        : isBookmarked ? (
+                                                            <StarFilled className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
+                                                        ) : (
+                                                            <StarOutlined className="text-red-600 text-2xl p-2 rounded-full hover:bg-red-100" />
+                                                        )}
                                                 </h4>
                                             )}
                                         </BookmarkButton>

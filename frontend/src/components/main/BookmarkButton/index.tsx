@@ -19,6 +19,8 @@ const BookmarkButton: React.FC<IProps> = (props) => {
     }, [props.initBookmarkState]);
 
     const dispatchBookmark = async () => {
+        if (isLoading) return;
+
         try {
             // state = TRUE | FALSE
             setLoading(true);
