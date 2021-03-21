@@ -19,16 +19,8 @@ interface IProps {
     isOwnProfile: boolean;
 }
 
-interface IBookmarkState {
-    items: IBookmark[];
-    total: number;
-}
-
 const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
-    const [bookmarks, setBookmarks] = useState<IBookmarkState>({
-        items: [],
-        total: 0
-    });
+    const [bookmarks, setBookmarks] = useState<IBookmark[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<IError | null>(null);
     const [offset, setOffset] = useState(0);
@@ -44,13 +36,10 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
         try {
             setIsLoading(true);
 
-            const { bookmarks: result, total } = await getBookmarks({ offset });
+            const data = await getBookmarks({ offset });
 
             if (didMount) {
-                setBookmarks({
-                    items: [...bookmarks.items, ...result],
-                    total
-                });
+                setBookmarks(data);
                 setOffset(offset + 1);
 
                 setIsLoading(false);
@@ -66,7 +55,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
 
     const infiniteRef = useInfiniteScroll({
         loading: isLoading,
-        hasNextPage: !error && bookmarks.items.length >= 10,
+        hasNextPage: !error && bookmarks.length >= 10,
         onLoadMore: fetchBookmarks,
         scrollContainer: 'window',
         threshold: 200
@@ -74,23 +63,23 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
 
     return (!isOwnProfile && username) ? <Redirect to={`/user/${username}`} /> : (
         <div className="flex flex-col items-start justify-start w-full min-h-10rem">
-            {(isLoading && bookmarks.items.length === 0) && (
+            {(isLoading && bookmarks.length === 0) && (
                 <div className="flex w-full items-center justify-center min-h-10rem">
                     <Loader />
                 </div>
             )}
-            {(bookmarks.items.length === 0 && error && !isLoading) && (
+            {(bookmarks.length === 0 && error && !isLoading) && (
                 <div className="w-full p-4 flex min-h-10rem items-center justify-center">
                     <span className="text-gray-400 text-lg italic">
                         {error?.error?.message || "Something went wrong :("}
                     </span>
                 </div>
             )}
-            {(bookmarks.items.length !== 0 && !error) && (
+            {(bookmarks.length !== 0 && !error) && (
                 <div className="w-full space-y-4" ref={infiniteRef as React.RefObject<HTMLDivElement>}>
                     <h4 className="text-gray-700 dark:text-white mb-4 ml-4 mt-4 laptop:mt-0">Bookmarks</h4>
                     <TransitionGroup component={null}>
-                        {bookmarks.items.map(item => (
+                        {bookmarks.map(item => (
                             <CSSTransition
                                 timeout={500}
                                 classNames="fade"
@@ -135,7 +124,7 @@ const Bookmarks: React.FC<IProps> = ({ username, isOwnProfile }) => {
                             </CSSTransition>
                         ))}
                     </TransitionGroup>
-                    {(bookmarks.items.length !== 0 && !error && isLoading) && (
+                    {(bookmarks.length !== 0 && !error && isLoading) && (
                         <div className="flex justify-center py-6">
                             <Loader />
                         </div>

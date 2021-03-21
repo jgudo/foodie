@@ -33,17 +33,12 @@ router.post(
             });
 
             await comment.save();
-            await Post
-                .findByIdAndUpdate(post_id, {
-                    $push: {
-                        comments: comment._id
-                    }
-                });
             await comment
                 .populate({
                     path: 'author',
                     select: 'username profilePicture fullname'
-                }).execPopulate();
+                })
+                .execPopulate();
 
             // SEND NOTIFICATION
             if (post._author_id.toString() !== userID.toString()) {
@@ -249,15 +244,6 @@ router.delete(
                         { parents: { $in: [comment_id] } }
                     ]
                 });
-                await Post.updateMany({
-                    comments: {
-                        $in: [comment_id]
-                    }
-                }, {
-                    $pull: {
-                        comments: Types.ObjectId(comment_id)
-                    }
-                });
                 res.sendStatus(200);
             } else {
                 res.sendStatus(401);
@@ -349,17 +335,12 @@ router.post(
             });
 
             await reply.save();
-            await Post
-                .findByIdAndUpdate(post_id, {
-                    $push: {
-                        comments: reply._id
-                    }
-                });
             await reply
                 .populate({
                     path: 'author',
                     select: 'username profilePicture fullname'
-                }).execPopulate();
+                })
+                .execPopulate();
 
             // SEND NOTIFICATION
             if (req.user._id.toString() !== comment._author_id.toString()) {

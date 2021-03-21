@@ -196,7 +196,7 @@ export const markAllAsUnreadNotifications = () => {
 
 //  ---------- BOOKMARK METHODS ----------------
 
-export const getBookmarks = (params: IFetchParams) => httpRequest<{ bookmarks: IBookmark[]; total: number; }>({
+export const getBookmarks = (params: IFetchParams) => httpRequest<IBookmark[]>({
     method: 'GET',
     url: `/bookmarks`,
     params

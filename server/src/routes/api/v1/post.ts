@@ -280,16 +280,6 @@ router.delete(
                 await Comment.deleteMany({ _post_id: Types.ObjectId(post_id) });
                 await NewsFeed.deleteMany({ post: Types.ObjectId(post_id) });
                 await Bookmark.deleteMany({ _post_id: Types.ObjectId(post_id) });
-                await User.updateMany({
-                    bookmarks: {
-                        $in: [post_id]
-                    }
-                }, {
-                    $pull: {
-                        bookmarks: Types.ObjectId(post_id)
-                    }
-                });
-
 
                 res.sendStatus(200);
             } else {

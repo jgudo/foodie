@@ -2,7 +2,7 @@ import { BOOKMARKS_LIMIT } from '@/constants/constants';
 import { makeResponseJson } from '@/helpers/utils';
 import { ErrorHandler } from '@/middlewares/error.middleware';
 import { isAuthenticated, validateObjectID } from '@/middlewares/middlewares';
-import { Bookmark, Post, User } from '@/schemas';
+import { Bookmark, Post } from '@/schemas';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
 
@@ -32,7 +32,6 @@ router.post(
 
             if (isPostBookmarked) {
                 await Bookmark.findOneAndDelete({ _author_id: userID, _post_id: Types.ObjectId(post_id) });
-                await User.findByIdAndUpdate(userID, { $pull: { bookmarks: Types.ObjectId(post_id) } });
 
                 res.status(200).send(makeResponseJson({ state: false }));
             } else {
@@ -42,7 +41,7 @@ router.post(
                     createdAt: Date.now()
                 });
                 await bookmark.save();
-                await User.findByIdAndUpdate(userID, { $push: { bookmarks: post_id } });
+
                 res.status(200).send(makeResponseJson({ state: true }));
             }
         } catch (e) {
@@ -62,8 +61,6 @@ router.get(
             const limit = BOOKMARKS_LIMIT;
             const skip = offset * limit;
 
-            // GET TOTAL
-            const countBookmarks = await Bookmark.find({ _author_id: userID });
             const bookmarks = await Bookmark
                 .find({ _author_id: userID })
                 .populate({
@@ -82,15 +79,13 @@ router.get(
             }
 
             const result = bookmarks.map((item) => {
-                const isBookmarked = req.user.isBookmarked(item._post_id);
-
                 return {
                     ...item.toObject(),
-                    isBookmarked,
+                    isBookmarked: true,
                 }
             });
 
-            res.status(200).send(makeResponseJson({ bookmarks: result, total: countBookmarks.length }));
+            res.status(200).send(makeResponseJson(result));
         } catch (e) {
             console.log('CANT GET BOOKMARKS ', e);
             next(e);
