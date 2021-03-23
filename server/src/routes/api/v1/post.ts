@@ -47,8 +47,8 @@ router.post(
                 .execPopulate();
 
 
-            const myFollowersDoc = await Follow.find({ target: req.user._id });
-            const myFollowers = myFollowersDoc.map(user => user.target);
+            const myFollowersDoc = await Follow.find({ target: req.user._id }); // target is yourself
+            const myFollowers = myFollowersDoc.map(user => user.user); // so user property must be used 
 
             const newsFeeds = myFollowers
                 .map(follower => ({ // add post to follower's newsfeed
