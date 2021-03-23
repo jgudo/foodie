@@ -69,13 +69,15 @@ router.post(
             }
 
             // Notify followers that new post has been made 
-            const io = req.app.get('io');
-            myFollowers.forEach((id) => {
-                io.to(id.toString()).emit('newFeed', {
-                    ...post.toObject(),
-                    isOwnPost: false
+            if (post.privacy !== 'private') {
+                const io = req.app.get('io');
+                myFollowers.forEach((id) => {
+                    io.to(id.toString()).emit('newFeed', {
+                        ...post.toObject(),
+                        isOwnPost: false
+                    });
                 });
-            });
+            }
 
             return res.status(200).send(makeResponseJson({ ...post.toObject(), isOwnPost: true }));
         } catch (e) {

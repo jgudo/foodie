@@ -127,7 +127,18 @@ export const getNewsFeed = (user: IUser | null, query: Object, skip: number, lim
                 }
             ]);
 
-            resolve(agg);
+            const filtered = [];
+
+            agg.forEach((post) => {
+                // make sure to not include private posts of users
+                if (!post.isOwnPost && post.privacy === 'private') {
+                    return;
+                }
+
+                filtered.push(post);
+            })
+
+            resolve(filtered);
         } catch (err) {
             reject(err);
         }
