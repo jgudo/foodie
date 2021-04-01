@@ -102,10 +102,7 @@ const Comments: React.FC<IProps> = (props) => {
 
     const updateCommentCallback = (comment: IComment) => {
         if (didMount) {
-            setComments(oldComments => ({
-                ...oldComments,
-                items: oldComments.filter((cmt) => cmt.id !== comment.id)
-            }));
+            setComments(oldComments => oldComments.filter((cmt) => cmt.id !== comment.id));
         }
     }
 

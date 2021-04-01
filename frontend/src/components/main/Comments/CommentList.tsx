@@ -27,8 +27,8 @@ const CommentList: React.FC<IProps> = ({ comments, updateCommentCallback }) => {
 
     const deleteSuccessCallback = (comment: IComment) => {
         if (didMount) {
-            updateCommentCallback && updateCommentCallback(comment); // For updating the base/parent comment
-            dispatch(setTargetComment(null)); // else update the replies
+            (updateCommentCallback) && updateCommentCallback(comment); // For updating the base/parent comment
+            dispatch(setTargetComment(null));
             setReplies(oldComments => oldComments.filter((cmt) => cmt.id !== comment.id));
         }
     }

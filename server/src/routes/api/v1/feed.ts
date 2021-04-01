@@ -19,7 +19,12 @@ router.get(
             let result = [];
 
             if (req.isAuthenticated()) {
-                result = await NewsFeedService.getNewsFeed(req.user, { follower: req.user._id }, skip, limit);
+                result = await NewsFeedService.getNewsFeed(
+                    req.user, 
+                    { follower: req.user._id }, 
+                    skip, 
+                    limit
+                );
             } else {
                 result = await PostService.getPosts(null, { privacy: EPrivacy.public }, { skip, limit, sort: { createdAt: -1 } });
             }
