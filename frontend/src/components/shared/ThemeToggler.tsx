@@ -26,8 +26,9 @@ const ThemeToggler = () => {
     }
 
     return (
-        <div
-            className="w-9 h-9 p-2 flex items-center justify-center rounded-full border border-gray-200 hover:bg-indigo-100 dark:hover:bg-indigo-900 dark:border-gray-800"
+        <label
+            htmlFor="theme"
+            className="w-9 h-9 p-2 flex items-center justify-center rounded-full border border-gray-200 hover:bg-indigo-100 dark:hover:bg-indigo-900 dark:border-gray-800 cursor-pointer"
             title={theme === 'dark' ? 'Toggle Light Theme' : 'Toggle Dark Theme'}
         >
             <input
@@ -55,7 +56,7 @@ const ThemeToggler = () => {
                     </g>
                 </svg>
             </label>
-        </div>
+        </label>
     );
 };
 
