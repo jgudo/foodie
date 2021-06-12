@@ -22,7 +22,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
         bio: profile?.info?.bio || '',
         birthday: profile?.info?.birthday || ''
     });
-    const [bioLength, setBioLength] = useState(200 - field.bio.length);
+    const [bioLength, setBioLength] = useState(200 - profile?.info?.bio?.length || 0);
     const history = useHistory();
     const dispatch = useDispatch();
     const didMount = useDidMount();
@@ -33,9 +33,10 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
             firstname: profile.firstname,
             lastname: profile.lastname,
             gender: profile.info.gender,
-            bio: profile.info.bio,
+            bio: profile.info?.bio || '',
             birthday: profile.info.birthday
         });
+
     }, [profile]);
 
     const handleUpdateUser = async () => {
