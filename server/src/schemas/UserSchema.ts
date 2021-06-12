@@ -129,6 +129,10 @@ const UserSchema = new Schema({
         type: Object,
         default: {}
     },
+    status: {
+        type: Number,
+        default: 1 // 1 OK | 2 Warning | 3 Blocked | 4 Ban
+    },
     bookmarks: [{
         type: Schema.Types.ObjectId,
         ref: 'Post'

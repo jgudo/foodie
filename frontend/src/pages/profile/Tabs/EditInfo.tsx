@@ -18,8 +18,8 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const [field, setField] = useState({
         firstname: profile?.firstname || '',
         lastname: profile?.lastname || '',
-        gender: profile?.info.gender || '',
-        bio: profile?.info.bio || '',
+        gender: profile?.info?.gender || '',
+        bio: profile?.info?.bio || '',
         birthday: profile?.info?.birthday || ''
     });
     const [bioLength, setBioLength] = useState(200 - field.bio.length);
@@ -57,7 +57,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
             }
 
             toast.dismiss();
-            toast.error(e.error.message || 'Unable to process your request.');
+            toast.error(e.error?.message || 'Unable to process your request.');
         }
     };
 
