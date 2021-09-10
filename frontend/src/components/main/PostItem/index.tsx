@@ -106,7 +106,7 @@ const PostItem: React.FC<IProps> = (props) => {
             </div>
             {/* --- DESCRIPTION */}
             <div className="mb-3 mt-2">
-                <p className="text-gray-700 dark:text-gray-300">{post.description}</p>
+                <p className="text-gray-700 dark:text-gray-300 break-words">{post.description}</p>
             </div>
             {/* --- IMAGE GRID ----- */}
             {post.photos.length !== 0 && <ImageGrid images={post.photos.map(img => img.url)} />}
@@ -146,7 +146,7 @@ const PostItem: React.FC<IProps> = (props) => {
                 <div className="text-center py-2">
                     <span className="text-gray-400 text-sm">
                         <Link className="font-medium underline dark:text-indigo-400" to={LOGIN}>Login</Link> to like or comment on post.
-                        </span>
+                    </span>
                 </div>
             )}
             {isAuth && (
