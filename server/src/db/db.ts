@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 import config from '@/config/config';
 const mongoUri = config.mongodb.uri || 'mongodb://localhost:27017';
-const dbName = config.mongodb.dbName || 'foodie';
+const dbName = config.mongodb.dbName || 'Nomid social';
 
 if (config.server.env === 'dev') {
     mongoose.set("debug", true);

@@ -27,7 +27,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const dispatch = useDispatch();
     const didMount = useDidMount();
 
-    useDocumentTitle(`Edit Info - ${profile.username} | Foodie`);
+    useDocumentTitle(`Edit Info - ${profile.username} | Nomid social`);
     useEffect(() => {
         setField({
             firstname: profile.firstname,

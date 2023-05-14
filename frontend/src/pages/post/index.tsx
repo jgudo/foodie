@@ -13,7 +13,7 @@ const Post: React.FC<RouteComponentProps<{ post_id: string; }>> = ({ history, ma
     const [error, setError] = useState<IError | null>(null);
     const { post_id } = match.params;
 
-    useDocumentTitle(`${post?.description} - Foodie` || 'View Post');
+    useDocumentTitle(`${post?.description} - Nomid social` || 'View Post');
     useEffect(() => {
         fetchPost();
         // eslint-disable-next-line react-hooks/exhaustive-deps

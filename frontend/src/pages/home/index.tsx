@@ -35,7 +35,7 @@ const Home: React.FC<IProps> = (props) => {
     const from = props.location.state?.from || null;
 
 
-    useDocumentTitle('Foodie | Social Network');
+    useDocumentTitle('Nomid social | Social Network');
     useEffect(() => {
         console.log('TRIGGER', from)
         if (state.newsFeed.items.length === 0 || from === '/') {
