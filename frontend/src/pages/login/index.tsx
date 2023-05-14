@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     const [isPasswordVisible, setPasswordVisible] = useState(false);
     const dispatch = useDispatch();
 
-    useDocumentTitle('Login to Foodie');
+    useDocumentTitle('Login to Nomid social');
     useEffect(() => {
         return () => {
             dispatch(setAuthErrorMessage(null));
@@ -61,7 +61,7 @@ const Login: React.FC = () => {
             >
                 {/* --- LOGO --- */}
                 <Link className="absolute left-8 top-8" to="/">
-                    <img src={logo} alt="Foodie Logo" className="w-24" />
+                    <img src={logo} alt="Nomid social Logo" className="w-24" />
                 </Link>
                 {/* -- INFO --- */}
                 <h3 className="animate-fade text-white w-9/12 mb-14">
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
                 <Link to="/">
                     <img
                         src={logo_dark}
-                        alt="Foodie Logo"
+                        alt="Nomid social Logo"
                         className="w-24 relative mx-auto laptop:hidden"
                     />
                 </Link>
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
                 <div className="w-full laptop:px-14 px-8 text-center laptop:text-left">
                     <div>
                         <h2 className="mt-6 text-xl laptop:text-2xl font-extrabold text-gray-900">
-                            Login to Foodie
+                            Login
                     </h2>
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
@@ -169,7 +169,7 @@ const Login: React.FC = () => {
                     </div>
                     {/* --- COPYRIGHT -- */}
                     <span className="text-gray-400 text-xs mx-auto text-center block mt-4">
-                        &copy;Copyright {new Date().getFullYear()} Foodie
+                        &copy;Copyright {new Date().getFullYear()} Nomid social
                     </span>
                 </div>
             </div>

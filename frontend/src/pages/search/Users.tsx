@@ -7,7 +7,7 @@ interface IProps {
 }
 
 const Users: React.FC<IProps> = ({ users }) => {
-    useDocumentTitle(`Search Users | Foodie`);
+    useDocumentTitle(`Search Users | Nomid social`);
 
     return (
         <div>

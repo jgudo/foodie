@@ -1,12 +1,11 @@
 import { Redirect, Route } from "react-router-dom";
 import withAuth from "~/components/hoc/withAuth";
 import { LOGIN } from "~/constants/routes";
+import { RouteProps} from "react-router";
 
-interface IProps {
-    component: React.ComponentType;
-    path: string;
+interface IProps extends RouteProps {
+    component: any;
     isAuth: boolean;
-    [propName: string]: any;
 }
 
 const ProtectedRoute: React.FC<IProps> = ({ isAuth, component: Component, path, ...rest }) => {

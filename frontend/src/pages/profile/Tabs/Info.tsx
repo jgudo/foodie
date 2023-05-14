@@ -10,7 +10,7 @@ const Info = () => {
         isOwnProfile: state.auth.username === state.profile.username
     }));
     const history = useHistory();
-    useDocumentTitle(`Info - ${profile.username} | Foodie`);
+    useDocumentTitle(`Info - ${profile.username} | Nomid social`);
 
     return (
         <div className="p-4 bg-white dark:bg-indigo-1000 rounded-md min-h-10rem shadow-lg">

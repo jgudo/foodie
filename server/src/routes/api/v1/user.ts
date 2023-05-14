@@ -128,6 +128,7 @@ router.post(
     isAuthenticated,
     multer.single('photo'),
     async (req: Request, res: Response, next: NextFunction) => {
+        console.log('')
         try {
             const { field } = req.params;
             const file = req.file;

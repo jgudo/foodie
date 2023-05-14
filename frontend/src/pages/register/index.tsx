@@ -19,7 +19,7 @@ const Register: React.FC = () => {
     const [isPasswordVisible, setPasswordVisible] = useState(false);
     const dispatch = useDispatch();
 
-    useDocumentTitle('Register to Foodie');
+    useDocumentTitle('Register to Nomid social');
     useEffect(() => {
         return () => {
             dispatch(setAuthErrorMessage(null));
@@ -67,7 +67,7 @@ const Register: React.FC = () => {
             >
                 {/* --- LOGO --- */}
                 <Link className="absolute left-8 top-8" to="/">
-                    <img src={logo} alt="Foodie Logo" className="w-24" />
+                    <img src={logo} alt="Nomid social Logo" className="w-24" />
                 </Link>
                 {/* -- INFO --- */}
                 <h3 className="animate-fade text-white w-9/12 mb-14">
@@ -87,7 +87,7 @@ const Register: React.FC = () => {
                 <Link to="/">
                     <img
                         src={logo_dark}
-                        alt="Foodie Logo"
+                        alt="Nomid social Logo"
                         className="w-24 relative mx-auto laptop:hidden"
                     />
                 </Link>
@@ -188,7 +188,7 @@ const Register: React.FC = () => {
                     </div>
                     {/* --- COPYRIGHT -- */}
                     <span className="text-gray-400 text-xs mx-auto text-center block mt-4">
-                        &copy;Copyright {new Date().getFullYear()} Foodie
+                        &copy;Copyright {new Date().getFullYear()} Nomid social
                     </span>
                 </div>
             </div>

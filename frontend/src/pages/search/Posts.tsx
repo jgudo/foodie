@@ -26,7 +26,7 @@ const boldString = (str: string, substr: string) => {
 
 const Posts: React.FC<IProps> = ({ posts, searchQuery }) => {
     const history = useHistory();
-    useDocumentTitle(`Search Posts | Foodie`);
+    useDocumentTitle(`Search Posts | Nomid social`);
 
     const onClickPost = (id: string) => {
         history.push(`/post/${id}`);

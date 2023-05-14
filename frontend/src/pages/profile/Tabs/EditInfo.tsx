@@ -27,7 +27,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
     const dispatch = useDispatch();
     const didMount = useDidMount();
 
-    useDocumentTitle(`Edit Info - ${profile.username} | Foodie`);
+    useDocumentTitle(`Edit Info - ${profile.username} | Nomid social`);
     useEffect(() => {
         setField({
             firstname: profile.firstname,
@@ -152,7 +152,7 @@ const EditInfo: React.FC<IProps> = ({ isOwnProfile, profile }) => {
                         </select>
                     </div>
                     <div className="flex flex-col py-2">
-                        <label htmlFor="birthday" className="ml-4 text-gray-400 mb-2">Birthday (mm/dd/yyyy)</label>
+                        <label htmlFor="birthday" className="ml-4 text-gray-400 mb-2">Birthday (dd/mm/yyyy)</label>
                         <input
                             className="dark:bg-indigo-1100 dark:text-white dark:border-gray-800"
                             readOnly={isUpdating}

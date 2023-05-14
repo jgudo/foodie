@@ -35,7 +35,7 @@ const Home: React.FC<IProps> = (props) => {
     const from = props.location.state?.from || null;
 
 
-    useDocumentTitle('Foodie | Social Network');
+    useDocumentTitle('Nomid social | Social Network');
     useEffect(() => {
         console.log('TRIGGER', from)
         if (state.newsFeed.items.length === 0 || from === '/') {
@@ -83,13 +83,7 @@ const Home: React.FC<IProps> = (props) => {
     });
 
     return (
-        <div className="laptop:px-6% pt-20 flex items-start">
-            {/*  --- SIDE MENU --- */}
-            <div className="hidden laptop:block laptop:w-1/4 laptop:rounded-md bg-white laptop:sticky laptop:top-20 mr-4 laptop:shadow-lg divide-y-2 dark:bg-indigo-1000">
-                {props.isAuth && (
-                    <SideMenu username={state.auth.username} profilePicture={state.auth.profilePicture?.url} />
-                )}
-            </div>
+        <div className="laptop:px-6% pt-20 flex justify-center">
             <div className="w-full laptop:w-2/4 relative">
                 {/* --- CREATE POST INPUT ---- */}
                 {props.isAuth && (
