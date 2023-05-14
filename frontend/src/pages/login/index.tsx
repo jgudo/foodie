@@ -93,7 +93,7 @@ const Login: React.FC = () => {
                 <div className="w-full laptop:px-14 px-8 text-center laptop:text-left">
                     <div>
                         <h2 className="mt-6 text-xl laptop:text-2xl font-extrabold text-gray-900">
-                            Login to Foodie
+                            Login
                     </h2>
                     </div>
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>

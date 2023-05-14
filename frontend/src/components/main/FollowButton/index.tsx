@@ -1,5 +1,5 @@
 import { CheckOutlined, UserAddOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import {FC, useEffect, useState } from "react";
 import { useDidMount } from "~/hooks";
 import { followUser, unfollowUser } from "~/services/api";
 
@@ -9,7 +9,7 @@ interface IProps {
     size?: string;
 }
 
-const FollowButton: React.FC<IProps> = (props) => {
+const FollowButton: FC<IProps> = (props) => {
     const [isFollowing, setIsFollowing] = useState(props.isFollowing);
     const [isLoading, setLoading] = useState(false);
     const didMount = useDidMount();
